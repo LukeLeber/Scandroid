@@ -1,0 +1,12 @@
+<!--
+  ~ This file is protected under the KILLGPL.
+  ~ For more information visit <insert_valid_link_to_killgpl_here>
+  ~ <p/>
+  ~ Copyright (c) Luke A. Leber <LukeLeber@gmail.com> 2014
+  -->
+
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+</resources>

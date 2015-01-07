@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This file is protected under the KILLGPL.
+  ~ For more information visit <insert_valid_link_to_killgpl_here>
+  ~ <p/>
+  ~ Copyright (c) Luke A. Leber <LukeLeber@gmail.com> 2014
+  -->
+
+<resources>
+
+    <string name="app_name">Scandroid</string>
+    <string name="title_activity_scandroid">Scandroid</string>
+    <string name="title_activity_select_interface">Interface Configuration</string>
+    <string name="title_activity_vehicle_history">VehicleHistory</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Strings for activity_scandroid -->
+    <string name="scandroid_menu_settings_item_title">        Settings</string>
+    <string name="scandroid_menu_logging_item_title">        Logging</string>
+    <string name="scandroid_instruction_label">        Scandroid: The FREE scan-tool for Android!\n
+        Select a function from the choices below to get started.</string>
+    <string name="scandroid_generic_scanner_label">        Scanner (Generic)</string>
+    <string name="scandroid_expert_scanner_label">        Scanner (Expert)</string>
+    <string name="scandroid_vin_decoder_label">        VIN Decoder</string>
+
+    <!-- Strings for activity_scandroid -->
+
+
+    <!-- Default Hardware Configuration -->
+    <string name="usb_device_name">OBDII</string>
+    <string name="wifi_device_ssid">OBDII</string>
+    <string name="bluetooth_device_name">OBDII</string>
+    <string name="title_activity_bluetooth_configuration">BluetoothConfiguration</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_naive_test">NaiveTest</string>
+    <string name="title_activity_generic_scanner">GenericScanner</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

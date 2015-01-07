@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ This file is protected under the KILLGPL.
+  ~ For more information visit <insert_valid_link_to_killgpl_here>
+  ~ <p/>
+  ~ Copyright (c) Luke A. Leber <LukeLeber@gmail.com> 2014
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@id/scandroid_menu_test_group">
+        <item
+            android:id="@id/scandroid_menu_settings_item"
+            android:title="@string/scandroid_menu_settings_item_title"/>
+        <item
+            android:id="@id/scandroid_menu_logging_item"
+            android:title="@string/scandroid_menu_logging_item_title"/>
+    </group>
+</menu>

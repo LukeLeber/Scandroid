@@ -1,0 +1,21 @@
+<!--
+  ~ This file is protected under the KILLGPL.
+  ~ For more information visit <insert_valid_link_to_killgpl_here>
+  ~ <p/>
+  ~ Copyright (c) Luke A. Leber <LukeLeber@gmail.com> 2014
+  -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="killgpl.scandroid.gui.fragments.LiveDatastream">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <ListView
+        android:id="@+id/fragment_live_datastream_listview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+</FrameLayout>
