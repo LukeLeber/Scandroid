@@ -7,7 +7,9 @@
 
 package com.lukeleber.scandroid.sae;
 
-public enum OBDSupport
+import java.io.Serializable;
+
+public enum OBDSupport implements Serializable
 {
     UNDEFINED(0x0, "Undefined by SAE-J1979"),
     OBDII_CALIFORNIA_ARB(0x1, "OBD II"),

@@ -16,12 +16,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.lukeleber.app.EnhancedActivity;
+import com.lukeleber.scandroid.Globals;
+import com.lukeleber.scandroid.R;
+import com.lukeleber.scandroid.database.DiagnosticTroubleCodeDatabase;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.lukeleber.scandroid.R;
-import com.lukeleber.scandroid.Globals;
 
 /**
  * The "Home Page" of the Scandroid application.  This activity is shown when the application
@@ -55,10 +56,11 @@ public class Scandroid
     @OnClick(R.id.scanToolGeneric)
     void onScanToolGenericClicked()
     {
-        if(Globals.getInterpreter(getApplicationContext()) ==  null ||
+        if (Globals.getInterpreter(getApplicationContext()) == null ||
                 Globals.getProfile(getApplicationContext()) == null)
         {
-            Toast.makeText(Scandroid.this, "opening connection to vehicle...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Scandroid.this, "opening connection to vehicle...", Toast.LENGTH_SHORT)
+                 .show();
             GenericScanner.startGenericScanner(this, null);
         }
         else
@@ -75,7 +77,8 @@ public class Scandroid
     @OnClick(R.id.scanToolExpert)
     void onScanToolExpertClicked()
     {
-        Toast.makeText(this, "Not Implemented Yet", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Not Implemented Yet", Toast.LENGTH_SHORT)
+             .show();
         // TODO:
 /*        Intent intent = new Intent(Scandroid.this, SelectInterface.class);
         intent.putExtra(Extras.SCANNER_MODE, ConfigurationMode.EXPERT_MODE);
@@ -85,7 +88,8 @@ public class Scandroid
     @OnClick(R.id.vinDecoder)
     void onVINDecoderClicked()
     {
-        Toast.makeText(this, "Not Implemented Yet", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Not Implemented Yet", Toast.LENGTH_SHORT)
+             .show();
         //TODO
     }
 
@@ -119,11 +123,13 @@ public class Scandroid
         switch (item.getItemId())
         {
             case R.id.scandroid_menu_settings_item:
-                Toast.makeText(this, "Not Implemented Yet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Not Implemented Yet", Toast.LENGTH_SHORT)
+                     .show();
                 // TODO
                 break;
             case R.id.scandroid_menu_logging_item:
-                Toast.makeText(this, "Not Implemented Yet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Not Implemented Yet", Toast.LENGTH_SHORT)
+                     .show();
                 // TODO
                 break;
             default:

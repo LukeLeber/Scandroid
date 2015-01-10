@@ -49,11 +49,12 @@ public class AppendixA
         public PIDSupport invoke(byte... bytes)
         {
             int ctr = 0;
-            while(bytes.length > 4 && bytes[ctr] == 0)
+            while (bytes.length > 4 && bytes[ctr] == 0)
             {
                 ++ctr;
             }
-            return new PIDSupport(ByteBuffer.wrap(bytes, ctr, bytes.length - ctr).getInt());
+            return new PIDSupport(ByteBuffer.wrap(bytes, ctr, bytes.length - ctr)
+                                            .getInt());
         }
     };
 

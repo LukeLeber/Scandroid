@@ -9,7 +9,8 @@ package com.lukeleber.scandroid.io;
 
 import java.io.IOException;
 
-public class ScandroidIOException extends IOException
+public class ScandroidIOException
+        extends IOException
 {
 
     public enum ExceptionCode
@@ -18,7 +19,8 @@ public class ScandroidIOException extends IOException
         BLUETOOTH_UNSUPPORTED("Bluetooth is unsupported on this device."),
         BLUETOOTH_DEVICE_NOT_AVAILABLE("Unable to find a suitable bluetooth interface device."),
         BLUETOOTH_NOT_PERMITTED("This operation requires bluetooth permissions."),
-        UNDOCUMENTED_BLUETOOTH_ERROR("Wish I could give you a better message, but the Android API is very vague in terms of why this might happen...");
+        UNDOCUMENTED_BLUETOOTH_ERROR(
+                "Wish I could give you a better message, but the Android API is very vague in terms of why this might happen...");
 
         private final String what;
 
@@ -33,6 +35,7 @@ public class ScandroidIOException extends IOException
         }
 
     }
+
     private final ExceptionCode code;
 
     public ScandroidIOException(IOException cause, ExceptionCode code)

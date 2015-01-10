@@ -14,7 +14,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-
+import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
@@ -22,13 +22,9 @@ import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import java.io.IOException;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import com.lukeleber.scandroid.BuildConfig;
-import com.lukeleber.scandroid.R;
 import com.lukeleber.scandroid.Globals;
+import com.lukeleber.scandroid.R;
 import com.lukeleber.scandroid.gui.fragments.FreezeFrameRecords;
 import com.lukeleber.scandroid.gui.fragments.LiveDatastream;
 import com.lukeleber.scandroid.gui.fragments.ResetDiagnosticInformation;
@@ -46,42 +42,26 @@ import com.lukeleber.scandroid.sae.Profile;
 import com.lukeleber.scandroid.sae.Service;
 import com.lukeleber.scandroid.sae.detail.AppendixA;
 
+import java.io.IOException;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class GenericScanner<T, U>
         extends Activity
         implements InterpreterHost<T, U>
 {
-
-    private final static ActionBar.TabListener waste_of_space_and_clocks = new ActionBar.TabListener()
-    {
-        @Override
-        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft)
-        {
-
-        }
-
-        @Override
-        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft)
-        {
-
-        }
-
-        @Override
-        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft)
-        {
-
-        }
-    };
 
     private final static String TAG = GenericScanner.class.getName();
 
     /**
      * Attempts to start a "Generic" OBDII scan tool
      *
-     * @param context the parent {@link android.app.Activity}
-     *
-     * @param errorHandler the {@link killgpl.scandroid.interpreter.Interpreter.ErrorHandler} to
-     *                     receive any fatal errors on
-     *
+     * @param context
+     *         the parent {@link android.app.Activity}
+     * @param errorHandler
+     *         the {@link com.lukeleber.scandroid.interpreter.Interpreter.ErrorHandler} to receive any
+     *         fatal errors on
      */
     public static void startGenericScanner(final Scandroid context,
                                            Interpreter.ErrorHandler errorHandler)
@@ -96,17 +76,18 @@ public class GenericScanner<T, U>
                 protected final void onConnected()
                 {
                     context.handler.post(
-                        new Runnable()
-                        {
-                            @Override
-                            public void run()
+                            new Runnable()
                             {
-                                Toast.makeText(
-                                        context, "connected to interpreter...",
-                                        Toast.LENGTH_SHORT).show();
+                                @Override
+                                public void run()
+                                {
+                                    Toast.makeText(
+                                            context, "connected to interpreter...",
+                                            Toast.LENGTH_SHORT)
+                                         .show();
+                                }
                             }
-                        }
-                    );
+                                        );
                 }
 
                 /// Performs any initialization procedures for this session
@@ -141,30 +122,33 @@ public class GenericScanner<T, U>
                     /// So if this request fails, assume the key is off (or there is a
                     /// problem in the vehicle's diagnostic system(s))
                     super.sendRequest(
-                        new ServiceRequest<String, PIDSupport>(
-                            Service.LIVE_DATASTREAM,
-                            AppendixA.J1979_CHECK_PID_SUPPORT_1_TO_20,
-                            new killgpl.scandroid.interpreter.Handler<PIDSupport>()
-                    {
-                        @Override
-                        public void onResponse(PIDSupport value) {  }
+                            new ServiceRequest<String, PIDSupport>(
+                                    Service.LIVE_DATASTREAM,
+                                    AppendixA.J1979_CHECK_PID_SUPPORT_1_TO_20,
+                                    new com.lukeleber.scandroid.interpreter.Handler<PIDSupport>()
+                                    {
+                                        @Override
+                                        public void onResponse(PIDSupport value)
+                                        {
+                                        }
 
-                        @Override
-                        public void onFailure(FailureCode code)
-                        {
-                            cancel(true);
-                            Toast.makeText(context,
-                                    "No communication -- is the key on?",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }));
+                                        @Override
+                                        public void onFailure(FailureCode code)
+                                        {
+                                            cancel(true);
+                                            Toast.makeText(context,
+                                                           "No communication -- is the key on?",
+                                                           Toast.LENGTH_SHORT)
+                                                 .show();
+                                        }
+                                    }));
                 }
             };
 
             /// Since we have to store shared non-parcelables in global scope...
             /// run cleanup on an old one (if it exists)
             Interpreter<?> old = Globals.setInterpreter(context.getApplicationContext(),
-                    interpreter);
+                                                        interpreter);
             if (old != null)
             {
                 try
@@ -173,7 +157,7 @@ public class GenericScanner<T, U>
                 }
                 catch (IOException ioe)
                 {
-                    if(BuildConfig.DEBUG)
+                    if (BuildConfig.DEBUG)
                     {
                         Log.e(TAG, ioe.getMessage(), ioe);
                     }
@@ -190,7 +174,8 @@ public class GenericScanner<T, U>
                 public void onResponse(Profile value)
                 {
                     Globals.setProfile(context.getApplicationContext(), value);
-                    Toast.makeText(context, "scandroid is ready to use", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "scandroid is ready to use", Toast.LENGTH_SHORT)
+                         .show();
                     context.startActivity(new Intent(context, GenericScanner.class));
                 }
 
@@ -198,39 +183,36 @@ public class GenericScanner<T, U>
                 @Override
                 public void onFailure(FailureCode code)
                 {
-                    switch(code)
+                    switch (code)
                     {
                         case IO_ERROR:
                         case IO_LINK_ERROR:
                         case REQUEST_NOT_SUPPORTED:
-                            Toast.makeText(context, "failed to create a profile for vehicle.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "failed to create a profile for vehicle.",
+                                           Toast.LENGTH_SHORT)
+                                 .show();
                             break;
                     }
                 }
             });
         }
-        catch(ScandroidIOException sioe)
+        catch (ScandroidIOException sioe)
         {
-            Toast.makeText(context, sioe.getCode().what(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, sioe.getCode()
+                                        .what(), Toast.LENGTH_SHORT)
+                 .show();
         }
     }
 
     @InjectView(R.id.genericScannerProgressBar)
     ProgressBar progressBar;
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the
-     * sections. We use a {@link FragmentPagerAdapter} derivative, which will keep every loaded
-     * fragment in memory. If this becomes too memory intensive, it may be best to switch to a
-     * {@link android.support.v13.app.FragmentStatePagerAdapter}.
-     */
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
      * The {@link android.support.v4.view.ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
-
 
 
     @SuppressWarnings("unchecked")
@@ -241,28 +223,10 @@ public class GenericScanner<T, U>
         setContentView(R.layout.activity_generic_scanner);
         ButterKnife.inject(this);
         final ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
-        {
-            @Override
-            public void onPageSelected(int position)
-            {
-                actionBar.setSelectedNavigationItem(position);
-            }
-        });
-        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++)
-        {
-            actionBar.addTab(
-                    actionBar.newTab()
-                             .setText(mSectionsPagerAdapter.getPageTitle(i))
-                             .setTabListener(waste_of_space_and_clocks)
-                            );
-        }
     }
-
 
 
     @Override
@@ -292,7 +256,7 @@ public class GenericScanner<T, U>
     }
 
     public class SectionsPagerAdapter
-           extends FragmentStatePagerAdapter
+            extends FragmentStatePagerAdapter
     {
 
         public SectionsPagerAdapter(FragmentManager fm)

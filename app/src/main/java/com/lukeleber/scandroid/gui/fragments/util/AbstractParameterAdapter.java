@@ -15,16 +15,12 @@ import android.view.ViewGroup;
 import com.lukeleber.widget.GenericBaseAdapter;
 
 /**
- * @internal
- *
- * A partial implementation of a PID adapter.  Simply override
- * {@link android.widget.BaseAdapter#getItem(int)} and
- * {@link android.widget.BaseAdapter#getCount()} to reflect the specifics of the data-set that
- * is being adapted and apply this adapter to a view.
- *
+ * @internal A partial implementation of a PID adapter.  Simply override {@link
+ * android.widget.BaseAdapter#getItem(int)} and {@link android.widget.BaseAdapter#getCount()} to
+ * reflect the specifics of the data-set that is being adapted and apply this adapter to a view.
  */
 public abstract class AbstractParameterAdapter
-    extends GenericBaseAdapter<ParameterModel>
+        extends GenericBaseAdapter<ParameterModel>
 {
     /// The {@link LayoutInflater} to use for this adapter
     private final LayoutInflater inflater;
@@ -42,7 +38,6 @@ public abstract class AbstractParameterAdapter
 
     /**
      * {@inheritDoc}
-     *
      */
     @Override
     public long getItemId(int position)
@@ -52,7 +47,6 @@ public abstract class AbstractParameterAdapter
 
     /**
      * {@inheritDoc}
-     *
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
@@ -61,10 +55,13 @@ public abstract class AbstractParameterAdapter
         ParameterModel model = getItem(position);
         if (convertView == null)
         {
-            convertView = inflater.inflate(model.getPID().getLayoutID(), null);
-            convertView.setTag(model.getPID().createViewModel(convertView));
+            convertView = inflater.inflate(model.getPID()
+                                                .getLayoutID(), null);
+            convertView.setTag(model.getPID()
+                                    .createViewModel(convertView));
         }
-        model.getPID().updateViewModel(convertView.getTag(), model.getLastKnownValue());
+        model.getPID()
+             .updateViewModel(convertView.getTag(), model.getLastKnownValue());
         return convertView;
     }
 }

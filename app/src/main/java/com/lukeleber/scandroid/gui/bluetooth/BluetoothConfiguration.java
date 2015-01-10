@@ -22,6 +22,7 @@ import android.widget.ListView;
 import com.lukeleber.app.EnhancedActivity;
 import com.lukeleber.bluetooth.BluetoothEnabler;
 import com.lukeleber.content.BroadcastListener;
+import com.lukeleber.scandroid.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +31,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
-import com.lukeleber.scandroid.R;
 
 /**
- * <p>The {@link com.lukeleber.scandroid.gui.bluetooth.BluetoothConfiguration} Activity presents the user with a means by which to choose
- * the bluetooth device that is to act as a bridge between the vehicle's onboard systems and the
- * Scandroid API.  The default device for Scandroid is the ELM327 interpreter which usually has the
- * device name "OBDII", although that is not set in stone.</p>
+ * <p>The {@link com.lukeleber.scandroid.gui.bluetooth.BluetoothConfiguration} Activity presents the
+ * user with a means by which to choose the bluetooth device that is to act as a bridge between the
+ * vehicle's onboard systems and the Scandroid API.  The default device for Scandroid is the ELM327
+ * interpreter which usually has the device name "OBDII", although that is not set in stone.</p>
  */
 public class BluetoothConfiguration
         extends
@@ -106,7 +106,8 @@ public class BluetoothConfiguration
                 BluetoothConfiguration.this.getSystemService(BLUETOOTH_SERVICE);
         if (manager != null)
         {
-            manager.getAdapter().cancelDiscovery();
+            manager.getAdapter()
+                   .cancelDiscovery();
         }
     }
 
@@ -120,7 +121,8 @@ public class BluetoothConfiguration
                 BluetoothConfiguration.this.getSystemService(BLUETOOTH_SERVICE);
         if (manager != null)
         {
-            manager.getAdapter().startDiscovery();
+            manager.getAdapter()
+                   .startDiscovery();
         }
     }
 
@@ -147,7 +149,8 @@ public class BluetoothConfiguration
         BluetoothManager manager = (BluetoothManager) super.getSystemService(BLUETOOTH_SERVICE);
         if (manager != null)
         {
-            for (BluetoothDevice device : manager.getAdapter().getBondedDevices())
+            for (BluetoothDevice device : manager.getAdapter()
+                                                 .getBondedDevices())
             {
                 population.add(new DeviceWrapper(device));
             }
@@ -208,15 +211,20 @@ public class BluetoothConfiguration
             @SuppressWarnings("unchecked")
             ArrayAdapter<DeviceWrapper> adapter =
                     (ArrayAdapter<DeviceWrapper>) devices.getAdapter();
-            for (int i = 0; i < adapter.getCount(); ++i)
+            for (int i = 0;
+                 i < adapter.getCount();
+                 ++i)
             {
-                if (adapter.getItem(i).unwrap().equals(device))
+                if (adapter.getItem(i)
+                           .unwrap()
+                           .equals(device))
                 {
                     return;
                 }
             }
             adapter.add(new DeviceWrapper((BluetoothDevice)
-                    intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)));
+                                                  intent.getParcelableExtra(
+                                                          BluetoothDevice.EXTRA_DEVICE)));
         }
     }
 }

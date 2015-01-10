@@ -48,9 +48,9 @@ public interface Handler<T>
     void onResponse(T value);
 
     /**
-     * Invoked when the sending of the associated {@link killgpl.scandroid.interpreter.Request} has
-     * failed for any reason.  For more information and control concerning failures, see {@link
-     * Interpreter#start(killgpl.scandroid.interpreter.Interpreter.ErrorHandler)}.
+     * Invoked when the sending of the associated {@link com.lukeleber.scandroid.interpreter.Request}
+     * has failed for any reason.  For more information and control concerning failures, see {@link
+     * Interpreter#start(com.lukeleber.scandroid.interpreter.Interpreter.ErrorHandler)}.
      */
     void onFailure(FailureCode code);
 }

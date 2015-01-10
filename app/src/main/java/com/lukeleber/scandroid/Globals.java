@@ -18,9 +18,8 @@ import java.util.Map;
 
 /**
  * Seems like a hack.  I really hate the android way of doing things...
- *
+ * <p/>
  * Seriously, who designed the application lifecycle API anyway?
- *
  */
 public class Globals
 {
@@ -31,12 +30,12 @@ public class Globals
 
     public static <T> Interpreter<T> getInterpreter(Context key)
     {
-        return (Interpreter<T>)interpreters.get(key);
+        return (Interpreter<T>) interpreters.get(key);
     }
 
     public static <T> Interpreter<T> setInterpreter(Context key, Interpreter<T> interpreter)
     {
-        return (Interpreter<T>)interpreters.put(key, interpreter);
+        return (Interpreter<T>) interpreters.put(key, interpreter);
     }
     /// Interpreters based on context (outlive the application lifecycle) -->
 

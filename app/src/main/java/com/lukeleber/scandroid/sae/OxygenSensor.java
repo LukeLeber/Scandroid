@@ -7,11 +7,12 @@
 
 package com.lukeleber.scandroid.sae;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public enum OxygenSensor
+public enum OxygenSensor implements Serializable
 {
     /// Bank 1 Sensor 1
     O2S11,
@@ -61,27 +62,31 @@ public enum OxygenSensor
         O2S24(0x80);
 
         private final int mask;
+
         public boolean exists(int val)
         {
             return (val & mask) != 0;
         }
+
         public static Collection<OxygenSensor> forByte(int val)
         {
             List<OxygenSensor> sensors = new ArrayList<>();
-            for(DualBank sensor : DualBank.values())
+            for (DualBank sensor : DualBank.values())
             {
-                if(sensor.exists(val))
+                if (sensor.exists(val))
                 {
                     sensors.add(OxygenSensor.valueOf(sensor.name()));
                 }
             }
             return sensors;
         }
+
         DualBank(int mask)
         {
             this.mask = mask;
         }
     }
+
     public enum QuadBank
     {
         O2S11(0x1),
@@ -94,6 +99,7 @@ public enum OxygenSensor
         O2S42(0x80);
 
         private final int mask;
+
         public boolean exists(int val)
         {
             return (val & mask) != 0;
@@ -102,15 +108,16 @@ public enum OxygenSensor
         public static Collection<OxygenSensor> forByte(int val)
         {
             List<OxygenSensor> sensors = new ArrayList<>();
-            for(QuadBank sensor : QuadBank.values())
+            for (QuadBank sensor : QuadBank.values())
             {
-                if(sensor.exists(val))
+                if (sensor.exists(val))
                 {
                     sensors.add(OxygenSensor.valueOf(sensor.name()));
                 }
             }
             return sensors;
         }
+
         QuadBank(int mask)
         {
             this.mask = mask;

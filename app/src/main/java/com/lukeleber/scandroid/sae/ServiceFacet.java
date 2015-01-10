@@ -15,7 +15,7 @@ import java.io.Serializable;
  * The ultimate base class for all PIDs, TIDs, OBDMIDs, and INFOTYPEs.
  */
 public interface ServiceFacet
-    extends
+        extends
         Comparable<ServiceFacet>,
         Serializable,
         Parcelable

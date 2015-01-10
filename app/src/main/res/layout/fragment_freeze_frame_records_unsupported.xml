@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This file is protected under the KILLGPL.
+  ~ For more information visit <insert_valid_link_to_killgpl_here>
+  ~ <p/>
+  ~ Copyright (c) Luke A. Leber <LukeLeber@gmail.com> 2015
+  -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Freeze frame data is unsupported for this vehicle."
+        android:id="@+id/textView8"
+        android:layout_gravity="center"/>
+</FrameLayout>

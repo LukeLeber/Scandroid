@@ -7,7 +7,9 @@
 
 package com.lukeleber.scandroid.sae;
 
-public enum AuxiliaryInputStatus
+import java.io.Serializable;
+
+public enum AuxiliaryInputStatus implements Serializable
 {
     OFF(0x0),
     ON(0x1);

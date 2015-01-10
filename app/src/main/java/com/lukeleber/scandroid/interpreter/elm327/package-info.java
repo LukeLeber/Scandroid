@@ -7,7 +7,7 @@
 
 /**
  * <p>Implementation details for the ELM327 can be found within this package.  Refer to the
- * {@link killgpl.scandroid.interpreter.elm327.OpCode} class for more detailed information as
+ * {@link com.lukeleber.scandroid.interpreter.elm327.OpCode} class for more detailed information as
  * to how to configure the ELM327 for use.</p>
  *
  * <p>Otherwise, using the ELM327 implementation is very simple:

@@ -15,7 +15,7 @@ import android.widget.BaseAdapter;
  * for {@link android.database.DataSetObserver observers}.  Additionally, this type of adapter is
  * generic, shadowing the method defined in its super-interface, which allows for increased
  * type-safety.</p> <p/> <p>The documentation has also been enhanced to enforce a stricter contract.
- *  Particularly exceptional circumstances are explicitly documented such that any concrete
+ * Particularly exceptional circumstances are explicitly documented such that any concrete
  * implementation is bound to follow suit.  This should give a better idea of how to handle bad
  * input.</p>
  *

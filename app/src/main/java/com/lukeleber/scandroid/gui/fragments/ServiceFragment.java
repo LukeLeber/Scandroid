@@ -11,7 +11,8 @@ import android.app.Fragment;
 
 import com.lukeleber.scandroid.sae.Service;
 
-public abstract class ServiceFragment extends Fragment
+public abstract class ServiceFragment
+        extends Fragment
 {
     public abstract Service getService();
 }

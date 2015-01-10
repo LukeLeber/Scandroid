@@ -11,16 +11,15 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.util.Pair;
 
+import com.lukeleber.scandroid.BuildConfig;
 import com.lukeleber.scandroid.io.CommunicationInterface;
 
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.lukeleber.scandroid.BuildConfig;
-
 /**
- * A reasonable skeletal implementation of much of the {@link killgpl.scandroid.interpreter.Interpreter}
+ * A reasonable skeletal implementation of much of the {@link com.lukeleber.scandroid.interpreter.Interpreter}
  * interface.
  *
  * @param <T>
@@ -30,7 +29,7 @@ import com.lukeleber.scandroid.BuildConfig;
  * @param <Result>
  *         the type of data that is returned from the asynchronous invocation of this Interpreter
  *
- * @see killgpl.scandroid.interpreter.Interpreter
+ * @see com.lukeleber.scandroid.interpreter.Interpreter
  * @see android.os.AsyncTask
  */
 public abstract class AbstractInterpreter<T, U, Result>
@@ -49,7 +48,7 @@ public abstract class AbstractInterpreter<T, U, Result>
     private ErrorHandler errorHandler;
 
     /**
-     * Constructs an {@link killgpl.scandroid.interpreter.AbstractInterpreter}
+     * Constructs an {@link com.lukeleber.scandroid.interpreter.AbstractInterpreter}
      */
     protected AbstractInterpreter(CommunicationInterface com)
     {
@@ -122,7 +121,8 @@ public abstract class AbstractInterpreter<T, U, Result>
 
         if (interrupted)
         {
-            Thread.currentThread().interrupt();
+            Thread.currentThread()
+                  .interrupt();
         }
         if (cancelled)
         {
@@ -217,8 +217,8 @@ public abstract class AbstractInterpreter<T, U, Result>
             IOException;
 
     /**
-     * Performs a best-attempt cleanup.  Closes the {@link killgpl.scandroid.io.CommunicationInterface}
-     * associated with this {@link killgpl.scandroid.interpreter.Interpreter} and invokes the
+     * Performs a best-attempt cleanup.  Closes the {@link com.lukeleber.scandroid.io.CommunicationInterface}
+     * associated with this {@link com.lukeleber.scandroid.interpreter.Interpreter} and invokes the
      * virtual {@link java.io.Closeable#close()} method on itself.
      */
     private void cleanup()
@@ -262,7 +262,7 @@ public abstract class AbstractInterpreter<T, U, Result>
      * this method will be dependent on the type of remote system being interacted with.
      *
      * @param request
-     *         the {@link killgpl.scandroid.interpreter.Request} to write
+     *         the {@link com.lukeleber.scandroid.interpreter.Request} to write
      *
      * @throws java.io.IOException
      *         if any I/O error occurs during the write
@@ -298,7 +298,10 @@ public abstract class AbstractInterpreter<T, U, Result>
      */
     protected abstract Result getSuccessfulExitResult();
 
-    protected void onConnected() { /* no-op */ }
-    protected void onInitialized() { /* no-op */ }
+    protected void onConnected()
+    { /* no-op */ }
+
+    protected void onInitialized()
+    { /* no-op */ }
 
 }

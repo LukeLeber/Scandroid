@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A <code>CumulitivePIDSupport</code> is a form of {@link com.lukeleber.scandroid.sae.PIDSupport} that
- * covers the entire support range; that is, from ID 0 to ID 255.  This utility class is a
+ * A <code>CumulitivePIDSupport</code> is a form of {@link com.lukeleber.scandroid.sae.PIDSupport}
+ * that covers the entire support range; that is, from ID 0 to ID 255.  This utility class is a
  * convenience function for obtaining all supported PIDs/TIDs/OBDMIDs from the vehicle in a single
  * statement.
  */
@@ -51,7 +51,8 @@ public class CumulativePIDSupport
     List<PIDSupport> pids;
 
 
-    private final class SupportHandler implements Handler<PIDSupport>
+    private final class SupportHandler
+            implements Handler<PIDSupport>
     {
 
         /// The current index into {@link PID_RANGE_REQUESTS}
@@ -71,7 +72,8 @@ public class CumulativePIDSupport
             if (value.checkSupport(31)) /// Are additional ranges supported?
             {
                 ++rangeIndex;
-                interpreter.sendRequest(new ServiceRequest(service, PID_RANGE_REQUESTS[rangeIndex], this));
+                interpreter.sendRequest(new ServiceRequest(service, PID_RANGE_REQUESTS[rangeIndex],
+                                                           this));
             }
             else
             {
@@ -91,7 +93,8 @@ public class CumulativePIDSupport
     /// The "Helper" handler that is called upon a response to each successive range query
     private final transient Handler<PIDSupport> supportHandler;
 
-    public CumulativePIDSupport(Service service, Interpreter<?> interpreter, Handler<CumulativePIDSupport> handler)
+    public CumulativePIDSupport(Service service, Interpreter<?> interpreter,
+                                Handler<CumulativePIDSupport> handler)
     {
         this.pids = new ArrayList<>();
         this.service = service;
@@ -99,10 +102,12 @@ public class CumulativePIDSupport
         this.supportHandler = new SupportHandler(interpreter);
     }
 
-    public static <T> void getSupportedPIDs(Service service, Interpreter<T> interpreter, Handler<CumulativePIDSupport> handler)
+    public static <T> void getSupportedPIDs(Service service, Interpreter<T> interpreter,
+                                            Handler<CumulativePIDSupport> handler)
     {
         CumulativePIDSupport tmp = new CumulativePIDSupport(service, interpreter, handler);
-        interpreter.sendRequest(new ServiceRequest<T, PIDSupport>(service, PID_RANGE_REQUESTS[0], tmp.supportHandler));
+        interpreter.sendRequest(new ServiceRequest<T, PIDSupport>(service, PID_RANGE_REQUESTS[0],
+                                                                  tmp.supportHandler));
     }
 
     public boolean isSupported(int pid)
@@ -110,7 +115,8 @@ public class CumulativePIDSupport
         int index = pid / 32;
         if (index < pids.size())
         {
-            return pids.get(index).checkSupport(pid);
+            return pids.get(index)
+                       .checkSupport(pid);
         }
         return false;
     }

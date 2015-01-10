@@ -25,7 +25,8 @@ public class DefaultPID<T>
     {
         public AbstractPID createFromParcel(Parcel in)
         {
-            return new DefaultPID(in.readInt(), in.readString(), in.readString(), in.readHashMap(null), in.readInt(), in.readInt());
+            return new DefaultPID(in.readInt(), in.readString(), in.readString(), in.readHashMap(
+                    null), in.readInt(), in.readInt());
         }
 
         public AbstractPID[] newArray(int size)
@@ -45,7 +46,7 @@ public class DefaultPID<T>
         {
             dest.writeInt(getResponseLength(null));
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             dest.writeInt(0);
         }
@@ -58,13 +59,15 @@ public class DefaultPID<T>
         return 0;
     }
 
-    public DefaultPID(int id, String displayName, String description, Map<Unit, Unmarshaller<T>> unmarshallers, int responseLength)
+    public DefaultPID(int id, String displayName, String description,
+                      Map<Unit, Unmarshaller<T>> unmarshallers, int responseLength)
     {
         super(id, displayName, description, unmarshallers);
         this.responseLength = responseLength;
     }
 
-    public DefaultPID(int id, String displayName, String description, Map<Unit, Unmarshaller<T>> unmarshallers, int responseLength, int layoutID)
+    public DefaultPID(int id, String displayName, String description,
+                      Map<Unit, Unmarshaller<T>> unmarshallers, int responseLength, int layoutID)
     {
         super(id, displayName, description, unmarshallers, layoutID);
         this.responseLength = responseLength;

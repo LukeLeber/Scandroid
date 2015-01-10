@@ -10,28 +10,23 @@ package com.lukeleber.scandroid.gui.fragments.util;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
-
 import com.lukeleber.scandroid.sae.PID;
 import com.lukeleber.scandroid.util.Unit;
 
+import java.io.Serializable;
+
 /**
- * @Internal
- *
- * A class that acts to bind a PID to an unspecified point in time.  Generally used in view
- * adapters, this model yields the following information:
- * <ul>
- *     <li>All information provided through the PID interface</li>
- *     <li>The last known value of the PID as reported by the vehicle</li>
- *     <li>The unit of the last known value</li>
- *     <li>The time (unix timestamp) that this model was last updated</li>
- * </ul>
+ * @Internal A class that acts to bind a PID to an unspecified point in time.  Generally used in
+ * view adapters, this model yields the following information: <ul> <li>All information provided
+ * through the PID interface</li> <li>The last known value of the PID as reported by the
+ * vehicle</li> <li>The unit of the last known value</li> <li>The time (unix timestamp) that this
+ * model was last updated</li> </ul>
  */
 public final class ParameterModel
         implements
-            Comparable<ParameterModel>,
-            Parcelable,
-            Serializable
+        Comparable<ParameterModel>,
+        Parcelable,
+        Serializable
 {
 
     /// Required by the {@link android.os.Parcelable} mechanism
@@ -43,7 +38,7 @@ public final class ParameterModel
         @Override
         public ParameterModel createFromParcel(Parcel in)
         {
-            ParameterModel rv = new ParameterModel((PID<?>)in.readParcelable(null));
+            ParameterModel rv = new ParameterModel((PID<?>) in.readParcelable(null));
             rv.lastKnownValue = in.readSerializable();
             rv.unit = (Unit) in.readSerializable();
             return rv;
@@ -70,7 +65,6 @@ public final class ParameterModel
 
     /**
      * {@inheritDoc}
-     *
      */
     @Override
     public int describeContents()
@@ -80,7 +74,6 @@ public final class ParameterModel
 
     /**
      * {@inheritDoc}
-     *
      */
     @Override
     public void writeToParcel(Parcel dest, int flags)
@@ -93,7 +86,6 @@ public final class ParameterModel
 
     /**
      * {@inheritDoc}
-     *
      */
     @Override
     public int compareTo(ParameterModel rhs)
@@ -105,7 +97,6 @@ public final class ParameterModel
      * Retrieves the PID that is represented by this model
      *
      * @return the PID that is represented by this model
-     *
      */
     public PID<?> getPID()
     {
@@ -116,7 +107,6 @@ public final class ParameterModel
      * Retrieves the last known value of the represented PID
      *
      * @return the last known value of the represented PID
-     *
      */
     public Serializable getLastKnownValue()
     {
@@ -127,7 +117,6 @@ public final class ParameterModel
      * Retrieves the unit of the last known value of the represented PID
      *
      * @return the unit of the last known value of the represented PID
-     *
      */
     public Unit getUnit()
     {
@@ -138,7 +127,6 @@ public final class ParameterModel
      * Retrieves the time (unix timestamp) that this model was last updated
      *
      * @return the time (unix timestamp) that this model was last updated
-     *
      */
     public long getTimestamp()
     {
@@ -148,20 +136,21 @@ public final class ParameterModel
     /**
      * Updates the data contained within this model (including the timestamp)
      *
-     * @param newValue the new value to set
+     * @param newValue
+     *         the new value to set
+     * @param newUnit
+     *         the new unit to set
      *
-     * @param newUnit the new unit to set
-     *
-     * @throws NullPointerException if the provided serializable and/or unit are null
-     *
+     * @throws NullPointerException
+     *         if the provided serializable and/or unit are null
      */
     public void update(Serializable newValue, Unit newUnit)
     {
-        if(newValue == null)
+        if (newValue == null)
         {
             throw new NullPointerException("newValue == null");
         }
-        if(newUnit == null)
+        if (newUnit == null)
         {
             throw new NullPointerException("newUnit == null");
         }
@@ -173,14 +162,15 @@ public final class ParameterModel
     /**
      * Constructs a ParameterModel with the provided {@link killgpl.scandroid.sae.PID}
      *
-     * @param pid the {@link killgpl.scandroid.sae.PID} that this model represents
+     * @param pid
+     *         the {@link killgpl.scandroid.sae.PID} that this model represents
      *
-     * @throws NullPointerException if the provided {@link killgpl.scandroid.sae.PID} is null
-     *
+     * @throws NullPointerException
+     *         if the provided {@link killgpl.scandroid.sae.PID} is null
      */
     public ParameterModel(PID<?> pid)
     {
-        if(pid == null)
+        if (pid == null)
         {
             throw new NullPointerException("pid == null");
         }

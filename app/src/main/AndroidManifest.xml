@@ -29,10 +29,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.lukeleber.scandroid.gui.VehicleHistory"
-            android:label="@string/title_activity_vehicle_history">
-        </activity>
-        <activity
             android:name="com.lukeleber.scandroid.gui.SelectInterface"
             android:label="@string/title_activity_select_interface">
         </activity>

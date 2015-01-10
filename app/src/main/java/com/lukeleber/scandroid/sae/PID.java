@@ -77,7 +77,6 @@ public interface PID<T>
      * Retrieves the layout resource ID that adapts this PID to a user interface
      *
      * @return the layout resource ID that adapts this PID to a user interface
-     *
      */
     int getLayoutID();
 

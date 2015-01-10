@@ -7,15 +7,23 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent"
              tools:context="killgpl.scandroid.gui.fragments.LiveDatastream">
 
     <!-- TODO: Update blank fragment layout -->
 
-    <ListView
-        android:id="@+id/fragment_live_datastream_listview"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Viewing live data for vehicle"
+        android:id="@+id/textView7"
+        android:layout_gravity="center_horizontal|top"/>
+
+    <ListView
+        android:id="@+id/fragment_live_datastream_listview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_gravity="center"/>
+
 </FrameLayout>

@@ -8,8 +8,8 @@
 package com.lukeleber.scandroid.interpreter;
 
 /**
- * A type of {@link killgpl.scandroid.interpreter.Request} that is used to configure a piece of
- * remote hardware.
+ * A type of {@link com.lukeleber.scandroid.interpreter.Request} that is used to configure a piece
+ * of remote hardware.
  *
  * @param <T>
  *         the type of data that represents the configuration option
@@ -27,7 +27,7 @@ public class ConfigurationRequest<T, U>
 
     /**
      * Constructs a <code>ConfigurationRequest</code> with the provided {@link
-     * killgpl.scandroid.interpreter.Option}.  This constructor is equivalent to
+     * com.lukeleber.scandroid.interpreter.Option}.  This constructor is equivalent to
      * <code>ConfigurationRequest(option, null);</code>
      *
      * @param option
@@ -41,13 +41,13 @@ public class ConfigurationRequest<T, U>
 
     /**
      * Constructs a <code>ConfigurationRequest</code> with the provided {@link
-     * killgpl.scandroid.interpreter.Option} and {@link killgpl.scandroid.interpreter.Handler}
+     * com.lukeleber.scandroid.interpreter.Option} and {@link com.lukeleber.scandroid.interpreter.Handler}
      *
      * @param handler
-     *         the {@link Handler} that is invoked when a response to
-     *         this request is received from the remote hardware
+     *         the {@link Handler} that is invoked when a response to this request is received from
+     *         the remote hardware
      * @param option
- *         the {@link Option} to configure
+     *         the {@link Option} to configure
      * @param args
      */
     public ConfigurationRequest(Handler<U> handler, Option<T> option, Object... args)
@@ -58,9 +58,9 @@ public class ConfigurationRequest<T, U>
     }
 
     /**
-     * Retrieves the {@link killgpl.scandroid.interpreter.Option} that is being configured
+     * Retrieves the {@link com.lukeleber.scandroid.interpreter.Option} that is being configured
      *
-     * @return the {@link killgpl.scandroid.interpreter.Option} that is being configured
+     * @return the {@link com.lukeleber.scandroid.interpreter.Option} that is being configured
      */
     public final Option<T> getOption()
     {

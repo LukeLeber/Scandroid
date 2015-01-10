@@ -42,21 +42,27 @@ public abstract class AbstractPID<T>
         TextView value;
     }
 
-    protected AbstractPID(int id, String displayName, String description, Map<Unit, Unmarshaller<T>> unmarshallers)
+    protected AbstractPID(int id, String displayName, String description,
+                          Map<Unit, Unmarshaller<T>> unmarshallers)
     {
         super(id, displayName, description);
         this.unmarshallers = unmarshallers;
-        Map.Entry<Unit, Unmarshaller<T>> defaults = unmarshallers.entrySet().iterator().next();
+        Map.Entry<Unit, Unmarshaller<T>> defaults = unmarshallers.entrySet()
+                                                                 .iterator()
+                                                                 .next();
         this.defaultUnit = defaults.getKey();
         this.defaultUnmarshaller = defaults.getValue();
         this.layoutID = R.layout.default_pid_layout;
     }
 
-    protected AbstractPID(int id, String displayName, String description, Map<Unit, Unmarshaller<T>> unmarshallers, int layoutID)
+    protected AbstractPID(int id, String displayName, String description,
+                          Map<Unit, Unmarshaller<T>> unmarshallers, int layoutID)
     {
         super(id, displayName, description);
         this.unmarshallers = unmarshallers;
-        Map.Entry<Unit, Unmarshaller<T>> defaults = unmarshallers.entrySet().iterator().next();
+        Map.Entry<Unit, Unmarshaller<T>> defaults = unmarshallers.entrySet()
+                                                                 .iterator()
+                                                                 .next();
         this.defaultUnit = defaults.getKey();
         this.defaultUnmarshaller = defaults.getValue();
         this.layoutID = layoutID;
@@ -90,16 +96,17 @@ public abstract class AbstractPID<T>
     public Object createViewModel(View view)
     {
         DefaultModelView dmv = new DefaultModelView();
-        dmv.name = (TextView)view.findViewById(R.id.default_pid_layout_pid_name);
+        dmv.name = (TextView) view.findViewById(R.id.default_pid_layout_pid_name);
         dmv.name.setText(this.getDisplayName());
-        dmv.value = (TextView)view.findViewById(R.id.default_pid_layout_pid_value);
+        dmv.value = (TextView) view.findViewById(R.id.default_pid_layout_pid_value);
         return dmv;
     }
 
     @Override
     public void updateViewModel(Object view, Object value)
     {
-        DefaultModelView dmv = (DefaultModelView)view;
+        DefaultModelView dmv = (DefaultModelView) view;
+        dmv.name.setText(this.getDisplayName());
         dmv.value.setText(value != null ? value.toString() : "N/A");
     }
 }

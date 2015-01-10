@@ -1,4 +1,3 @@
-
 /*
  * This file is protected under the KILLGPL.
  * For more information visit <insert_valid_link_to_killgpl_here>
@@ -8,13 +7,15 @@
 
 package com.lukeleber.scandroid.sae;
 
+import java.io.Serializable;
+
 /**
  * An enumeration of all possible modes that a fuel system might be in.  Each mode is comprised of a
  * loop status (that is, open or closed loop) as well as a condition that describes the
  * aforementioned loop status.  For more detailed documentation, refer to each individual enumerated
  * member.
  */
-public enum FuelSystemStatus
+public enum FuelSystemStatus implements Serializable
 {
     /**
      * Open Loop: conditions have not yet been met to enter closed loop

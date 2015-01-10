@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.lukeleber.app.EnhancedActivity;
 import com.lukeleber.bluetooth.BluetoothEnabler;
+import com.lukeleber.scandroid.R;
+import com.lukeleber.scandroid.gui.bluetooth.BluetoothConfiguration;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -24,8 +26,6 @@ import java.util.Iterator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.lukeleber.scandroid.R;
-import com.lukeleber.scandroid.gui.bluetooth.BluetoothConfiguration;
 
 /**
  * The start of the "scan tool" GUI chain.  This GUI enables users to choose between various types
@@ -85,7 +85,8 @@ public class SelectInterface
 
     private void onAutoConfigurationFailure()
     {
-        Toast.makeText(this, "No communication, is the key on?", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "No communication, is the key on?", Toast.LENGTH_SHORT)
+             .show();
         // TODO: Toast?
     }
 
@@ -164,7 +165,8 @@ public class SelectInterface
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_interface);
-        this.mode = (ConfigurationMode) super.getIntent().getSerializableExtra(Scandroid.Extras.SCANNER_MODE);
+        this.mode = (ConfigurationMode) super.getIntent()
+                                             .getSerializableExtra(Scandroid.Extras.SCANNER_MODE);
         ButterKnife.inject(this);
     }
 

@@ -7,7 +7,9 @@
 
 package com.lukeleber.scandroid.sae;
 
-public enum SecondaryAirStatus
+import java.io.Serializable;
+
+public enum SecondaryAirStatus implements Serializable
 {
     AIR_STAT_UPS(0x0, "upstream of the first catalytic converter"),
     AIR_STAT_DNS(0x1, "downstream of the first catalytic converter inlet"),

@@ -7,9 +7,12 @@
 
 package com.lukeleber.scandroid.sae.detail;
 
+import android.view.View;
+import android.widget.TextView;
+
+import com.lukeleber.scandroid.R;
 import com.lukeleber.scandroid.sae.AuxiliaryInputStatus;
 import com.lukeleber.scandroid.sae.DefaultPID;
-import com.lukeleber.scandroid.sae.DiagnosticTroubleCode;
 import com.lukeleber.scandroid.sae.FuelSystemStatus;
 import com.lukeleber.scandroid.sae.MonitorStatus;
 import com.lukeleber.scandroid.sae.OBDSupport;
@@ -17,6 +20,7 @@ import com.lukeleber.scandroid.sae.OxygenSensor;
 import com.lukeleber.scandroid.sae.PID;
 import com.lukeleber.scandroid.sae.Profile;
 import com.lukeleber.scandroid.sae.SecondaryAirStatus;
+import com.lukeleber.scandroid.sae.j2012.DiagnosticTroubleCode;
 import com.lukeleber.scandroid.util.Unit;
 import com.lukeleber.util.SerializablePair;
 
@@ -38,7 +42,7 @@ public class AppendixB
 
     /// A PID that requests the current {@link MonitorStatus}
     public final static PID<MonitorStatus> MONITOR_STATUS
-            = new DefaultPID<>(
+            = new DefaultPID<MonitorStatus>(
             0x01,
             "Monitor Status",
             "Retrieve the monitor status since the last time the DTCs wee cleared",
@@ -51,15 +55,50 @@ public class AppendixB
                         public MonitorStatus invoke(byte... bytes)
                         {
                             return new MonitorStatus(((bytes[0] & 0xFF) << 24) |
-                                    ((bytes[1] & 0xFF) << 16) |
-                                    ((bytes[2] & 0xFF) << 8) |
-                                    (bytes[3] & 0xFF));
+                                                             ((bytes[1] & 0xFF) << 16) |
+                                                             ((bytes[2] & 0xFF) << 8) |
+                                                             (bytes[3] & 0xFF));
                         }
                     });
                 }
             },
             4
-    );
+    )
+    {
+
+        final class ModelView
+        {
+            TextView milStatus;
+            TextView dtcCount;
+            TextView monitorStatus;
+        }
+
+        @Override
+        public int getLayoutID()
+        {
+            return R.layout.monitor_status_listview_item;
+        }
+
+        @Override
+        public Object createViewModel(View view)
+        {
+            ModelView dmv = new ModelView();
+            dmv.milStatus = (TextView) view.findViewById(R.id.monitor_status_mil_status);
+            dmv.dtcCount = (TextView) view.findViewById(R.id.monitor_status_dtc_count);
+            dmv.monitorStatus = (TextView)view.findViewById(R.id.monitor_status_support_readiness);
+            return dmv;
+        }
+
+        @Override
+        public void updateViewModel(Object view, Object value)
+        {
+            MonitorStatus ms = (MonitorStatus)value;
+            ModelView mv = (ModelView)view;
+            mv.milStatus.setText(ms.isMalfunctionLampOn() ? "ON" : "OFF");
+            mv.dtcCount.setText(ms.getDiagnosticTroubleCodeCount());
+            mv.monitorStatus.setText(ms.getSupportReadinessString());
+        }
+    };
     /// A PID that requests the {@link DiagnosticTroubleCode DTC} that caused a freeze-frame
     /// Note: {@link DiagnosticTroubleCode#NO_DTC is returned if there is not a DTC set
     public final static PID<DiagnosticTroubleCode> FREEZE_FRAME_DTC
@@ -70,40 +109,78 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<DiagnosticTroubleCode>>()
             {
                 {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, new PID.Unmarshaller<DiagnosticTroubleCode>()
-                    {
-                        @Override
-                        public DiagnosticTroubleCode invoke(byte... bytes)
-                        {
-                            return new DiagnosticTroubleCode(bytes[0], bytes[1]);
-                        }
-                    });
+                    super.put(Unit.INTERNAL_PLACEHOLDER,
+                              new PID.Unmarshaller<DiagnosticTroubleCode>()
+                              {
+                                  @Override
+                                  public DiagnosticTroubleCode invoke(byte... bytes)
+                                  {
+                                      return new DiagnosticTroubleCode(bytes[0], bytes[1]);
+                                  }
+                              });
                 }
             },
             2
     );
+
     /// A PID that requests the {@link FuelSystemStatus statuses} of all onboard fuel systems
     public final static PID<SerializablePair<FuelSystemStatus, FuelSystemStatus>> FUEL_SYSTEM_STATUS
-            = new DefaultPID<>(
+            = new DefaultPID<SerializablePair<FuelSystemStatus, FuelSystemStatus>>(
             0x03,
             "FSYS_STAT",
             "Retrieves a collection of statuses for all onboard fuel systems",
             new HashMap<Unit, PID.Unmarshaller<SerializablePair<FuelSystemStatus, FuelSystemStatus>>>()
             {
                 {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, new PID.Unmarshaller<SerializablePair<FuelSystemStatus, FuelSystemStatus>>()
-                    {
+                    super.put(Unit.INTERNAL_PLACEHOLDER,
+                              new PID.Unmarshaller<SerializablePair<FuelSystemStatus, FuelSystemStatus>>()
+                              {
 
-                        @Override
-                        public SerializablePair<FuelSystemStatus, FuelSystemStatus> invoke(byte... bytes)
-                        {
-                            return new SerializablePair<>(FuelSystemStatus.forByte(bytes[0]), FuelSystemStatus.forByte(bytes[1]));
-                        }
-                    });
+                                  @Override
+                                  public SerializablePair<FuelSystemStatus, FuelSystemStatus> invoke(
+                                          byte... bytes)
+                                  {
+                                      return new SerializablePair<>(FuelSystemStatus.forByte(
+                                              bytes[0]), FuelSystemStatus.forByte(bytes[1]));
+                                  }
+                              });
                 }
             },
             2
-    );
+    )
+    {
+        final class ModelView
+        {
+            TextView fSys1;
+            TextView fSys2;
+        }
+
+        @Override
+        public int getLayoutID()
+        {
+            return R.layout.fuel_system_status_listview_item;
+        }
+
+        @Override
+        public Object createViewModel(View view)
+        {
+            ModelView dmv = new ModelView();
+            dmv.fSys1 = (TextView) view.findViewById(R.id.fuel_system_status_1);
+            dmv.fSys2 = (TextView) view.findViewById(R.id.fuel_system_status_2);
+            return dmv;
+        }
+
+        @Override
+        public void updateViewModel(Object view, Object value)
+        {
+            @SuppressWarnings("unchecked")
+            SerializablePair<FuelSystemStatus, FuelSystemStatus> ms =
+                    (SerializablePair<FuelSystemStatus, FuelSystemStatus>)value;
+            ModelView mv = (ModelView)view;
+            mv.fSys1.setText(ms.first.toString());
+            mv.fSys2.setText(ms.second.toString());
+        }
+    };
     /// A PID that requests the calculated engine load (LOAD)
     public final static PID<Float> CALCULATED_ENGINE_LOAD = new DefaultPID<>(
             0x04,
@@ -156,112 +233,140 @@ public class AppendixB
     );
 
     /// A PID that requests the short term fuel trim value for bank 1 (STFT1)
-    public final static PID<SerializablePair<Float, Float>> SHORT_TERM_FUEL_TRIM_BANK_1_3 = new DefaultPID<SerializablePair<Float, Float>>(
-            0x06,
-            "SHRTFT1",
-            "Retrieve the short term fuel trim for bank 1 (%)",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
-            {
-                {
-                    super.put(Unit.PERCENT, new PID.Unmarshaller<SerializablePair<Float, Float>>()
+    public final static PID<SerializablePair<Float, Float>> SHORT_TERM_FUEL_TRIM_BANK_1_3 =
+            new DefaultPID<SerializablePair<Float, Float>>(
+                    0x06,
+                    "SHRTFT1",
+                    "Retrieve the short term fuel trim for bank 1 (%)",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
-                        @Override
-                        public SerializablePair<Float, Float> invoke(byte... bytes)
                         {
-                            return new SerializablePair<>(((bytes[0] & 0xFF) - 128) * 100.0f / 128.0f, bytes.length > 1 ? (((bytes[1] & 0xFF) - 128) * 100.0f / 128.0f) : null);
+                            super.put(Unit.PERCENT,
+                                      new PID.Unmarshaller<SerializablePair<Float, Float>>()
+                                      {
+                                          @Override
+                                          public SerializablePair<Float, Float> invoke(
+                                                  byte... bytes)
+                                          {
+                                              return new SerializablePair<>(
+                                                      ((bytes[0] & 0xFF) - 128) * 100.0f / 128.0f,
+                                                      bytes.length > 1 ?
+                                                              (((bytes[1] & 0xFF) - 128) * 100.0f / 128.0f) :
+                                                              null);
+                                          }
+                                      });
                         }
-                    });
+                    }, 0
+            )
+            {
+                @Override
+                public int getResponseLength(Profile profile)
+                {
+                    return profile.isEquipped(Profile.BANK_3) ? 2 : 1;
                 }
-            }, 0
-    )
-    {
-        @Override
-        public int getResponseLength(Profile profile)
-        {
-            return profile.isEquipped(Profile.BANK_3) ? 2 : 1;
-        }
-    };
+            };
 
     /// A PID that requests the long term fuel trim value for bank 1 (LTFT1)
-    public final static PID<SerializablePair<Float, Float>> LONG_TERM_FUEL_TRIM_BANK_1_3 = new DefaultPID<SerializablePair<Float, Float>>(
-            0x07,
-            "LONGFT1",
-            "Retrieve the long term fuel trim for bank 1 (%)",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
-            {
-                {
-                    super.put(Unit.PERCENT, new PID.Unmarshaller<SerializablePair<Float, Float>>()
+    public final static PID<SerializablePair<Float, Float>> LONG_TERM_FUEL_TRIM_BANK_1_3 =
+            new DefaultPID<SerializablePair<Float, Float>>(
+                    0x07,
+                    "LONGFT1",
+                    "Retrieve the long term fuel trim for bank 1 (%)",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
-                        @Override
-                        public SerializablePair<Float, Float> invoke(byte... bytes)
                         {
-                            return new SerializablePair<>(((bytes[0] & 0xFF) - 128) * 100.0f / 128.0f, bytes.length > 1 ? (((bytes[1] & 0xFF) - 128) * 100.0f / 128.0f) : null);
+                            super.put(Unit.PERCENT,
+                                      new PID.Unmarshaller<SerializablePair<Float, Float>>()
+                                      {
+                                          @Override
+                                          public SerializablePair<Float, Float> invoke(
+                                                  byte... bytes)
+                                          {
+                                              return new SerializablePair<>(
+                                                      ((bytes[0] & 0xFF) - 128) * 100.0f / 128.0f,
+                                                      bytes.length > 1 ?
+                                                              (((bytes[1] & 0xFF) - 128) * 100.0f / 128.0f) :
+                                                              null);
+                                          }
+                                      });
                         }
-                    });
+                    }, 0
+            )
+            {
+                @Override
+                public int getResponseLength(Profile profile)
+                {
+                    return profile.isEquipped(Profile.BANK_3) ? 2 : 1;
                 }
-            }, 0
-    )
-    {
-        @Override
-        public int getResponseLength(Profile profile)
-        {
-            return profile.isEquipped(Profile.BANK_3) ? 2 : 1;
-        }
-    };
+            };
 
     /// A PID that requests the short term fuel trim value for bank 2 (STFT2)
-    public final static PID<SerializablePair<Float, Float>> SHORT_TERM_FUEL_TRIM_BANK_2_4 = new DefaultPID<SerializablePair<Float, Float>>(
-            0x08,
-            "SHRTFT2",
-            "Retrieve the short term fuel trim for bank 2 (%)",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
-            {
-                {
-                    super.put(Unit.PERCENT, new PID.Unmarshaller<SerializablePair<Float, Float>>()
+    public final static PID<SerializablePair<Float, Float>> SHORT_TERM_FUEL_TRIM_BANK_2_4 =
+            new DefaultPID<SerializablePair<Float, Float>>(
+                    0x08,
+                    "SHRTFT2",
+                    "Retrieve the short term fuel trim for bank 2 (%)",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
-                        @Override
-                        public SerializablePair<Float, Float> invoke(byte... bytes)
                         {
-                            return new SerializablePair<>(((bytes[0] & 0xFF) - 128) * 100.0f / 128.0f, bytes.length > 1 ? (((bytes[1] & 0xFF) - 128) * 100.0f / 128.0f) : null);
+                            super.put(Unit.PERCENT,
+                                      new PID.Unmarshaller<SerializablePair<Float, Float>>()
+                                      {
+                                          @Override
+                                          public SerializablePair<Float, Float> invoke(
+                                                  byte... bytes)
+                                          {
+                                              return new SerializablePair<>(
+                                                      ((bytes[0] & 0xFF) - 128) * 100.0f / 128.0f,
+                                                      bytes.length > 1 ?
+                                                              (((bytes[1] & 0xFF) - 128) * 100.0f / 128.0f) :
+                                                              null);
+                                          }
+                                      });
                         }
-                    });
+                    }, 0
+            )
+            {
+                @Override
+                public int getResponseLength(Profile profile)
+                {
+                    return profile.isEquipped(Profile.BANK_4) ? 2 : 1;
                 }
-            }, 0
-    )
-    {
-        @Override
-        public int getResponseLength(Profile profile)
-        {
-            return profile.isEquipped(Profile.BANK_4) ? 2 : 1;
-        }
-    };
+            };
 
     /// A PID that requests the long term fuel trim value for bank 2 (LTFT2)
-    public final static PID<SerializablePair<Float, Float>> LONG_TERM_FUEL_TRIM_BANK_2_4 = new DefaultPID<SerializablePair<Float, Float>>(
-            0x09,
-            "LONGFT2",
-            "Retrieve the long term fuel trim for bank 2 (%)",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
-            {
-                {
-                    super.put(Unit.PERCENT, new PID.Unmarshaller<SerializablePair<Float, Float>>()
+    public final static PID<SerializablePair<Float, Float>> LONG_TERM_FUEL_TRIM_BANK_2_4 =
+            new DefaultPID<SerializablePair<Float, Float>>(
+                    0x09,
+                    "LONGFT2",
+                    "Retrieve the long term fuel trim for bank 2 (%)",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
-                        @Override
-                        public SerializablePair<Float, Float> invoke(byte... bytes)
                         {
-                            return new SerializablePair<>(((bytes[0] & 0xFF) - 128) * 100.0f / 128.0f, bytes.length > 1 ? (((bytes[1] & 0xFF) - 128) * 100.0f / 128.0f) : null);
+                            super.put(Unit.PERCENT,
+                                      new PID.Unmarshaller<SerializablePair<Float, Float>>()
+                                      {
+                                          @Override
+                                          public SerializablePair<Float, Float> invoke(
+                                                  byte... bytes)
+                                          {
+                                              return new SerializablePair<>(
+                                                      ((bytes[0] & 0xFF) - 128) * 100.0f / 128.0f,
+                                                      bytes.length > 1 ?
+                                                              (((bytes[1] & 0xFF) - 128) * 100.0f / 128.0f) :
+                                                              null);
+                                          }
+                                      });
                         }
-                    });
+                    }, 0
+            )
+            {
+                @Override
+                public int getResponseLength(Profile profile)
+                {
+                    return profile.isEquipped(Profile.BANK_4) ? 2 : 1;
                 }
-            }, 0
-    )
-    {
-        @Override
-        public int getResponseLength(Profile profile)
-        {
-            return profile.isEquipped(Profile.BANK_4) ? 2 : 1;
-        }
-    };
+            };
 
     /// A PID that requests the fuel pressure at the fuel rail relative to atmosphere (FP)
     /// NOTE: An ECU may ONLY support ONE of the following PIDs: 0x0A, 0x22, or 0x23
@@ -278,17 +383,18 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<Integer>>()
                     {
                         {
-                            super.put(Unit.KILO_PASCALS, new PID.Unmarshaller<Integer>(){
+                            super.put(Unit.KILO_PASCALS, new PID.Unmarshaller<Integer>()
+                            {
                                 @Override
                                 public Integer invoke(byte... bytes)
                                 {
                                     return (bytes[0] & 0xFF) * 3;
                                 }
-});
-        }
-        },
-        1
-        );
+                            });
+                        }
+                    },
+                    1
+            );
 
     /// A PID that requests the manifold pressure by a manifold absolute pressure sensor. (MAP)
     /// NOTE: For vehicles that are equipped with both MAP and MAF sensors, this PID
@@ -402,7 +508,7 @@ public class AppendixB
                                 @Override
                                 public Integer invoke(byte... bytes)
                                 {
-                                    return (int)(((bytes[0] & 0xFF) - 40) * (9.0f / 5.0f) + 32);
+                                    return (int) (((bytes[0] & 0xFF) - 40) * (9.0f / 5.0f) + 32);
                                 }
                             });
                             super.put(Unit.TEMPERATURE_CELSIUS, new PID.Unmarshaller<Integer>()
@@ -472,14 +578,15 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SecondaryAirStatus>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, new PID.Unmarshaller<SecondaryAirStatus>()
-                            {
-                                @Override
-                                public SecondaryAirStatus invoke(byte... bytes)
-                                {
-                                    return SecondaryAirStatus.forByte(bytes[0]);
-                                }
-                            });
+                            super.put(Unit.INTERNAL_PLACEHOLDER,
+                                      new PID.Unmarshaller<SecondaryAirStatus>()
+                                      {
+                                          @Override
+                                          public SecondaryAirStatus invoke(byte... bytes)
+                                          {
+                                              return SecondaryAirStatus.forByte(bytes[0]);
+                                          }
+                                      });
                         }
                     },
                     1
@@ -495,14 +602,15 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<Collection<OxygenSensor>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, new PID.Unmarshaller<Collection<OxygenSensor>>()
-                            {
-                                @Override
-                                public Collection<OxygenSensor> invoke(byte... bytes)
-                                {
-                                return OxygenSensor.DualBank.forByte(bytes[0]);
-                                }
-                            });
+                            super.put(Unit.INTERNAL_PLACEHOLDER,
+                                      new PID.Unmarshaller<Collection<OxygenSensor>>()
+                                      {
+                                          @Override
+                                          public Collection<OxygenSensor> invoke(byte... bytes)
+                                          {
+                                              return OxygenSensor.DualBank.forByte(bytes[0]);
+                                          }
+                                      });
                         }
                     },
                     1
@@ -534,7 +642,8 @@ public class AppendixB
             0x14,
             "O2S11",
             "Retrieve O2S11 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>(){
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
                 {
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
@@ -549,7 +658,8 @@ public class AppendixB
             0x14,
             "O2S11",
             "Retrieve O2S11 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>(){
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
                 {
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
@@ -564,7 +674,8 @@ public class AppendixB
             0x15,
             "O2S12",
             "Retrieve O2S12 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>(){
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
                 {
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
@@ -578,7 +689,8 @@ public class AppendixB
             0x15,
             "O2S12",
             "Retrieve O2S12 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>(){
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
                 {
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
@@ -593,7 +705,8 @@ public class AppendixB
             0x16,
             "O2S13",
             "Retrieve O2S13 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>(){
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
                 {
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
@@ -608,7 +721,8 @@ public class AppendixB
             0x16,
             "O2S21",
             "Retrieve O2S21 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>(){
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
                 {
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
@@ -623,7 +737,8 @@ public class AppendixB
             0x17,
             "O2S14",
             "Retrieve O2S14 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>(){
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
                 {
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
@@ -638,7 +753,8 @@ public class AppendixB
             0x17,
             "O2S22",
             "Retrieve O2S22 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>(){
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
                 {
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
@@ -653,7 +769,8 @@ public class AppendixB
             0x18,
             "O2S21",
             "Retrieve O2S21 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>(){
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
                 {
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
@@ -668,7 +785,8 @@ public class AppendixB
             0x18,
             "O2S31",
             "Retrieve O2S31 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>(){
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
                 {
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
@@ -683,7 +801,8 @@ public class AppendixB
             0x19,
             "O2S22",
             "Retrieve O2S22 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>(){
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
                 {
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
@@ -698,7 +817,8 @@ public class AppendixB
             0x19,
             "O2S32",
             "Retrieve O2S32 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>(){
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
                 {
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
@@ -713,7 +833,8 @@ public class AppendixB
             0x1A,
             "O2S23",
             "Retrieve O2S23 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>(){
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
                 {
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
@@ -728,7 +849,8 @@ public class AppendixB
             0x1A,
             "O2S41",
             "Retrieve O2S41 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>(){
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
                 {
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
@@ -743,7 +865,8 @@ public class AppendixB
             0x1B,
             "O2S24",
             "Retrieve O2S24 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>(){
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
                 {
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
@@ -758,7 +881,8 @@ public class AppendixB
             0x1B,
             "O2S42",
             "Retrieve O2S42 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>(){
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
                 {
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
@@ -798,14 +922,15 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<Collection<OxygenSensor>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, new PID.Unmarshaller<Collection<OxygenSensor>>()
-                            {
-                                @Override
-                                public Collection<OxygenSensor> invoke(byte... bytes)
-                                {
-                                    return OxygenSensor.QuadBank.forByte(bytes[0]);
-                                }
-                            });
+                            super.put(Unit.INTERNAL_PLACEHOLDER,
+                                      new PID.Unmarshaller<Collection<OxygenSensor>>()
+                                      {
+                                          @Override
+                                          public Collection<OxygenSensor> invoke(byte... bytes)
+                                          {
+                                              return OxygenSensor.QuadBank.forByte(bytes[0]);
+                                          }
+                                      });
                         }
                     },
                     1
@@ -864,7 +989,7 @@ public class AppendixB
                         @Override
                         public Integer invoke(byte... bytes)
                         {
-                            return ((bytes[0] & 0xFF) << 8) |  bytes[1];
+                            return ((bytes[0] & 0xFF) << 8) | bytes[1];
                         }
                     });
                     // TODO: Miles Conversion
@@ -880,25 +1005,26 @@ public class AppendixB
     ///       0x23 uses atmospheric pressure as a reference, but has a wider value range (this
     ///       PID is most likely to be used on diesels, which operate at a much higher
     ///       fuel pressure)
-    public final static PID<Float> FUEL_RAIL_PRESSURE_RELATIVE_TO_MANIFOLD_VACUUM = new DefaultPID<>(
-            0x22,
-            "FRP",
-            "Retrieves the fuel rail pressure relative to manifold vacuum",
-            new HashMap<Unit, PID.Unmarshaller<Float>>()
-            {
-                {
-                    super.put(Unit.KILO_PASCALS, new PID.Unmarshaller<Float>()
+    public final static PID<Float> FUEL_RAIL_PRESSURE_RELATIVE_TO_MANIFOLD_VACUUM =
+            new DefaultPID<>(
+                    0x22,
+                    "FRP",
+                    "Retrieves the fuel rail pressure relative to manifold vacuum",
+                    new HashMap<Unit, PID.Unmarshaller<Float>>()
                     {
-                        @Override
-                        public Float invoke(byte... bytes)
                         {
-                            return (((bytes[0] & 0xFF) << 8) | bytes[1]) * 0.079F;
+                            super.put(Unit.KILO_PASCALS, new PID.Unmarshaller<Float>()
+                            {
+                                @Override
+                                public Float invoke(byte... bytes)
+                                {
+                                    return (((bytes[0] & 0xFF) << 8) | bytes[1]) * 0.079F;
+                                }
+                            });
                         }
-                    });
-                }
-            },
-            2
-    );
+                    },
+                    2
+            );
 
     /// A PID that requests the fuel pressure at the fuel rail relative to atmosphere
     /// NOTE: An ECU may ONLY support ONE of the following PIDs: 0x0A, 0x22, or 0x23
@@ -927,7 +1053,7 @@ public class AppendixB
                         @Override
                         public Integer invoke(byte... bytes)
                         {
-                            return (int)((((bytes[0] & 0xFF) << 8) | bytes[1]) * 1.450377f);
+                            return (int) ((((bytes[0] & 0xFF) << 8) | bytes[1]) * 1.450377f);
                         }
                     });
                 }
@@ -935,7 +1061,8 @@ public class AppendixB
             2
     );
 
-    private final static PID.Unmarshaller<SerializablePair<Float, Float>> WIDE_RANGE_O2S_UNMARSHALLER = new PID.Unmarshaller<SerializablePair<Float, Float>>()
+    private final static PID.Unmarshaller<SerializablePair<Float, Float>>
+            WIDE_RANGE_O2S_UNMARSHALLER = new PID.Unmarshaller<SerializablePair<Float, Float>>()
     {
         @Override
         public SerializablePair<Float, Float> invoke(byte... bytes)
@@ -949,260 +1076,292 @@ public class AppendixB
 
     /// A PID that requests the reading of O2S11 on a dual-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $24 is
-    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S11_WIDE_RANGE = new DefaultPID<>(
-            0x24,
-            "O2S11",
-            "Retrieve O2S11 value",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>(){
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S11_WIDE_RANGE =
+            new DefaultPID<>(
+                    0x24,
+                    "O2S11",
+                    "Retrieve O2S11 value",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                        }
+                    },
+                    1
+            );
+
+    /// A PID that requests the reading of O2S11 on a quad-bank system
+    /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $14 is
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S11_WIDE_RANGE =
+            new DefaultPID<>(
+                    0x24,
+                    "O2S11",
+                    "Retrieve O2S11 value",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                        }
+                    },
+                    1
+            );
+
+    /// A PID that requests the reading of O2S12 on a dual-bank system
+    /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $15 is
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S12_WIDE_RANGE =
+            new DefaultPID<>(
+                    0x25,
+                    "O2S12",
+                    "Retrieve O2S12 value",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                        }
+                    },
+                    1
+            );
+    /// A PID that requests the reading of O2S12 on a quad-bank system
+    /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $15 is
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S12_WIDE_RANGE =
+            new DefaultPID<>(
+                    0x25,
+                    "O2S12",
+                    "Retrieve O2S12 value",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                        }
+                    },
+                    1
+            );
+
+    /// A PID that requests the reading of O2S13 on a dual-bank system
+    /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $16 is
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S13_WIDE_RANGE =
+            new DefaultPID<>(
+                    0x26,
+                    "O2S13",
+                    "Retrieve O2S13 value",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                        }
+                    },
+                    1
+            );
+
+    /// A PID that requests the reading of O2S21 on a quad-bank system
+    /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $18 is
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S21_WIDE_RANGE =
+            new DefaultPID<>(
+                    0x26,
+                    "O2S21",
+                    "Retrieve O2S21 value",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                        }
+                    },
+                    1
+            );
+
+    /// A PID that requests the reading of O2S14 on a dual-bank system
+    /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $17 is
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S14_WIDE_RANGE =
+            new DefaultPID<>(
+                    0x27,
+                    "O2S14",
+                    "Retrieve O2S14 value",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                        }
+                    },
+                    1
+            );
+
+    /// A PID that requests the reading of O2S22 on a quad-bank system
+    /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $17 is
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S22_WIDE_RANGE =
+            new DefaultPID<>(
+                    0x27,
+                    "O2S22",
+                    "Retrieve O2S22 value",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                        }
+                    },
+                    1
+            );
+
+    /// A PID that requests the reading of O2S21 on a dual-bank system
+    /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $18 is
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S21_WIDE_RANGE =
+            new DefaultPID<>(
+                    0x28,
+                    "O2S21",
+                    "Retrieve O2S21 value",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                        }
+                    },
+                    1
+            );
+
+    /// A PID that requests the reading of O2S31 on a quad-bank system
+    /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $18 is
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S31_WIDE_RANGE =
+            new DefaultPID<>(
+                    0x28,
+                    "O2S31",
+                    "Retrieve O2S31 value",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                        }
+                    },
+                    1
+            );
+
+    /// A PID that requests the reading of O2S14 on a dual-bank system
+    /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $19 is
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S22_WIDE_RANGE =
+            new DefaultPID<>(
+                    0x29,
+                    "O2S22",
+                    "Retrieve O2S22 value",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                        }
+                    },
+                    1
+            );
+
+    /// A PID that requests the reading of O2S32 on a quad-bank system
+    /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $19 is
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S32_WIDE_RANGE =
+            new DefaultPID<>(
+                    0x29,
+                    "O2S32",
+                    "Retrieve O2S32 value",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                        }
+                    },
+                    1
+            );
+
+    /// A PID that requests the reading of O2S23 on a dual-bank system
+    /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $1A is
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S23_WIDE_RANGE =
+            new DefaultPID<>(
+                    0x2A,
+                    "O2S23",
+                    "Retrieve O2S23 value",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                        }
+                    },
+                    1
+            );
+
+    /// A PID that requests the reading of O2S41 on a quad-bank system
+    /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $1A is
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S41_WIDE_RANGE =
+            new DefaultPID<>(
+                    0x2A,
+                    "O2S41",
+                    "Retrieve O2S41 value",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                        }
+                    },
+                    1
+            );
+
+    /// A PID that requests the reading of O2S24 on a dual-bank system
+    /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $1B is
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S24_WIDE_RANGE =
+            new DefaultPID<>(
+                    0x2B,
+                    "O2S24",
+                    "Retrieve O2S24 value",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                        }
+                    },
+                    1
+            );
+
+    /// A PID that requests the reading of O2S42 on a quad-bank system
+    /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $1B is
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S42_WIDE_RANGE =
+            new DefaultPID<>(
+                    0x2B,
+                    "O2S42",
+                    "Retrieve O2S42 value",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                        }
+                    },
+                    1
+            );
+
+    /// A PID that requests the commanded EGR as a percent.  EGR shall be normalized to the
+    /// maximum EGR commanded output control parameter.  EGR systems use a variety of methods
+    /// to control the amount of EGR delivered to the engine.
+    /// 1) If an on/off solenoid is used -- EGR_PCT shall display 0% when the EGR is commanded
+    /// off, 100% when the EGR system is commanded on.
+    /// 2) If a vacuum solenoid is duty cycled, the EGR duty cycle from 0 to 100% shall be
+    /// displayed
+    /// 3) If a linear or stepper motor valve is used, the fully closed position shall be
+    /// displayed as 0%, the fully open position shall be displayed as 100%.  Intermediate
+    /// positions shall be displayed as a percent of the full-open position.  For example,
+    /// a stepper-motor EGR valve that moves from 0 to 128 counts shall display 0% at 0
+    /// counts, 100% at 128 counts, and 50% at 64 counts.
+    /// 4) Any other actuation method shall be normalised to display 0% when no EGR is
+    /// commanded and 100% at the maximum commanded EGR position.
+    public final static PID<Float> COMMANDED_EGR = new DefaultPID<>(
+            0x2C,
+            "EGR_PCT",
+            "Retrieve the commanded EGR percentage",
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
                 {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                    super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
+                    {
+                        @Override
+                        public Float invoke(byte... bytes)
+                        {
+                            return (bytes[0] & 0xFF) * 100.0f / 255.0f;
+                        }
+                    });
                 }
             },
             1
     );
-        
-        /// A PID that requests the reading of O2S11 on a quad-bank system
-        /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $14 is
-        public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S11_WIDE_RANGE = new DefaultPID<>(
-            0x24,
-            "O2S11",
-            "Retrieve O2S11 value",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>(){
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
-                }
-            },
-            1
-        );
-        
-        /// A PID that requests the reading of O2S12 on a dual-bank system
-        /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $15 is
-        public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S12_WIDE_RANGE = new DefaultPID<>(
-            0x25,
-            "O2S12",
-            "Retrieve O2S12 value",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>(){
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
-                }
-            },
-            1
-        );
-        /// A PID that requests the reading of O2S12 on a quad-bank system
-        /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $15 is
-        public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S12_WIDE_RANGE = new DefaultPID<>(
-            0x25,
-            "O2S12",
-            "Retrieve O2S12 value",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>(){
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
-                }
-            },
-            1
-        );
-        
-        /// A PID that requests the reading of O2S13 on a dual-bank system
-        /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $16 is
-        public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S13_WIDE_RANGE = new DefaultPID<>(
-            0x26,
-            "O2S13",
-            "Retrieve O2S13 value",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>(){
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
-                }
-            },
-            1
-        );
-        
-        /// A PID that requests the reading of O2S21 on a quad-bank system
-        /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $18 is
-        public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S21_WIDE_RANGE = new DefaultPID<>(
-            0x26,
-            "O2S21",
-            "Retrieve O2S21 value",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>(){
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
-                }
-            },
-            1
-        );
-        
-        /// A PID that requests the reading of O2S14 on a dual-bank system
-        /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $17 is
-        public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S14_WIDE_RANGE = new DefaultPID<>(
-            0x27,
-            "O2S14",
-            "Retrieve O2S14 value",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>(){
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
-                }
-            },
-            1
-        );
-        
-        /// A PID that requests the reading of O2S22 on a quad-bank system
-        /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $17 is
-        public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S22_WIDE_RANGE = new DefaultPID<>(
-            0x27,
-            "O2S22",
-            "Retrieve O2S22 value",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>(){
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
-                }
-            },
-            1
-        );
-        
-        /// A PID that requests the reading of O2S21 on a dual-bank system
-        /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $18 is
-        public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S21_WIDE_RANGE = new DefaultPID<>(
-            0x28,
-            "O2S21",
-            "Retrieve O2S21 value",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>(){
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
-                }
-            },
-            1
-        );
-        
-        /// A PID that requests the reading of O2S31 on a quad-bank system
-        /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $18 is
-        public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S31_WIDE_RANGE = new DefaultPID<>(
-            0x28,
-            "O2S31",
-            "Retrieve O2S31 value",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>(){
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
-                }
-            },
-            1
-        );
-        
-        /// A PID that requests the reading of O2S14 on a dual-bank system
-        /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $19 is
-        public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S22_WIDE_RANGE = new DefaultPID<>(
-            0x29,
-            "O2S22",
-            "Retrieve O2S22 value",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>(){
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
-                }
-            },
-            1
-        );
-        
-        /// A PID that requests the reading of O2S32 on a quad-bank system
-        /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $19 is
-        public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S32_WIDE_RANGE = new DefaultPID<>(
-            0x29,
-            "O2S32",
-            "Retrieve O2S32 value",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>(){
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
-                }
-            },
-            1
-        );
-        
-        /// A PID that requests the reading of O2S23 on a dual-bank system
-        /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $1A is
-        public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S23_WIDE_RANGE = new DefaultPID<>(
-            0x2A,
-            "O2S23",
-            "Retrieve O2S23 value",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>(){
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
-                }
-            },
-            1
-        );
-        
-        /// A PID that requests the reading of O2S41 on a quad-bank system
-        /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $1A is
-        public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S41_WIDE_RANGE = new DefaultPID<>(
-            0x2A,
-            "O2S41",
-            "Retrieve O2S41 value",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>(){
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
-                }
-            },
-            1
-        );
-        
-        /// A PID that requests the reading of O2S24 on a dual-bank system
-        /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $1B is
-        public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S24_WIDE_RANGE = new DefaultPID<>(
-            0x2B,
-            "O2S24",
-            "Retrieve O2S24 value",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>(){
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
-                }
-            },
-            1
-        );
-        
-        /// A PID that requests the reading of O2S42 on a quad-bank system
-        /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $1B is
-        public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S42_WIDE_RANGE = new DefaultPID<>(
-            0x2B,
-            "O2S42",
-            "Retrieve O2S42 value",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>(){
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
-                }
-            },
-            1
-        );
-
-        /// A PID that requests the commanded EGR as a percent.  EGR shall be normalized to the
-        /// maximum EGR commanded output control parameter.  EGR systems use a variety of methods
-        /// to control the amount of EGR delivered to the engine.
-        /// 1) If an on/off solenoid is used -- EGR_PCT shall display 0% when the EGR is commanded
-        /// off, 100% when the EGR system is commanded on.
-        /// 2) If a vacuum solenoid is duty cycled, the EGR duty cycle from 0 to 100% shall be
-        /// displayed
-        /// 3) If a linear or stepper motor valve is used, the fully closed position shall be
-        /// displayed as 0%, the fully open position shall be displayed as 100%.  Intermediate
-        /// positions shall be displayed as a percent of the full-open position.  For example,
-        /// a stepper-motor EGR valve that moves from 0 to 128 counts shall display 0% at 0
-        /// counts, 100% at 128 counts, and 50% at 64 counts.
-        /// 4) Any other actuation method shall be normalised to display 0% when no EGR is
-        /// commanded and 100% at the maximum commanded EGR position.
-        public final static PID<Float> COMMANDED_EGR = new DefaultPID<>(
-            0x2C,
-                "EGR_PCT",
-                "Retrieve the commanded EGR percentage",
-                new HashMap<Unit, PID.Unmarshaller<Float>>()
-                {
-                    {
-                        super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
-                        {
-                            @Override
-                            public Float invoke(byte... bytes)
-                            {
-                                return (bytes[0] & 0xFF) * 100.0f / 255.0f;
-                            }
-                        });
-                    }
-                },
-                1
-        );
     /// todo: docs.
     public final static PID<Float> EGR_ERROR = new DefaultPID<>(
             0x2D,
@@ -1337,7 +1496,7 @@ public class AppendixB
                         @Override
                         public Float invoke(byte... bytes)
                         {
-                            return (float)(bytes[0] & 0xFF);
+                            return (float) (bytes[0] & 0xFF);
                         }
                     });
                     super.put(Unit.INCHES_OF_MERCURY, new PID.Unmarshaller<Float>()
@@ -1355,246 +1514,262 @@ public class AppendixB
     );
 
     /// TODO: Override toString? needs to fit in UI display..
-    private final static PID.Unmarshaller<SerializablePair<Float, Float>> WIDE_RANGE_O2S_UNMARSHALLER_ALT
+    private final static PID.Unmarshaller<SerializablePair<Float, Float>>
+            WIDE_RANGE_O2S_UNMARSHALLER_ALT
             = new PID.Unmarshaller<SerializablePair<Float, Float>>()
     {
         @Override
         public SerializablePair<Float, Float> invoke(byte... bytes)
         {
-            return new SerializablePair<>((((bytes[0] & 0xFF) << 8) | bytes[1]) * 0.0000305f, (((short)bytes[2] << 8) | bytes[3]) * 0.00390825f);
+            return new SerializablePair<>((((bytes[0] & 0xFF) << 8) | bytes[1]) * 0.0000305f,
+                                          (((short) bytes[2] << 8) | bytes[3]) * 0.00390825f);
         }
     };
 
-    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S11_WIDE_RANGE_ALT = new DefaultPID<>(
-            0x34,
-            "O2S11",
-            "",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S11_WIDE_RANGE_ALT =
+            new DefaultPID<>(
+                    0x34,
+                    "O2S11",
+                    "",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                        }
+                    },
+                    4
+            );
+
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S12_WIDE_RANGE_ALT =
+            new DefaultPID<>(
+                    0x35,
+                    "O2S12",
+                    "",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                        }
+                    },
+                    4
+            );
+
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S13_WIDE_RANGE_ALT =
+            new DefaultPID<>(
+                    0x36,
+                    "O2S13",
+                    "",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                        }
+                    },
+                    4
+            );
+
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S14_WIDE_RANGE_ALT =
+            new DefaultPID<>(
+                    0x37,
+                    "O2S14",
+                    "",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                        }
+                    },
+                    4
+            );
+
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S21_WIDE_RANGE_ALT =
+            new DefaultPID<>(
+                    0x38,
+                    "O2S21",
+                    "",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                        }
+                    },
+                    4
+            );
+
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S22_WIDE_RANGE_ALT =
+            new DefaultPID<>(
+                    0x39,
+                    "O2S22",
+                    "",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                        }
+                    },
+                    4
+            );
+
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S23_WIDE_RANGE_ALT =
+            new DefaultPID<>(
+                    0x3A,
+                    "O2S23",
+                    "",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                        }
+                    },
+                    4
+            );
+
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S24_WIDE_RANGE_ALT =
+            new DefaultPID<>(
+                    0x3B,
+                    "O2S24",
+                    "",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                        }
+                    },
+                    4
+            );
+
+
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S11_WIDE_RANGE_ALT =
+            new DefaultPID<>(
+                    0x34,
+                    "O2S11",
+                    "",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                        }
+                    },
+                    4
+            );
+
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S12_WIDE_RANGE_ALT =
+            new DefaultPID<>(
+                    0x35,
+                    "O2S12",
+                    "",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                        }
+                    },
+                    4
+            );
+
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S21_WIDE_RANGE_ALT =
+            new DefaultPID<>(
+                    0x36,
+                    "O2S21",
+                    "",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                        }
+                    },
+                    4
+            );
+
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S22_WIDE_RANGE_ALT =
+            new DefaultPID<>(
+                    0x37,
+                    "O2S22",
+                    "",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                        }
+                    },
+                    4
+            );
+
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S31_WIDE_RANGE_ALT =
+            new DefaultPID<>(
+                    0x38,
+                    "O2S31",
+                    "",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                        }
+                    },
+                    4
+            );
+
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S32_WIDE_RANGE_ALT =
+            new DefaultPID<>(
+                    0x39,
+                    "O2S32",
+                    "",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                        }
+                    },
+                    4
+            );
+
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S41_WIDE_RANGE_ALT =
+            new DefaultPID<>(
+                    0x3A,
+                    "O2S41",
+                    "",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                        }
+                    },
+                    4
+            );
+
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S42_WIDE_RANGE_ALT =
+            new DefaultPID<>(
+                    0x3B,
+                    "O2S42",
+                    "",
+                    new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+                    {
+                        {
+                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                        }
+                    },
+                    4
+            );
+
+    private final static PID.Unmarshaller<Float> CATALYST_TEMPERATURE_CELSIUS_UNMARSHALLER =
+            new PID.Unmarshaller<Float>()
             {
+                @Override
+                public Float invoke(byte... bytes)
                 {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                    return ((((bytes[0] & 0xFF) << 8) | bytes[1]) * 0.1f) - 40.0f;
                 }
-            },
-            4
-    );
+            };
 
-    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S12_WIDE_RANGE_ALT = new DefaultPID<>(
-            0x35,
-            "O2S12",
-            "",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
+    private final static PID.Unmarshaller<Float> CATALYST_TEMPERATURE_FAHRENHEIT_UNMARSHALLER =
+            new PID.Unmarshaller<Float>()
             {
+                @Override
+                public Float invoke(byte... bytes)
                 {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                    return (((((bytes[0] & 0xFF) << 8) | bytes[1]) * 0.1f) - 40.0f) * 9.0f / 5.0f + 32.0f;
                 }
-            },
-            4
-    );
-
-    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S13_WIDE_RANGE_ALT = new DefaultPID<>(
-            0x36,
-            "O2S13",
-            "",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
-            {
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
-                }
-            },
-            4
-    );
-
-    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S14_WIDE_RANGE_ALT = new DefaultPID<>(
-            0x37,
-            "O2S14",
-            "",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
-            {
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
-                }
-            },
-            4
-    );
-
-    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S21_WIDE_RANGE_ALT = new DefaultPID<>(
-            0x38,
-            "O2S21",
-            "",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
-            {
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
-                }
-            },
-            4
-    );
-
-    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S22_WIDE_RANGE_ALT = new DefaultPID<>(
-            0x39,
-            "O2S22",
-            "",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
-            {
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
-                }
-            },
-            4
-    );
-
-    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S23_WIDE_RANGE_ALT = new DefaultPID<>(
-            0x3A,
-            "O2S23",
-            "",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
-            {
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
-                }
-            },
-            4
-    );
-
-    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S24_WIDE_RANGE_ALT = new DefaultPID<>(
-            0x3B,
-            "O2S24",
-            "",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
-            {
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
-                }
-            },
-            4
-    );
-
-
-
-
-
-
-    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S11_WIDE_RANGE_ALT = new DefaultPID<>(
-            0x34,
-            "O2S11",
-            "",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
-            {
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
-                }
-            },
-            4
-    );
-
-    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S12_WIDE_RANGE_ALT = new DefaultPID<>(
-            0x35,
-            "O2S12",
-            "",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
-            {
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
-                }
-            },
-            4
-    );
-
-    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S21_WIDE_RANGE_ALT = new DefaultPID<>(
-            0x36,
-            "O2S21",
-            "",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
-            {
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
-                }
-            },
-            4
-    );
-
-    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S22_WIDE_RANGE_ALT = new DefaultPID<>(
-            0x37,
-            "O2S22",
-            "",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
-            {
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
-                }
-            },
-            4
-    );
-
-    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S31_WIDE_RANGE_ALT = new DefaultPID<>(
-            0x38,
-            "O2S31",
-            "",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
-            {
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
-                }
-            },
-            4
-    );
-
-    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S32_WIDE_RANGE_ALT = new DefaultPID<>(
-            0x39,
-            "O2S32",
-            "",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
-            {
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
-                }
-            },
-            4
-    );
-
-    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S41_WIDE_RANGE_ALT = new DefaultPID<>(
-            0x3A,
-            "O2S41",
-            "",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
-            {
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
-                }
-            },
-            4
-    );
-
-    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S42_WIDE_RANGE_ALT = new DefaultPID<>(
-            0x3B,
-            "O2S42",
-            "",
-            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
-            {
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
-                }
-            },
-            4
-    );
-
-    private final static PID.Unmarshaller<Float> CATALYST_TEMPERATURE_CELSIUS_UNMARSHALLER = new PID.Unmarshaller<Float>()
-    {
-        @Override
-        public Float invoke(byte... bytes)
-        {
-            return ((((bytes[0] & 0xFF) << 8) | bytes[1]) * 0.1f) - 40.0f;
-        }
-    };
-
-    private final static PID.Unmarshaller<Float> CATALYST_TEMPERATURE_FAHRENHEIT_UNMARSHALLER = new PID.Unmarshaller<Float>()
-    {
-        @Override
-        public Float invoke(byte... bytes)
-        {
-            return (((((bytes[0] & 0xFF) << 8) | bytes[1]) * 0.1f) - 40.0f) * 9.0f / 5.0f + 32.0f;
-        }
-    };
+            };
 
     public final static PID<Float> CATALYST_TEMPERATURE_BANK_1_SENSOR_1 = new DefaultPID<>(
             0x3C,
@@ -1604,7 +1779,8 @@ public class AppendixB
             {
                 {
                     super.put(Unit.TEMPERATURE_CELSIUS, CATALYST_TEMPERATURE_CELSIUS_UNMARSHALLER);
-                    super.put(Unit.TEMPERATURE_FAHRENHEIT, CATALYST_TEMPERATURE_FAHRENHEIT_UNMARSHALLER);
+                    super.put(Unit.TEMPERATURE_FAHRENHEIT,
+                              CATALYST_TEMPERATURE_FAHRENHEIT_UNMARSHALLER);
                 }
             },
             2
@@ -1618,7 +1794,8 @@ public class AppendixB
             {
                 {
                     super.put(Unit.TEMPERATURE_CELSIUS, CATALYST_TEMPERATURE_CELSIUS_UNMARSHALLER);
-                    super.put(Unit.TEMPERATURE_FAHRENHEIT, CATALYST_TEMPERATURE_FAHRENHEIT_UNMARSHALLER);
+                    super.put(Unit.TEMPERATURE_FAHRENHEIT,
+                              CATALYST_TEMPERATURE_FAHRENHEIT_UNMARSHALLER);
                 }
             },
             2
@@ -1632,7 +1809,8 @@ public class AppendixB
             {
                 {
                     super.put(Unit.TEMPERATURE_CELSIUS, CATALYST_TEMPERATURE_CELSIUS_UNMARSHALLER);
-                    super.put(Unit.TEMPERATURE_FAHRENHEIT, CATALYST_TEMPERATURE_FAHRENHEIT_UNMARSHALLER);
+                    super.put(Unit.TEMPERATURE_FAHRENHEIT,
+                              CATALYST_TEMPERATURE_FAHRENHEIT_UNMARSHALLER);
                 }
             },
             2
@@ -1646,10 +1824,11 @@ public class AppendixB
             {
                 {
                     super.put(Unit.TEMPERATURE_CELSIUS, CATALYST_TEMPERATURE_CELSIUS_UNMARSHALLER);
-                    super.put(Unit.TEMPERATURE_FAHRENHEIT, CATALYST_TEMPERATURE_FAHRENHEIT_UNMARSHALLER);
+                    super.put(Unit.TEMPERATURE_FAHRENHEIT,
+                              CATALYST_TEMPERATURE_FAHRENHEIT_UNMARSHALLER);
                 }
             },
             2
     );
-    
+
 }

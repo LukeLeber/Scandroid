@@ -21,7 +21,9 @@ package com.lukeleber.scandroid.gui;
  */
 /*package*/ enum ConfigurationMode
 {
-    /** A mode that only supports the base functions provided by SAE-J1979 */
+    /**
+     * A mode that only supports the base functions provided by SAE-J1979
+     */
     GENERIC_MODE,
 
     /**

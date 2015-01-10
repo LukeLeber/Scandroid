@@ -45,8 +45,8 @@ public interface Interpreter<T>
     String getName();
 
     /**
-     * Sends an asynchronous request over this {@link com.lukeleber.scandroid.interpreter.Interpreter} and
-     * invokes a default {@link ResponseListener} on the UI thread when a reply is received, the
+     * Sends an asynchronous request over this {@link com.lukeleber.scandroid.interpreter.Interpreter}
+     * and invokes a default {@link ResponseListener} on the UI thread when a reply is received, the
      * request times out, or an error occurs.
      *
      * @param request
@@ -57,9 +57,9 @@ public interface Interpreter<T>
     <V> void sendRequest(Request<T, V> request);
 
     /**
-     * Sends an asynchronous request over this {@link com.lukeleber.scandroid.interpreter.Interpreter} and
-     * invokes the provided {@link ResponseListener} on the UI thread when a reply is received, the
-     * request times out, or an error occurs.
+     * Sends an asynchronous request over this {@link com.lukeleber.scandroid.interpreter.Interpreter}
+     * and invokes the provided {@link ResponseListener} on the UI thread when a reply is received,
+     * the request times out, or an error occurs.
      *
      * @param request
      *         the {@link Request} to send over this {@link com.lukeleber.scandroid.interpreter.Interpreter}
@@ -72,19 +72,19 @@ public interface Interpreter<T>
 
     /**
      * Asynchronously starts this {@link com.lukeleber.scandroid.interpreter.Interpreter} with no
-     * specified {@link com.lukeleber.scandroid.interpreter.Interpreter.ErrorHandler}.  This method is
-     * equivalent to <code>start(null);</code>
+     * specified {@link com.lukeleber.scandroid.interpreter.Interpreter.ErrorHandler}.  This method
+     * is equivalent to <code>start(null);</code>
      */
     void start();
 
     /**
      * Asynchronously starts this {@link com.lukeleber.scandroid.interpreter.Interpreter} with the
-     * provided {@link com.lukeleber.scandroid.interpreter.Interpreter.ErrorHandler} that will be invoked
-     * by the asynchronous service when an error is encountered.
+     * provided {@link com.lukeleber.scandroid.interpreter.Interpreter.ErrorHandler} that will be
+     * invoked by the asynchronous service when an error is encountered.
      *
      * @param errorHandler
-     *         the {@link com.lukeleber.scandroid.interpreter.Interpreter.ErrorHandler} to invoke upon an
-     *         error
+     *         the {@link com.lukeleber.scandroid.interpreter.Interpreter.ErrorHandler} to invoke
+     *         upon an error
      */
     void start(ErrorHandler errorHandler);
 
@@ -104,8 +104,8 @@ public interface Interpreter<T>
     public interface ErrorHandler
     {
         /**
-         * Invoked when the {@link com.lukeleber.scandroid.interpreter.Interpreter} encounters an error of
-         * any kind
+         * Invoked when the {@link com.lukeleber.scandroid.interpreter.Interpreter} encounters an
+         * error of any kind
          *
          * @param error
          *         the error that was encountered

@@ -15,14 +15,14 @@ import android.content.pm.PackageManager;
 import android.os.ParcelUuid;
 import android.util.Log;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import com.lukeleber.scandroid.BuildConfig;
 import com.lukeleber.scandroid.R;
 import com.lukeleber.scandroid.io.CommunicationInterface;
 import com.lukeleber.scandroid.io.ScandroidIOException;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * An {@link killgpl.scandroid.io.CommunicationInterface} that is implemented via Bluetooth.
@@ -52,8 +52,9 @@ public class BluetoothInterface
     private final OutputStream outputStream;
 
     /**
-     * Constructs a {@link com.lukeleber.scandroid.io.bluetooth.BluetoothInterface} from the provided {@link
-     * android.bluetooth.BluetoothDevice remote device} and {@link android.os.ParcelUuid UUID}
+     * Constructs a {@link com.lukeleber.scandroid.io.bluetooth.BluetoothInterface} from the
+     * provided {@link android.bluetooth.BluetoothDevice remote device} and {@link
+     * android.os.ParcelUuid UUID}
      *
      * @param remoteDevice
      *         the remote {@link android.bluetooth.BluetoothDevice} to connect with
@@ -91,16 +92,20 @@ public class BluetoothInterface
             throws
             ScandroidIOException
     {
-        if(context.getPackageManager().checkPermission(android.Manifest.permission.BLUETOOTH, context.getPackageName()) == PackageManager.PERMISSION_GRANTED)
+        if (context.getPackageManager()
+                   .checkPermission(android.Manifest.permission.BLUETOOTH,
+                                    context.getPackageName()) == PackageManager.PERMISSION_GRANTED)
         {
             BluetoothManager manager
                     = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
             if (manager != null)
             {
-                if(manager.getAdapter().isEnabled())
+                if (manager.getAdapter()
+                           .isEnabled())
                 {
                     String targetName = context.getString(R.string.bluetooth_device_name);
-                    for (BluetoothDevice candidate : manager.getAdapter().getBondedDevices())
+                    for (BluetoothDevice candidate : manager.getAdapter()
+                                                            .getBondedDevices())
                     {
                         if (targetName.equals(candidate.getName()))
                         {
@@ -110,15 +115,19 @@ public class BluetoothInterface
                             }
                             catch (IOException ioe)
                             {
-                                throw new ScandroidIOException(ioe, ScandroidIOException.ExceptionCode.UNDOCUMENTED_BLUETOOTH_ERROR);
+                                throw new ScandroidIOException(ioe,
+                                                               ScandroidIOException.ExceptionCode.UNDOCUMENTED_BLUETOOTH_ERROR);
                             }
                         }
                     }
-                    throw new ScandroidIOException(ScandroidIOException.ExceptionCode.BLUETOOTH_DEVICE_NOT_AVAILABLE);
+                    throw new ScandroidIOException(
+                            ScandroidIOException.ExceptionCode.BLUETOOTH_DEVICE_NOT_AVAILABLE);
                 }
-                throw new ScandroidIOException(ScandroidIOException.ExceptionCode.BLUETOOTH_NOT_ENABLED);
+                throw new ScandroidIOException(
+                        ScandroidIOException.ExceptionCode.BLUETOOTH_NOT_ENABLED);
             }
-            throw new ScandroidIOException(ScandroidIOException.ExceptionCode.BLUETOOTH_UNSUPPORTED);
+            throw new ScandroidIOException(
+                    ScandroidIOException.ExceptionCode.BLUETOOTH_UNSUPPORTED);
         }
         throw new ScandroidIOException(ScandroidIOException.ExceptionCode.BLUETOOTH_NOT_PERMITTED);
     }

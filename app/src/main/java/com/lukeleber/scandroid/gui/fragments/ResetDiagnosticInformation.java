@@ -13,10 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import com.lukeleber.scandroid.R;
 import com.lukeleber.scandroid.sae.Service;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ResetDiagnosticInformation
         extends ServiceFragment
@@ -43,7 +44,8 @@ public class ResetDiagnosticInformation
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View rv =  inflater.inflate(R.layout.fragment_reset_diagnostic_information, container, false);
+        View rv = inflater.inflate(R.layout.fragment_reset_diagnostic_information, container,
+                                   false);
         ButterKnife.inject(this, rv);
         return rv;
     }

@@ -15,7 +15,9 @@ package com.lukeleber.scandroid.interpreter.elm327;
 @SuppressWarnings("unused")
 public enum Protocol
 {
-    /** Automatically select the correct protocol */
+    /**
+     * Automatically select the correct protocol
+     */
     AUTOMATIC(0, -1),
 
     SAE_J1850_PWM(1, 41600),

@@ -51,8 +51,9 @@ public class BluetoothEnabler
     /**
      * <p>A convenience function for requesting that bluetooth be enabled.</p> <p/> <p>Launches a
      * confirmation dialog in the same manner as starting an activity with {@link
-     * android.bluetooth.BluetoothAdapter#ACTION_REQUEST_ENABLE}.  The provided {@link com.lukeleber.bluetooth.BluetoothEnabler.Handler}
-     * shall receive the result of the activity.</p>
+     * android.bluetooth.BluetoothAdapter#ACTION_REQUEST_ENABLE}.  The provided {@link
+     * com.lukeleber.bluetooth.BluetoothEnabler.Handler} shall receive the result of the
+     * activity.</p>
      *
      * @param context
      *         the calling {@link android.content.Context}
@@ -120,9 +121,10 @@ public class BluetoothEnabler
         protected final void onCreate(Bundle unused)
         {
             super.onCreate(unused);
-            this.handler = (Handler) super.getIntent().getSerializableExtra(EXTRA_HANDLER);
+            this.handler = (Handler) super.getIntent()
+                                          .getSerializableExtra(EXTRA_HANDLER);
             super.startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
-                    super.addResultListener(this));
+                                         super.addResultListener(this));
         }
     }
 }

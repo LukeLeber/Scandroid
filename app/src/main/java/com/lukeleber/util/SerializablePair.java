@@ -11,8 +11,9 @@ import android.util.Pair;
 
 import java.io.Serializable;
 
-public class SerializablePair<T extends Serializable, U extends Serializable> extends Pair<T, U>
-    implements Serializable
+public class SerializablePair<T extends Serializable, U extends Serializable>
+        extends Pair<T, U>
+        implements Serializable
 {
     /**
      * Constructor for a Pair.

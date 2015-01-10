@@ -134,7 +134,8 @@ public abstract class EnhancedActivity
      */
     protected final void shortToast(int resourceID)
     {
-        Toast.makeText(this, super.getString(resourceID), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, super.getString(resourceID), Toast.LENGTH_SHORT)
+             .show();
     }
 
     /**
@@ -146,17 +147,20 @@ public abstract class EnhancedActivity
     @SuppressWarnings("unused")
     protected final void longToast(int resourceID)
     {
-        Toast.makeText(this, super.getString(resourceID), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, super.getString(resourceID), Toast.LENGTH_LONG)
+             .show();
     }
 
     @SuppressWarnings("unused")
     protected final void shortToast(String text)
     {
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, text, Toast.LENGTH_SHORT)
+             .show();
     }
 
     protected final void longToast(String text)
     {
-        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, text, Toast.LENGTH_LONG)
+             .show();
     }
 }

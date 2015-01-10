@@ -17,14 +17,14 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.lukeleber.scandroid.BuildConfig;
+import com.lukeleber.scandroid.R;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-
-import com.lukeleber.scandroid.BuildConfig;
-import com.lukeleber.scandroid.R;
 
 /**
  * An interface that is to be implemented by classes that handle the completion of I/O interface
@@ -106,9 +106,11 @@ import com.lukeleber.scandroid.R;
             Exception
     {
         UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
-        for (Map.Entry<String, UsbDevice> e : manager.getDeviceList().entrySet())
+        for (Map.Entry<String, UsbDevice> e : manager.getDeviceList()
+                                                     .entrySet())
         {
-            if (e.getKey().equals(context.getString(R.string.usb_device_name)))
+            if (e.getKey()
+                 .equals(context.getString(R.string.usb_device_name)))
             {
                 return true;
             }
@@ -190,12 +192,15 @@ import com.lukeleber.scandroid.R;
     @Override
     public final Boolean call()
     {
-        BluetoothManager manager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
+        BluetoothManager manager = (BluetoothManager) context.getSystemService(
+                Context.BLUETOOTH_SERVICE);
         if (manager != null)
         {
-            for (BluetoothDevice device : manager.getAdapter().getBondedDevices())
+            for (BluetoothDevice device : manager.getAdapter()
+                                                 .getBondedDevices())
             {
-                if (device.getName().equals(context.getString(R.string.bluetooth_device_name)))
+                if (device.getName()
+                          .equals(context.getString(R.string.bluetooth_device_name)))
                 {
                     return true;
                 }

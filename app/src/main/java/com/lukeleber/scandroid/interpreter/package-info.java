@@ -11,7 +11,7 @@
  * to the analog input required by onboard micro-controllers and vice-versa.  The Interpreter
  * package provides a means by which to communicate with such a middle-man.</p>
  *
- * <p>The default {@link killgpl.scandroid.interpreter.Interpreter} for the Scandroid application
+ * <p>The default {@link com.lukeleber.scandroid.interpreter.Interpreter} for the Scandroid application
  * is the (awesome) ELM327 product.  The ELM327 communicates via strings such that:
  * <pre>
  *     (--> indicates a data conversion [IE from a byte array to a string])

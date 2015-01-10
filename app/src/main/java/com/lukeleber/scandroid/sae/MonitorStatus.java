@@ -7,7 +7,9 @@
 
 package com.lukeleber.scandroid.sae;
 
-public class MonitorStatus
+import java.io.Serializable;
+
+public class MonitorStatus implements Serializable
 {
     private final int bits;
 
@@ -24,6 +26,24 @@ public class MonitorStatus
     public int getDiagnosticTroubleCodeCount()
     {
         return bits & 0x7F000000;
+    }
+
+    public String getSupportReadinessString()
+    {
+        StringBuilder rv = new StringBuilder();
+        for(int i = 0; i < ContinuousMonitorReadiness.values().length; ++i)
+        {
+            rv.append(ContinuousMonitorSupport.values()[i].name())
+                .append(isContinuousMonitorSupported(ContinuousMonitorSupport.values()[i]) ? "SUP" : "[NOT_SUP], ")
+                .append(isContinuousMonitorReady(ContinuousMonitorReadiness.values()[i]) ? ", RDY" : "[NOT_RDY], ");
+        }
+        for(int i = 0; i < NonContinuousMonitorReadiness.values().length; ++i)
+        {
+            rv.append(NonContinuousMonitorSupport.values()[i].name())
+              .append(isNonContinuousMonitorSupported(NonContinuousMonitorSupport.values()[i]) ? "SUP" : "[NOT_SUP], ")
+              .append(isNonContinuousMonitorReady(NonContinuousMonitorReadiness.values()[i]) ? ", RDY" : "[NOT_RDY], ");
+        }
+        return rv.substring(0, rv.length() - 2);
     }
 
     public boolean isContinuousMonitorSupported(ContinuousMonitorSupport monitor)
@@ -51,7 +71,7 @@ public class MonitorStatus
      * <p/>
      * Continuous monitors may be either supported or unsupported based on the vehicle's OEM
      * equipment.  For example, diesel vehicles may not support {@link
-     * killgpl.scandroid.sae.MonitorStatus.ContinuousMonitorSupport#FUEL_SUP}. <br> For more
+     * com.lukeleber.scandroid.sae.MonitorStatus.ContinuousMonitorSupport#FUEL_SUP}. <br> For more
      * detailed documentation on whether or not a monitor is required to be supported, refer to each
      * individual monitor enumerated member.
      */
@@ -80,7 +100,7 @@ public class MonitorStatus
         private final int mask;
 
         /**
-         * Constructs a {@link killgpl.scandroid.sae.MonitorStatus.ContinuousMonitorSupport} with
+         * Constructs a {@link com.lukeleber.scandroid.sae.MonitorStatus.ContinuousMonitorSupport} with
          * the provided mask
          *
          * @param mask
@@ -128,8 +148,8 @@ public class MonitorStatus
         private final int mask;
 
         /**
-         * Constructs a {@link killgpl.scandroid.sae.MonitorStatus.ContinuousMonitorReadiness}
-         * with the provided mask
+         * Constructs a {@link com.lukeleber.scandroid.sae.MonitorStatus.ContinuousMonitorReadiness} with
+         * the provided mask
          *
          * @param mask
          *         The mask of the bit-position defined by SAE J1979
@@ -155,40 +175,56 @@ public class MonitorStatus
      * <p/>
      * Noncontinuous monitors may be either supported or unsupported based on the vehicle's OEM
      * equipment.  For example, many vehicles may not be equipped with secondary air injection, thus
-     * the monitor support for {@link killgpl.scandroid.sae.MonitorStatus.NonContinuousMonitorSupport#AIR_SUP}
+     * the monitor support for {@link com.lukeleber.scandroid.sae.MonitorStatus.NonContinuousMonitorSupport#AIR_SUP}
      * will show as unsupported.
      */
     public static enum NonContinuousMonitorSupport
     {
-        /** Catalyst monitoring support */
+        /**
+         * Catalyst monitoring support
+         */
         CAT_SUP(0x100),
 
-        /** Heated catalyst monitoring support */
+        /**
+         * Heated catalyst monitoring support
+         */
         HCAT_SUP(0x200),
 
-        /** Evaporative system monitoring support */
+        /**
+         * Evaporative system monitoring support
+         */
         EVAP_SUP(0x400),
 
-        /** Secondary air system monitoring support */
+        /**
+         * Secondary air system monitoring support
+         */
         AIR_SUP(0x800),
 
-        /** AC system refrigerant monitoring support */
+        /**
+         * AC system refrigerant monitoring support
+         */
         ACRF_SUP(0x1000),
 
-        /** Oxygen sensor monitoring support */
+        /**
+         * Oxygen sensor monitoring support
+         */
         O2S_SUP(0x2000),
 
-        /** Oxygen sensor heater monitoring support */
+        /**
+         * Oxygen sensor heater monitoring support
+         */
         HTR_SUP(0x4000),
 
-        /** EGR system monitoring support */
+        /**
+         * EGR system monitoring support
+         */
         EGR_SUP(0x8000);
 
         /// The SAE J1979 defined bit mask
         private final int mask;
 
         /**
-         * Constructs a {@link killgpl.scandroid.sae.MonitorStatus.NonContinuousMonitorSupport}
+         * Constructs a {@link com.lukeleber.scandroid.sae.MonitorStatus.NonContinuousMonitorSupport}
          *
          * @param mask
          *         the SAE J1979 defined bit mask
@@ -211,35 +247,51 @@ public class MonitorStatus
 
     public static enum NonContinuousMonitorReadiness
     {
-        /** Catalyst monitoring support */
+        /**
+         * Catalyst monitoring support
+         */
         CAT_RDY(0x1),
 
-        /** Heated catalyst monitoring support */
+        /**
+         * Heated catalyst monitoring support
+         */
         HCAT_RDY(0x2),
 
-        /** Evaporative system monitoring support */
+        /**
+         * Evaporative system monitoring support
+         */
         EVAP_RDY(0x4),
 
-        /** Secondary air system monitoring support */
+        /**
+         * Secondary air system monitoring support
+         */
         AIR_RDY(0x8),
 
-        /** AC system refrigerant monitoring support */
+        /**
+         * AC system refrigerant monitoring support
+         */
         ACRF_RDY(0x10),
 
-        /** Oxygen sensor monitoring support */
+        /**
+         * Oxygen sensor monitoring support
+         */
         O2S_RDY(0x20),
 
-        /** Oxygen sensor heater monitoring support */
+        /**
+         * Oxygen sensor heater monitoring support
+         */
         HTR_RDY(0x40),
 
-        /** EGR system monitoring support */
+        /**
+         * EGR system monitoring support
+         */
         EGR_RDY(0x80);
 
         /// The SAE J1979 defined bit mask
         private final int mask;
 
         /**
-         * Constructs a {@link killgpl.scandroid.sae.MonitorStatus.NonContinuousMonitorReadiness}
+         * Constructs a {@link com.lukeleber.scandroid.sae.MonitorStatus.NonContinuousMonitorReadiness}
          *
          * @param mask
          *         the SAE J1979 defined bit mask

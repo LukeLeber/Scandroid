@@ -12,14 +12,14 @@ import com.lukeleber.scandroid.sae.Service;
 import com.lukeleber.scandroid.util.Unit;
 
 /**
- * <p>A type of {@link killgpl.scandroid.interpreter.Request} that is used to request a piece of
- * information from a remote system.  <code>ServiceRequests</code> consist of a {@link
- * killgpl.scandroid.sae.PID} and a {@link killgpl.scandroid.sae.Service} on which the PID
- * should be requested under.  This is typically represented textually as "$XX$YY" where "XX" is the
- * service (from 00 to FF) and "YY" is the PID (from 00 to FF).  For example, $01$04 translates to
- * "Get me the calculated engine load from the live datastream". </p> <p/> <p>Not all vehicles
+ * <p>A type of {@link com.lukeleber.scandroid.interpreter.Request} that is used to request a piece
+ * of information from a remote system.  <code>ServiceRequests</code> consist of a {@link
+ * com.lukeleber.scandroid.sae.PID} and a {@link com.lukeleber.scandroid.sae.Service} on which the
+ * PID should be requested under.  This is typically represented textually as "$XX$YY" where "XX" is
+ * the service (from 00 to FF) and "YY" is the PID (from 00 to FF).  For example, $01$04 translates
+ * to "Get me the calculated engine load from the live datastream". </p> <p/> <p>Not all vehicles
  * support all services and not all services support all PIDs.  However this problem can be lessened
- * through the use of a {@link killgpl.scandroid.sae.Profile} that automatically detects the
+ * through the use of a {@link com.lukeleber.scandroid.sae.Profile} that automatically detects the
  * constructs that a vehicle supports.</p>
  *
  * @param <T>
@@ -31,28 +31,28 @@ public class ServiceRequest<T, U>
         extends Request<T, U>
 {
 
-    /// The {@link killgpl.scandroid.j1979.Service} that this request is to be sent for
+    /// The {@link com.lukeleber.scandroid.j1979.Service} that this request is to be sent for
     private final Service service;
 
-    /// The {@link killgpl.scandroid.j1979.PID} that is being requested
+    /// The {@link com.lukeleber.scandroid.j1979.PID} that is being requested
     private final PID<U> pid;
 
-    /// The {@link killgpl.scandroid.util.Unit} whose unmarshaller should be called
+    /// The {@link com.lukeleber.scandroid.util.Unit} whose unmarshaller should be called
     private final Unit preferredUnit;
 
     /**
-     * Constructs a ServiceRequest with the provided {@link killgpl.scandroid.sae.Service}, {@link
-     * killgpl.scandroid.sae.PID}, {@link killgpl.scandroid.interpreter.Handler}, and {@link
-     * killgpl.scandroid.util.Unit}.  This constructor is equivalent to
+     * Constructs a ServiceRequest with the provided {@link com.lukeleber.scandroid.sae.Service},
+     * {@link com.lukeleber.scandroid.sae.PID}, {@link com.lukeleber.scandroid.interpreter.Handler},
+     * and {@link com.lukeleber.scandroid.util.Unit}.  This constructor is equivalent to
      * <code>ServiceRequest(service, pid, handler, pid.getDefaultUnit());</code>
      *
      * @param service
-     *         the {@link killgpl.scandroid.sae.Service} that this request is to be sent for
+     *         the {@link com.lukeleber.scandroid.sae.Service} that this request is to be sent for
      * @param pid
-     *         the {@link killgpl.scandroid.sae.PID} that is being requested
+     *         the {@link com.lukeleber.scandroid.sae.PID} that is being requested
      * @param handler
-     *         the {@link killgpl.scandroid.interpreter.Handler} that is invoked when a response to
-     *         this request is received from the remote hardware
+     *         the {@link com.lukeleber.scandroid.interpreter.Handler} that is invoked when a
+     *         response to this request is received from the remote hardware
      */
     public ServiceRequest(Service service, PID<U> pid, Handler<U> handler)
     {
@@ -60,19 +60,19 @@ public class ServiceRequest<T, U>
     }
 
     /**
-     * Constructs a ServiceRequest with the provided {@link killgpl.scandroid.sae.Service}, {@link
-     * killgpl.scandroid.sae.PID}, {@link killgpl.scandroid.interpreter.Handler}, and {@link
-     * killgpl.scandroid.util.Unit}.
+     * Constructs a ServiceRequest with the provided {@link com.lukeleber.scandroid.sae.Service},
+     * {@link com.lukeleber.scandroid.sae.PID}, {@link com.lukeleber.scandroid.interpreter.Handler},
+     * and {@link com.lukeleber.scandroid.util.Unit}.
      *
      * @param service
-     *         the {@link killgpl.scandroid.sae.Service} that this request is to be sent for
+     *         the {@link com.lukeleber.scandroid.sae.Service} that this request is to be sent for
      * @param pid
-     *         the {@link killgpl.scandroid.sae.PID} that is being requested
+     *         the {@link com.lukeleber.scandroid.sae.PID} that is being requested
      * @param handler
-     *         the {@link killgpl.scandroid.interpreter.Handler} that is invoked when a response to
-     *         this request is received from the remote hardware
+     *         the {@link com.lukeleber.scandroid.interpreter.Handler} that is invoked when a
+     *         response to this request is received from the remote hardware
      * @param preferredUnit
-     *         the {@link killgpl.scandroid.util.Unit} whose unmarshaller should be called
+     *         the {@link com.lukeleber.scandroid.util.Unit} whose unmarshaller should be called
      */
     public ServiceRequest(Service service, PID<U> pid, Handler<U> handler, Unit preferredUnit)
     {
@@ -83,9 +83,10 @@ public class ServiceRequest<T, U>
     }
 
     /**
-     * Retrieves the {@link killgpl.scandroid.sae.Service} that this request is to be sent for
+     * Retrieves the {@link com.lukeleber.scandroid.sae.Service} that this request is to be sent
+     * for
      *
-     * @return the {@link killgpl.scandroid.sae.Service} that this request is to be sent for
+     * @return the {@link com.lukeleber.scandroid.sae.Service} that this request is to be sent for
      */
     public final Service getService()
     {
@@ -93,9 +94,9 @@ public class ServiceRequest<T, U>
     }
 
     /**
-     * Retrieves the {@link killgpl.scandroid.sae.PID} that is being requested
+     * Retrieves the {@link com.lukeleber.scandroid.sae.PID} that is being requested
      *
-     * @return the {@link killgpl.scandroid.sae.PID} that is being requested
+     * @return the {@link com.lukeleber.scandroid.sae.PID} that is being requested
      */
     public final PID<U> getPID()
     {
@@ -103,9 +104,9 @@ public class ServiceRequest<T, U>
     }
 
     /**
-     * Retrieves the {@link killgpl.scandroid.sae.PID.Unmarshaller} that should be used
+     * Retrieves the {@link com.lukeleber.scandroid.sae.PID.Unmarshaller} that should be used
      *
-     * @return the {@link killgpl.scandroid.sae.PID.Unmarshaller} that should be used
+     * @return the {@link com.lukeleber.scandroid.sae.PID.Unmarshaller} that should be used
      */
     public final PID.Unmarshaller<U> getUnmarshaller()
     {
