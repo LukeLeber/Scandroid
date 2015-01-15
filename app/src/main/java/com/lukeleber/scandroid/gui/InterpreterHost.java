@@ -10,9 +10,9 @@ package com.lukeleber.scandroid.gui;
 import com.lukeleber.scandroid.interpreter.Interpreter;
 import com.lukeleber.scandroid.sae.Profile;
 
-public interface InterpreterHost<T, U>
+public interface InterpreterHost
 {
-    Interpreter<T> getInterpreter();
+    Interpreter<String> getInterpreter();
 
     Profile getProfile();
 }

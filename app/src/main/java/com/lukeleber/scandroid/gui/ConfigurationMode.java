@@ -9,9 +9,9 @@ package com.lukeleber.scandroid.gui;
 
 /**
  * <p>The <code>ConfigurationMode</code> affects how many functions are available in subsequent user
- * interfaces.  {@link killgpl.scandroid.gui.ConfigurationMode#GENERIC_MODE} shall only display the
+ * interfaces.  {@link com.lukeleber.scandroid.gui.ConfigurationMode#GENERIC_MODE} shall only display the
  * functions defined by SAE-J1979 and shall not support any manufacturer specific operations. {@link
- * killgpl.scandroid.gui.ConfigurationMode#EXPERT_MODE} on the other hand may contain manufacturer
+ * com.lukeleber.scandroid.gui.ConfigurationMode#EXPERT_MODE} on the other hand may contain manufacturer
  * specified information, tests, and other advanced functions.  It is worth noting that some "expert
  * mode" functions may be dangerous, as their behavior is not governed by the SAE.  For example, a
  * relearn procedure may rewrite certain areas of memory in an onboard controller.  Being

@@ -25,6 +25,33 @@ public interface Interpreter<T>
         Closeable
 {
     /**
+     * An optional function object that can be provided to the {@link com.lukeleber.scandroid.interpreter.Interpreter#start(com.lukeleber.scandroid.interpreter.Interpreter.ErrorListener)}
+     * to provide custom handling for any exceptions arising during the asynchronous execution of
+     * the interpreter
+     */
+    public interface ErrorListener
+    {
+        /**
+         * Invoked when the {@link com.lukeleber.scandroid.interpreter.Interpreter} encounters an
+         * error of any kind
+         *
+         * @param error
+         *         the error that was encountered
+         */
+        void onError(Throwable error);
+    }
+
+    public interface ConnectionListener
+    {
+        void onConnected();
+    }
+
+    public interface ShutdownListener
+    {
+        void onShutdown();
+    }
+
+    /**
      * Retrieves the {@link com.lukeleber.scandroid.io.CommunicationInterface} that this {@link
      * com.lukeleber.scandroid.interpreter.Interpreter} utilizes.
      *
@@ -70,23 +97,17 @@ public interface Interpreter<T>
      */
     <V> void sendRequest(Request<T, V> request, ResponseListener<T> listener);
 
-    /**
-     * Asynchronously starts this {@link com.lukeleber.scandroid.interpreter.Interpreter} with no
-     * specified {@link com.lukeleber.scandroid.interpreter.Interpreter.ErrorHandler}.  This method
-     * is equivalent to <code>start(null);</code>
-     */
-    void start();
+    void addErrorListener(ErrorListener listener);
+
+    void addConnectionListener(ConnectionListener listener);
+
+    void addShutdownListener(ShutdownListener listener);
 
     /**
-     * Asynchronously starts this {@link com.lukeleber.scandroid.interpreter.Interpreter} with the
-     * provided {@link com.lukeleber.scandroid.interpreter.Interpreter.ErrorHandler} that will be
-     * invoked by the asynchronous service when an error is encountered.
+     * Asynchronously starts this {@link com.lukeleber.scandroid.interpreter.Interpreter}
      *
-     * @param errorHandler
-     *         the {@link com.lukeleber.scandroid.interpreter.Interpreter.ErrorHandler} to invoke
-     *         upon an error
      */
-    void start(ErrorHandler errorHandler);
+    void start();
 
     /**
      * Asynchronously stops this {@link com.lukeleber.scandroid.interpreter.Interpreter}
@@ -95,21 +116,4 @@ public interface Interpreter<T>
      * signalled to stop, otherwise false
      */
     boolean stop();
-
-    /**
-     * An optional function object that can be provided to the {@link com.lukeleber.scandroid.interpreter.Interpreter#start(com.lukeleber.scandroid.interpreter.Interpreter.ErrorHandler)}
-     * to provide custom handling for any exceptions arising during the asynchronous execution of
-     * the interpreter
-     */
-    public interface ErrorHandler
-    {
-        /**
-         * Invoked when the {@link com.lukeleber.scandroid.interpreter.Interpreter} encounters an
-         * error of any kind
-         *
-         * @param error
-         *         the error that was encountered
-         */
-        void onError(Throwable error);
-    }
 }

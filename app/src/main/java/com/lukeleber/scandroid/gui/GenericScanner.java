@@ -7,11 +7,7 @@
 
 package com.lukeleber.scandroid.gui;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
@@ -19,216 +15,294 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.lukeleber.app.ActivityResultListener;
+import com.lukeleber.app.EnhancedActivity;
 import com.lukeleber.scandroid.BuildConfig;
 import com.lukeleber.scandroid.Globals;
 import com.lukeleber.scandroid.R;
+import com.lukeleber.scandroid.gui.fragments.DiagnosticTroubleCodeDisplay;
 import com.lukeleber.scandroid.gui.fragments.FreezeFrameRecords;
 import com.lukeleber.scandroid.gui.fragments.LiveDatastream;
 import com.lukeleber.scandroid.gui.fragments.ResetDiagnosticInformation;
+import com.lukeleber.scandroid.gui.fragments.ServiceFragment;
+import com.lukeleber.scandroid.gui.fragments.UnsupportedService;
 import com.lukeleber.scandroid.interpreter.ConfigurationRequest;
 import com.lukeleber.scandroid.interpreter.FailureCode;
 import com.lukeleber.scandroid.interpreter.Handler;
 import com.lukeleber.scandroid.interpreter.Interpreter;
+import com.lukeleber.scandroid.interpreter.ResponseListener;
 import com.lukeleber.scandroid.interpreter.ServiceRequest;
+import com.lukeleber.scandroid.interpreter.elm327.Constants;
 import com.lukeleber.scandroid.interpreter.elm327.ELM327;
 import com.lukeleber.scandroid.interpreter.elm327.OpCode;
+import com.lukeleber.scandroid.interpreter.elm327.Protocol;
 import com.lukeleber.scandroid.io.ScandroidIOException;
 import com.lukeleber.scandroid.io.bluetooth.BluetoothInterface;
-import com.lukeleber.scandroid.sae.PIDSupport;
 import com.lukeleber.scandroid.sae.Profile;
-import com.lukeleber.scandroid.sae.Service;
+import com.lukeleber.scandroid.sae.j1979.Service;
 import com.lukeleber.scandroid.sae.detail.AppendixA;
 
 import java.io.IOException;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-
-public class GenericScanner<T, U>
-        extends Activity
-        implements InterpreterHost<T, U>
+/**
+ * A scan tool implementation that supports the bare minimum required by SAE-J1979.
+ *
+ */
+public class GenericScanner
+        extends EnhancedActivity
+        implements InterpreterHost
 {
 
+    /// @internal tag for debug logging
     private final static String TAG = GenericScanner.class.getName();
+
+    /// Each service exists in its own self contained UI fragment class
+    @SuppressWarnings("unchecked")
+    public final static Class<? extends ServiceFragment>[] services = new Class[]
+    {
+        LiveDatastream.class,
+        FreezeFrameRecords.class,
+        DiagnosticTroubleCodeDisplay.class,
+        ResetDiagnosticInformation.class
+    };
+
+    private final static class InitListener implements ResponseListener<String>
+    {
+        private final Handler<?> handler;
+
+        InitListener(Handler<?> handler)
+        {
+            this.handler = handler;
+        }
+
+        @Override
+        public void onSuccess(String message)
+        {
+            message = message.replace(Constants.ELM327_SEARCHING_FOR_PROTOCOL + (char)13, "");
+            if(!message.equals(Constants.ELM327_UNABLE_TO_CONNECT + (char)13))
+            {
+                handler.onResponse(null);
+            }
+            else
+            {
+                onFailure(FailureCode.CONDITIONS_NOT_CORRECT);
+            }
+        }
+
+        @Override
+        public void onFailure(FailureCode code)
+        {
+            handler.onFailure(code);
+        }
+    }
 
     /**
      * Attempts to start a "Generic" OBDII scan tool
      *
      * @param context
      *         the parent {@link android.app.Activity}
-     * @param errorHandler
-     *         the {@link com.lukeleber.scandroid.interpreter.Interpreter.ErrorHandler} to receive any
-     *         fatal errors on
      */
-    public static void startGenericScanner(final Scandroid context,
-                                           Interpreter.ErrorHandler errorHandler)
+    public static void startGenericScanner(final Scandroid context)
     {
         try
         {
-
-            Interpreter<String> interpreter = new ELM327(BluetoothInterface.getDefault(context))
+            /// By default, we use a bluetooth-enabled ELM327 using default settings
+            final ELM327 interpreter
+                    = new ELM327(BluetoothInterface.getDefault(context));
+            /// Add a connection listener
+            interpreter.addConnectionListener(new Interpreter.ConnectionListener()
             {
-                /// Invoked when a successful connection to the ELM327 is made
                 @Override
-                protected final void onConnected()
+                public void onConnected()
                 {
-                    context.handler.post(
-                            new Runnable()
-                            {
-                                @Override
-                                public void run()
-                                {
-                                    Toast.makeText(
-                                            context, "connected to interpreter...",
-                                            Toast.LENGTH_SHORT)
-                                         .show();
-                                }
-                            }
-                                        );
-                }
+                    /// General configuration
 
-                /// Performs any initialization procedures for this session
-                @Override
-                protected final void init()
-                {
-                    /// General configuration options
+                    /// First, reset the interface so we have a clean slate
+                    interpreter.sendRequest(new ConfigurationRequest<String, String>(
+                            OpCode.ELM327_RESET_ALL));
+
                     /// Tell the ELM327 that we don't want it to echo back everything we send it
                     /// This helps to mitigate I/O traffic
-                    super.sendRequest(
+                    interpreter.sendRequest(
                             new ConfigurationRequest<String, String>(OpCode.ELM327_ECHO_OFF));
 
                     /// Tell the ELM327 to eat any whitespace between data bytes
                     /// This helps to mitigate I/O traffic and eases response parsing
-                    super.sendRequest(
+                    interpreter.sendRequest(
                             new ConfigurationRequest<String, String>(
                                     OpCode.ELM327_OBD_SPACES_OFF));
 
-                    /// Tell the ELM327 that the communication protocol is unknown
-                    /// The ELM327 will then try each protocol until a match is found
-                    ///super.sendRequest(
-                    ///        new ConfigurationRequest<String, String>(
-                    ///                OpCode.ELM327_OBD_SET_PROTOCOL, Protocol.AUTOMATIC.getID()));
-                }
 
-                /// Runs any post-initialization procedures
-                @Override
-                protected final void onInitialized()
-                {
-                    /// Quick check to ensure the onboard conditions are correct
-                    /// All (?) OBDII compliant vehicles should support $1$0...
-                    /// So if this request fails, assume the key is off (or there is a
-                    /// problem in the vehicle's diagnostic system(s))
-                    super.sendRequest(
-                            new ServiceRequest<String, PIDSupport>(
-                                    Service.LIVE_DATASTREAM,
-                                    AppendixA.J1979_CHECK_PID_SUPPORT_1_TO_20,
-                                    new com.lukeleber.scandroid.interpreter.Handler<PIDSupport>()
-                                    {
-                                        @Override
-                                        public void onResponse(PIDSupport value)
-                                        {
-                                        }
+                    context.startActivity(new Intent(context,
+                            GenericScanner.class));
+               }
+            });
 
-                                        @Override
-                                        public void onFailure(FailureCode code)
-                                        {
-                                            cancel(true);
-                                            Toast.makeText(context,
-                                                           "No communication -- is the key on?",
-                                                           Toast.LENGTH_SHORT)
-                                                 .show();
-                                        }
-                                    }));
-                }
-            };
-
-            /// Since we have to store shared non-parcelables in global scope...
-            /// run cleanup on an old one (if it exists)
-            Interpreter<?> old = Globals.setInterpreter(context.getApplicationContext(),
-                                                        interpreter);
-            if (old != null)
+            /// Add an error listener
+            interpreter.addErrorListener(new Interpreter.ErrorListener()
             {
-                try
+                @Override
+                public void onError(final Throwable error)
                 {
-                    old.close();
-                }
-                catch (IOException ioe)
-                {
-                    if (BuildConfig.DEBUG)
+                    context.handler.post(new Runnable()
                     {
-                        Log.e(TAG, ioe.getMessage(), ioe);
+                        @Override
+                        public void run()
+                        {
+                             Toast.makeText(context, "I/O Error - Verify that the interpreter " +
+                                     "is securely plugged into the diagnostic connector and " +
+                                     "that the android device is within range.",
+                                     Toast.LENGTH_LONG).show();
+                            interpreter.stop();
+                        }
+                    });
+                }
+            });
+
+            {
+                /// Since we have to store shared non-parcelables in global scope...
+                /// run cleanup on an old one (if it exists)
+                Interpreter<?> old = Globals.setInterpreter(context.getApplicationContext(),
+                        interpreter);
+                if (old != null)
+                {
+                    try
+                    {
+                        old.close();
+                    }
+                    catch (IOException ioe)
+                    {
+                        if (BuildConfig.DEBUG)
+                        {
+                            Log.e(TAG, ioe.getMessage(), ioe);
+                        }
                     }
                 }
             }
+
             /// Start the new interpreter...
-            interpreter.start(errorHandler);
-
-            /// and attempt to make a profile
-            Profile.createProfile(interpreter, new Handler<Profile>()
-            {
-                /// Upon success, launch the scanner activity
-                @Override
-                public void onResponse(Profile value)
-                {
-                    Globals.setProfile(context.getApplicationContext(), value);
-                    Toast.makeText(context, "scandroid is ready to use", Toast.LENGTH_SHORT)
-                         .show();
-                    context.startActivity(new Intent(context, GenericScanner.class));
-                }
-
-                /// If something breaks...
-                @Override
-                public void onFailure(FailureCode code)
-                {
-                    switch (code)
-                    {
-                        case IO_ERROR:
-                        case IO_LINK_ERROR:
-                        case REQUEST_NOT_SUPPORTED:
-                            Toast.makeText(context, "failed to create a profile for vehicle.",
-                                           Toast.LENGTH_SHORT)
-                                 .show();
-                            break;
-                    }
-                }
-            });
+            interpreter.start();
         }
+        /// Catch any I/O errors that are not associated with the interpreter itself
+        /// These error conditions are usually configuration issues with the android device
+        /// itself or its proximity relative to the interpreter.  To resolve, correctly
+        /// configure the device and/or move closer to the vehicle.
         catch (ScandroidIOException sioe)
         {
-            Toast.makeText(context, sioe.getCode()
-                                        .what(), Toast.LENGTH_SHORT)
-                 .show();
+            Toast.makeText(context, sioe.getCode().what(), Toast.LENGTH_SHORT).show();
         }
     }
 
-    @InjectView(R.id.genericScannerProgressBar)
-    ProgressBar progressBar;
-
-    SectionsPagerAdapter mSectionsPagerAdapter;
+    @Override
+    public void onBackPressed()
+    {
+        getInterpreter().stop();
+        Globals.setInterpreter(getApplicationContext(), null);
+        super.onBackPressed();
+        super.finish();
+    }
 
     /**
-     * The {@link android.support.v4.view.ViewPager} that will host the section contents.
+     * {@inheritDoc}
+     *
      */
-    ViewPager mViewPager;
-
-
     @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generic_scanner);
-        ButterKnife.inject(this);
-        final ActionBar actionBar = getActionBar();
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        super.startActivityForResult(new Intent(this, ProtocolSearch.class), super.addResultListener(new ActivityResultListener()
+        {
+            @Override
+            public void onActivityResult(int resultCode, final Intent data)
+            {
+                final Interpreter<String> interpreter = Globals.getInterpreter(getApplicationContext());
+                switch(resultCode)
+                {
+                    case ProtocolSearch.PROTOCOL_FOUND:
+                        Profile.createProfile(interpreter,
+                                (Protocol)data.getSerializableExtra(ProtocolSearch.PROTOCOL_RESULT),
+                                new Handler<Profile>()
+                                {
+                                    /// Upon success, launch the scanner activity
+                                    @Override
+                                    public void onResponse(Profile value)
+                                    {
+                                        Globals.setProfile(
+                                                getApplicationContext(),
+                                                value);
+
+                                        /// Everything checks out
+                                        /// Start the scan tool
+                                        ((ViewPager) findViewById(R.id.pager)).setAdapter(
+                                                new FragmentStatePagerAdapter(getFragmentManager())
+                                                {
+                                                    @Override
+                                                    public Fragment getItem(int position)
+                                                    {
+                                                        Service service = Service.values()[position];
+                                                        if(!getProfile().isServiceSupported(service) || position >= services.length)
+                                                        {
+                                                            /// TODO: Remove second part of conditional upon completing all service fragments
+                                                            return new UnsupportedService();
+                                                        }
+                                                        else
+                                                        {
+                                                            try
+                                                            {
+                                                                return services[position].newInstance();
+                                                            }
+                                                            catch (InstantiationException | IllegalAccessException e)
+                                                            {
+                                                                throw new IllegalStateException(services[position].getName() +
+                                                                        " does not have a public default constructor.");
+                                                            }
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public int getCount()
+                                                    {
+                                                        return Service.values().length;
+                                                    }
+
+                                                    @Override
+                                                    public CharSequence getPageTitle(int position)
+                                                    {
+                                                        return Service.values()[position].toString();
+                                                    }
+                                                });
+                                    }
+
+                                    @Override
+                                    public void onFailure(FailureCode code)
+                                    {
+                                        /// Error creating profile
+                                    }
+                                }
+                                             );
+                        break;
+                    case ProtocolSearch.SEARCH_ABORTED:
+                    case ProtocolSearch.FATAL_ERROR:
+                        System.out.println("Search Aborted");
+                        interpreter.stop();
+                        Globals.setInterpreter(getApplicationContext(),  null);
+                        finish();
+                        break;
+
+                }
+            }
+        }));
     }
 
 
+    /**
+     * {@inheritDoc}
+     *
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -236,61 +310,33 @@ public class GenericScanner<T, U>
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        int id = item.getItemId();
-        return id == R.id.action_settings || super.onOptionsItemSelected(item);
+        return item.getItemId() == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     */
     @Override
-    public Interpreter<T> getInterpreter()
+    public Interpreter<String> getInterpreter()
     {
         return Globals.getInterpreter(getApplicationContext());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     */
     @Override
     public Profile getProfile()
     {
         return Globals.getProfile(getApplicationContext());
-    }
-
-    public class SectionsPagerAdapter
-            extends FragmentStatePagerAdapter
-    {
-
-        public SectionsPagerAdapter(FragmentManager fm)
-        {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position)
-        {
-            if(position == 0)
-            {
-                return new LiveDatastream();
-            }
-            else if(position == 3)
-            {
-                return new ResetDiagnosticInformation();
-            }
-            else
-            {
-                return new FreezeFrameRecords();
-            }
-        }
-
-        @Override
-        public int getCount()
-        {
-            return Service.values().length;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position)
-        {
-            return Service.values()[position].toString();
-        }
     }
 }

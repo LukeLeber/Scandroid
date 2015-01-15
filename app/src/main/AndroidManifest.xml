@@ -4,42 +4,49 @@
   ~ For more information visit <insert_valid_link_to_killgpl_here>
   ~ <p/>
   ~ Copyright (c) Luke A. Leber <LukeLeber@gmail.com> 2014
-  -->
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.lukeleber.scandroid" >
 
-<manifest
-    package="com.lukeleber.scandroid"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
-            android:name="com.lukeleber.scandroid.gui.Scandroid"
-            android:label="@string/title_activity_scandroid">
+            android:name=".gui.Scandroid"
+            android:label="@string/title_activity_scandroid" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.lukeleber.scandroid.gui.SelectInterface"
-            android:label="@string/title_activity_select_interface">
+            android:name=".database.DTCDatabaseUpdater"
+            android:label="Download DTC DB" />
+        <activity
+            android:name=".gui.SelectInterface"
+            android:label="@string/title_activity_select_interface" >
         </activity>
         <activity
-            android:name="com.lukeleber.scandroid.gui.bluetooth.BluetoothConfiguration"
-            android:label="@string/title_activity_bluetooth_configuration">
+            android:name=".gui.bluetooth.BluetoothConfiguration"
+            android:label="@string/title_activity_bluetooth_configuration" >
         </activity>
-        <activity android:name="com.lukeleber.bluetooth.BluetoothEnabler$Wrapper"/>
+        <activity android:name="com.lukeleber.bluetooth.BluetoothEnabler$Wrapper" />
         <activity
-            android:name="com.lukeleber.scandroid.gui.GenericScanner"
-            android:label="@string/title_activity_generic_scanner">
+            android:name=".gui.GenericScanner"
+            android:label="@string/title_activity_generic_scanner" >
+        </activity>
+        <activity
+            android:name=".gui.ProtocolSearch"
+            android:label="@string/title_activity_protocol_search" >
         </activity>
     </application>
 

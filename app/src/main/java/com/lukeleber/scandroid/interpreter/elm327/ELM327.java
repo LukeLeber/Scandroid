@@ -31,7 +31,7 @@ import java.util.Arrays;
  * Electronics</a>.
  */
 public class ELM327
-        extends AbstractInterpreter<String, String, Void>
+        extends AbstractInterpreter<String, String>
 {
 
     /// @internal tag for debug logging
@@ -65,17 +65,6 @@ public class ELM327
     }
 
     /**
-     * {@inheritDoc}
-     * <p/>
-     * Always returns null
-     */
-    @Override
-    protected Void getExceptionResult(Exception e)
-    {
-        return null;
-    }
-
-    /**
      * {inheritDoc}
      */
     @Override
@@ -88,9 +77,17 @@ public class ELM327
         {
             @SuppressWarnings("unchecked")
             ServiceRequest<String, ?> sr = (ServiceRequest<String, ?>) request;
-            String s = String.format("%02x%02x", sr.getService()
-                                                   .getID(), sr.getPID()
-                                                               .getID());
+            String s = null;
+            if(sr.getPID() != null)
+            {
+                s = String.format("%02x%02x", sr.getService()
+                                                .getID(), sr.getPID()
+                                                            .getID());
+            }
+            else
+            {
+                s = String.format("%02x", sr.getService().getID());
+            }
             toSend = new byte[s.length() + 1];
             System.arraycopy(s.getBytes(), 0, toSend, 0, s.length());
 
@@ -101,6 +98,7 @@ public class ELM327
             ConfigurationRequest<String, ?> cr = (ConfigurationRequest<String, ?>) request;
             String s = String.format(cr.getOption()
                                        .getOption(), cr.getArgs());
+            System.out.println("Sending: " + s);
             toSend = new byte[s.length() + 1];
             System.arraycopy(s.getBytes(), 0, toSend, 0, s.length());
         }
@@ -141,12 +139,12 @@ public class ELM327
      * {inheritDoc}
      */
     @Override
-    protected String readReply()
+    public String readReply()
             throws
             IOException
     {
         InputStream inputStream = getCommunicationInterface().getInputStream();
-        byte[] response = new byte[32];
+        byte[] response = new byte[256];
         int i = 0;
         while (true)
         {
@@ -173,28 +171,6 @@ public class ELM327
 
     /**
      * {@inheritDoc}
-     * <p/>
-     * Always returns null
-     */
-    @Override
-    protected Void getCancellationResult()
-    {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p/>
-     * Always returns null
-     */
-    @Override
-    protected Void getSuccessfulExitResult()
-    {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
      */
     @Override
     public final void close()
@@ -214,7 +190,7 @@ public class ELM327
      * provided {@link com.lukeleber.scandroid.interpreter.Handler} verbatim</li> <li>{@link
      * com.lukeleber.scandroid.interpreter.ServiceRequest} - The first two characters sent from the
      * ELM327 is "40" plus the service ID; thus a request using service ID 1 ({@link
-     * com.lukeleber.scandroid.sae.Service#LIVE_DATASTREAM}) shall produce "41".  The following two
+     * com.lukeleber.scandroid.sae.j1979.Service#LIVE_DATASTREAM}) shall produce "41".  The following two
      * characters are the PID/TID/OBDMID/INFOTYPE ID of the request; so PID #1 ({@link
      * com.lukeleber.scandroid.sae.detail.AppendixB#MONITOR_STATUS}) shall produce "01".  The
      * following characters sequence is the actual data response from the ELM327.  So to sum
@@ -306,8 +282,16 @@ public class ELM327
             {
                 if (handler != null)
                 {
-                    ((ConfigurationRequest<String, String>) request).getHandler()
-                                                                    .onResponse(resp);
+                    resp = resp.replace(""+(char)13, "");
+                    if(resp.equals("?"))
+                    {
+                        ((ConfigurationRequest<String, String>) request).getHandler().onFailure(FailureCode.CONFIGURATION_COMMAND_NOT_RECOGNIZED);
+                    }
+                    else
+                    {
+                        ((ConfigurationRequest<String, String>) request).getHandler()
+                                                                        .onResponse(resp);
+                    }
                 }
             }
         }

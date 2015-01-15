@@ -8,13 +8,13 @@
 package com.lukeleber.scandroid.interpreter;
 
 import com.lukeleber.scandroid.sae.PID;
-import com.lukeleber.scandroid.sae.Service;
+import com.lukeleber.scandroid.sae.j1979.Service;
 import com.lukeleber.scandroid.util.Unit;
 
 /**
  * <p>A type of {@link com.lukeleber.scandroid.interpreter.Request} that is used to request a piece
  * of information from a remote system.  <code>ServiceRequests</code> consist of a {@link
- * com.lukeleber.scandroid.sae.PID} and a {@link com.lukeleber.scandroid.sae.Service} on which the
+ * com.lukeleber.scandroid.sae.PID} and a {@link com.lukeleber.scandroid.sae.j1979.Service} on which the
  * PID should be requested under.  This is typically represented textually as "$XX$YY" where "XX" is
  * the service (from 00 to FF) and "YY" is the PID (from 00 to FF).  For example, $01$04 translates
  * to "Get me the calculated engine load from the live datastream". </p> <p/> <p>Not all vehicles
@@ -40,14 +40,27 @@ public class ServiceRequest<T, U>
     /// The {@link com.lukeleber.scandroid.util.Unit} whose unmarshaller should be called
     private final Unit preferredUnit;
 
+    public ServiceRequest(Service service)
+    {
+        this(service, null);
+    }
+
+    public ServiceRequest(Service service, Handler<U> handler)
+    {
+        super(handler);
+        this.service = service;
+        this.pid = null;
+        this.preferredUnit = null;
+    }
+
     /**
-     * Constructs a ServiceRequest with the provided {@link com.lukeleber.scandroid.sae.Service},
+     * Constructs a ServiceRequest with the provided {@link com.lukeleber.scandroid.sae.j1979.Service},
      * {@link com.lukeleber.scandroid.sae.PID}, {@link com.lukeleber.scandroid.interpreter.Handler},
      * and {@link com.lukeleber.scandroid.util.Unit}.  This constructor is equivalent to
      * <code>ServiceRequest(service, pid, handler, pid.getDefaultUnit());</code>
      *
      * @param service
-     *         the {@link com.lukeleber.scandroid.sae.Service} that this request is to be sent for
+     *         the {@link com.lukeleber.scandroid.sae.j1979.Service} that this request is to be sent for
      * @param pid
      *         the {@link com.lukeleber.scandroid.sae.PID} that is being requested
      * @param handler
@@ -60,12 +73,12 @@ public class ServiceRequest<T, U>
     }
 
     /**
-     * Constructs a ServiceRequest with the provided {@link com.lukeleber.scandroid.sae.Service},
+     * Constructs a ServiceRequest with the provided {@link com.lukeleber.scandroid.sae.j1979.Service},
      * {@link com.lukeleber.scandroid.sae.PID}, {@link com.lukeleber.scandroid.interpreter.Handler},
      * and {@link com.lukeleber.scandroid.util.Unit}.
      *
      * @param service
-     *         the {@link com.lukeleber.scandroid.sae.Service} that this request is to be sent for
+     *         the {@link com.lukeleber.scandroid.sae.j1979.Service} that this request is to be sent for
      * @param pid
      *         the {@link com.lukeleber.scandroid.sae.PID} that is being requested
      * @param handler
@@ -83,10 +96,10 @@ public class ServiceRequest<T, U>
     }
 
     /**
-     * Retrieves the {@link com.lukeleber.scandroid.sae.Service} that this request is to be sent
+     * Retrieves the {@link com.lukeleber.scandroid.sae.j1979.Service} that this request is to be sent
      * for
      *
-     * @return the {@link com.lukeleber.scandroid.sae.Service} that this request is to be sent for
+     * @return the {@link com.lukeleber.scandroid.sae.j1979.Service} that this request is to be sent for
      */
     public final Service getService()
     {

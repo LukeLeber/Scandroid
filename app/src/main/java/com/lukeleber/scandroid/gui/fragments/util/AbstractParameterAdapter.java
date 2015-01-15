@@ -53,13 +53,11 @@ public abstract class AbstractParameterAdapter
     {
         /// Cache the layout its child views
         ParameterModel model = getItem(position);
-        if (convertView == null)
-        {
-            convertView = inflater.inflate(model.getPID()
-                                                .getLayoutID(), null);
-            convertView.setTag(model.getPID()
-                                    .createViewModel(convertView));
-        }
+
+        convertView = inflater.inflate(model.getPID()
+                                            .getLayoutID(), null);
+        convertView.setTag(model.getPID()
+                                .createViewModel(convertView));
         model.getPID()
              .updateViewModel(convertView.getTag(), model.getLastKnownValue());
         return convertView;

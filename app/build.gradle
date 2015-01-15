@@ -1,19 +1,18 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
-
+    compileSdkVersion 20
+    buildToolsVersion '20.0.0'
     defaultConfig {
-        applicationId "com.lukeleber.scandroid"
-        minSdkVersion 19
-        targetSdkVersion 21
+        applicationId 'killgpl.myapplication'
+        minSdkVersion 20
+        targetSdkVersion 20
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
     }
     buildTypes {
         release {
-            minifyEnabled false
+            runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -21,11 +20,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+    productFlavors {
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.jakewharton:butterknife:5.1.1'
-    compile 'com.android.support:support-v13:21.0.3'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile files('libs/butterknife-5.1.2.jar')
+    compile 'com.android.support:support-v13:+'
 }

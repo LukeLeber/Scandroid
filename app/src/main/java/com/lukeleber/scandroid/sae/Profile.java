@@ -7,11 +7,15 @@
 
 package com.lukeleber.scandroid.sae;
 
+import com.lukeleber.scandroid.interpreter.ConfigurationRequest;
 import com.lukeleber.scandroid.interpreter.FailureCode;
 import com.lukeleber.scandroid.interpreter.Handler;
 import com.lukeleber.scandroid.interpreter.Interpreter;
+import com.lukeleber.scandroid.interpreter.elm327.OpCode;
+import com.lukeleber.scandroid.interpreter.elm327.Protocol;
 import com.lukeleber.scandroid.sae.detail.AppendixA;
 import com.lukeleber.scandroid.sae.detail.AppendixB;
+import com.lukeleber.scandroid.sae.j1979.Service;
 import com.lukeleber.scandroid.sae.util.CumulativePIDSupport;
 
 import java.util.HashMap;
@@ -27,14 +31,17 @@ public class Profile
     public final static String DUAL_BANK = "dual_bank";
     public final static String QUAD_BANK = "quad_bank";
 
+    private final Protocol protocol;
+
     private final Map<String, Boolean> equipmentCache = new HashMap<>();
 
     private final Map<Service, CumulativePIDSupport> supportedPIDs;
 
     private final Map<Service, PID<?>[]> pids = new TreeMap<>();
 
-    public Profile(Map<Service, CumulativePIDSupport> supportedPIDs)
+    public Profile(Protocol protocol, Map<Service, CumulativePIDSupport> supportedPIDs)
     {
+        this.protocol = protocol;
         for (Service service : Service.values())
         {
             if (supportedPIDs.get(service) != null)
@@ -50,6 +57,11 @@ public class Profile
         populateService01();
         populateService02();
         populateEquipment();
+    }
+
+    public Protocol getProtocol()
+    {
+        return protocol;
     }
 
     private void populateEquipment()
@@ -97,7 +109,8 @@ public class Profile
         }
     }
 
-    public static void createProfile(final Interpreter<?> interpreter,
+    @SuppressWarnings("unchecked")
+    public static void createProfile(final Interpreter<?> interpreter, final Protocol protocol,
                                      final Handler<Profile> listener)
     {
         final Map<Service, CumulativePIDSupport> serviceMap = new TreeMap<>();
@@ -105,55 +118,56 @@ public class Profile
         /// TODO: Check support for service $03, $04, and $07
         /// TODO: But for now, just assume support (I guess...)
         CumulativePIDSupport.getSupportedPIDs(Service.values()[0], interpreter,
-                                              new Handler<CumulativePIDSupport>()
-                                              {
-                                                  int currentService = 0;
+                new Handler<CumulativePIDSupport>()
+                {
+                    int currentService = 0;
 
-                                                  @Override
-                                                  public void onResponse(CumulativePIDSupport value)
-                                                  {
-                                                      serviceMap.put(
-                                                              Service.values()[services[currentService++]],
-                                                              value);
-                                                      if (currentService < services.length)
-                                                      {
-                                                          CumulativePIDSupport.getSupportedPIDs(
-                                                                  Service.values()[services[currentService]],
-                                                                  interpreter, this);
-                                                      }
-                                                      else
-                                                      {
-                                                          listener.onResponse(new Profile(
-                                                                  serviceMap));
-                                                      }
-                                                  }
+                    @Override
+                    public void onResponse(CumulativePIDSupport value)
+                    {
+                        serviceMap.put(
+                                Service.values()[services[currentService++]],
+                                value);
+                        if (currentService < services.length)
+                        {
+                            CumulativePIDSupport.getSupportedPIDs(
+                                    Service.values()[services[currentService]],
+                                    interpreter, this);
+                        }
+                        else
+                        {
+                            listener.onResponse(new Profile(protocol,
+                                    serviceMap));
+                        }
+                    }
 
-                                                  @Override
-                                                  public void onFailure(FailureCode code)
-                                                  {
-                                                      if (code == FailureCode.REQUEST_NOT_SUPPORTED)
-                                                      {
-                                                          serviceMap.put(
-                                                                  Service.values()[services[currentService++]],
-                                                                  null);
-                                                          if (currentService < services.length)
-                                                          {
-                                                              CumulativePIDSupport.getSupportedPIDs(
-                                                                      Service.values()[services[currentService]],
-                                                                      interpreter, this);
-                                                          }
-                                                          else
-                                                          {
-                                                              listener.onResponse(new Profile(
-                                                                      serviceMap));
-                                                          }
-                                                      }
-                                                      else
-                                                      {
-                                                          listener.onFailure(code);
-                                                      }
-                                                  }
-                                              });
+                    @Override
+                    public void onFailure(FailureCode code)
+                    {
+                        if (code == FailureCode.REQUEST_NOT_SUPPORTED)
+                        {
+                            serviceMap.put(
+                                    Service.values()[services[currentService++]],
+                                    null);
+                            if (currentService < services.length)
+                            {
+                                CumulativePIDSupport.getSupportedPIDs(
+                                        Service.values()[services[currentService]],
+                                        interpreter, this);
+                            }
+                            else
+                            {
+                                listener.onResponse(new Profile(protocol,
+                                        serviceMap));
+                            }
+                        }
+                        else
+                        {
+                            listener.onFailure(code);
+                        }
+                    }
+                });
+
     }
 
     public PID<?> getID(Service service, int id)

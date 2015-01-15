@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="The following information will be erased:\n\n- Number of diagnostic trouble codes\n- Diagnostic trouble codes\n- Trouble code for freeze frame data\n- Freeze frame data\n- Status of system monitoring tests\n- On-board monitoring test results\n- Distance travelled while MIL is activated\n- Number of warm-ups since DTC cleared\n- Distance since diagnostic trouble codes cleared\n- Minutes run by the engine while MIL activated\n- Time since diagnostic trouble codes cleared\n- Other manufacturer specific 'clearing/resetting' actions"
-                android:id="@+id/textView"
+                android:id="@+id/protocol_checked_text_view_protocol"
                 android:layout_gravity="center_horizontal|top"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"

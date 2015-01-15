@@ -4,8 +4,7 @@
   ~ For more information visit <insert_valid_link_to_killgpl_here>
   ~ <p/>
   ~ Copyright (c) Luke A. Leber <LukeLeber@gmail.com> 2014
-  -->
-
+-->
 <resources>
 
     <string name="app_name">Scandroid</string>
@@ -38,5 +37,6 @@
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_protocol_search">ProtocolSearch</string>
 
 </resources>

@@ -6,6 +6,7 @@
  */
 
 /**
- * GUI components for the {@link killgpl.scandroid.bluetooth} package are found within this package.
+ * GUI components for the {@link com.lukeleber.scandroid.gui.bluetooth} package are
+ * found within this package.
  */
 package com.lukeleber.scandroid.gui.bluetooth;

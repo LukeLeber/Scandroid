@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.lukeleber.scandroid.R;
 import com.lukeleber.scandroid.sae.AuxiliaryInputStatus;
 import com.lukeleber.scandroid.sae.DefaultPID;
-import com.lukeleber.scandroid.sae.FuelSystemStatus;
+import com.lukeleber.scandroid.sae.j1979.FuelSystemStatus;
 import com.lukeleber.scandroid.sae.MonitorStatus;
 import com.lukeleber.scandroid.sae.OBDSupport;
 import com.lukeleber.scandroid.sae.OxygenSensor;
@@ -93,10 +93,13 @@ public class AppendixB
         public void updateViewModel(Object view, Object value)
         {
             MonitorStatus ms = (MonitorStatus)value;
-            ModelView mv = (ModelView)view;
-            mv.milStatus.setText(ms.isMalfunctionLampOn() ? "ON" : "OFF");
-            mv.dtcCount.setText(ms.getDiagnosticTroubleCodeCount());
-            mv.monitorStatus.setText(ms.getSupportReadinessString());
+            if(ms != null)
+            {
+                ModelView mv = (ModelView) view;
+                mv.milStatus.setText(ms.isMalfunctionLampOn() ? "ON" : "OFF");
+                mv.dtcCount.setText(String.valueOf(ms.getDiagnosticTroubleCodeCount()));
+                mv.monitorStatus.setText(ms.getSupportReadinessString());
+            }
         }
     };
     /// A PID that requests the {@link DiagnosticTroubleCode DTC} that caused a freeze-frame
@@ -115,7 +118,7 @@ public class AppendixB
                                   @Override
                                   public DiagnosticTroubleCode invoke(byte... bytes)
                                   {
-                                      return new DiagnosticTroubleCode(bytes[0], bytes[1]);
+                                      return new DiagnosticTroubleCode((bytes[0] << 8) | bytes[1], "N/A");
                                   }
                               });
                 }
@@ -176,9 +179,14 @@ public class AppendixB
             @SuppressWarnings("unchecked")
             SerializablePair<FuelSystemStatus, FuelSystemStatus> ms =
                     (SerializablePair<FuelSystemStatus, FuelSystemStatus>)value;
-            ModelView mv = (ModelView)view;
-            mv.fSys1.setText(ms.first.toString());
-            mv.fSys2.setText(ms.second.toString());
+            if(ms != null)
+            {
+                ModelView mv = (ModelView) view;
+                if(ms.first != null)
+                mv.fSys1.setText(ms.first.toString());
+                if(ms.second != null)
+                mv.fSys2.setText(ms.second.toString());
+            }
         }
     };
     /// A PID that requests the calculated engine load (LOAD)

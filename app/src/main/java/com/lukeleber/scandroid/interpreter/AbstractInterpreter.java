@@ -15,6 +15,8 @@ import com.lukeleber.scandroid.BuildConfig;
 import com.lukeleber.scandroid.io.CommunicationInterface;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -26,15 +28,13 @@ import java.util.concurrent.LinkedBlockingQueue;
  *         the type of data that is to be sent over this Interpreter
  * @param <U>
  *         the type of data that is to be received over this Interpreter
- * @param <Result>
- *         the type of data that is returned from the asynchronous invocation of this Interpreter
  *
  * @see com.lukeleber.scandroid.interpreter.Interpreter
  * @see android.os.AsyncTask
  */
-public abstract class AbstractInterpreter<T, U, Result>
+public abstract class AbstractInterpreter<T, U>
         extends
-        AsyncTask<Void, Pair<U, ResponseListener<U>>, Result>
+        AsyncTask<Void, Pair<U, ResponseListener<U>>, Void>
         implements
         Interpreter<T>
 {
@@ -42,10 +42,33 @@ public abstract class AbstractInterpreter<T, U, Result>
     /// @internal tag for debug logging
     private final static String TAG = AbstractInterpreter.class.getName();
     private final CommunicationInterface com;
+
     /// The queue that internally synchronizes the use of this class with a UI thread
     private final transient BlockingQueue<Pair<Request<T, ?>, ResponseListener<U>>> pendingWrites;
-    /// The {@link killgpl.scandroid.interpreter.ErrorHandler} to forward errors to
-    private ErrorHandler errorHandler;
+
+    private final List<ErrorListener> errorListeners = new ArrayList<>();
+
+    private final List<ConnectionListener> connectionListeners = new ArrayList<>();
+
+    private final List<ShutdownListener> shutdownListeners = new ArrayList<>();
+
+    @Override
+    public final void addErrorListener(ErrorListener listener)
+    {
+        errorListeners.add(listener);
+    }
+
+    @Override
+    public final void addConnectionListener(ConnectionListener listener)
+    {
+        connectionListeners.add(listener);
+    }
+
+    @Override
+    public final void addShutdownListener(ShutdownListener listener)
+    {
+        shutdownListeners.add(listener);
+    }
 
     /**
      * Constructs an {@link com.lukeleber.scandroid.interpreter.AbstractInterpreter}
@@ -61,27 +84,28 @@ public abstract class AbstractInterpreter<T, U, Result>
      */
     @Override
     @SuppressWarnings("unchecked")
-    protected final Result doInBackground(Void... params)
+    protected final Void doInBackground(Void... params)
     {
 
         CommunicationInterface com = getCommunicationInterface();
         try
         {
             com.connect();
-            onConnected();
-            init();
-            onInitialized();
+            for(ConnectionListener listener : connectionListeners)
+            {
+                listener.onConnected();
+            }
         }
         catch (IOException ioe)
         {
-            if (errorHandler != null)
+            for(ErrorListener listener : errorListeners)
             {
-                errorHandler.onError(ioe);
+                listener.onError(ioe);
             }
             cleanup();
-            return getExceptionResult(ioe);
+            return null;
         }
-        boolean cancelled = false, interrupted = false;
+        boolean interrupted = false;
         do
         {
             if (super.isCancelled())
@@ -100,19 +124,15 @@ public abstract class AbstractInterpreter<T, U, Result>
                 catch (IOException ioe)
                 {
                     publishProgress(new Pair<>((U) null, request.second));
-                    if (errorHandler != null)
+                    for(ErrorListener listener : errorListeners)
                     {
-                        errorHandler.onError(ioe);
+                        listener.onError(ioe);
                     }
                 }
             }
             catch (InterruptedException ie)
             {
                 interrupted = true;
-                if (super.isCancelled())
-                {
-                    cancelled = true;
-                }
                 break;
             }
         }
@@ -124,11 +144,7 @@ public abstract class AbstractInterpreter<T, U, Result>
             Thread.currentThread()
                   .interrupt();
         }
-        if (cancelled)
-        {
-            return getCancellationResult();
-        }
-        return getSuccessfulExitResult();
+        return null;
     }
 
     /**
@@ -183,16 +199,6 @@ public abstract class AbstractInterpreter<T, U, Result>
     @Override
     public final void start()
     {
-        start(null);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final void start(ErrorHandler errorHandler)
-    {
-        this.errorHandler = errorHandler;
         execute();
     }
 
@@ -245,17 +251,11 @@ public abstract class AbstractInterpreter<T, U, Result>
                 Log.e(TAG, "Error closing interpreter", e);
             }
         }
+        for(ShutdownListener listener : shutdownListeners)
+        {
+            listener.onShutdown();
+        }
     }
-
-    /**
-     * Retrieves an object of type {@link Result} that indicates an exceptional exit
-     *
-     * @param e
-     *         the {@link Exception} that was raised during execution
-     *
-     * @return an object of type {@link Result} that indicates an exceptional exit
-     */
-    protected abstract Result getExceptionResult(Exception e);
 
     /**
      * Performs the actual writing operation to the remote hardware.  The implementation details of
@@ -283,25 +283,5 @@ public abstract class AbstractInterpreter<T, U, Result>
     protected abstract U readReply()
             throws
             IOException;
-
-    /**
-     * Retrieves an object of type {@link Result} that indicates a task cancellation
-     *
-     * @return an object of type {@link Result} that indicates a task cancellation
-     */
-    protected abstract Result getCancellationResult();
-
-    /**
-     * Retrieves an object of type {@link Result} that indicates a successful exit
-     *
-     * @return an object of type {@link Result} that indicates a successful exit
-     */
-    protected abstract Result getSuccessfulExitResult();
-
-    protected void onConnected()
-    { /* no-op */ }
-
-    protected void onInitialized()
-    { /* no-op */ }
 
 }

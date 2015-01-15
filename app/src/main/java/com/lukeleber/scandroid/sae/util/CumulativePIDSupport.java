@@ -13,7 +13,7 @@ import com.lukeleber.scandroid.interpreter.Interpreter;
 import com.lukeleber.scandroid.interpreter.ServiceRequest;
 import com.lukeleber.scandroid.sae.PID;
 import com.lukeleber.scandroid.sae.PIDSupport;
-import com.lukeleber.scandroid.sae.Service;
+import com.lukeleber.scandroid.sae.j1979.Service;
 import com.lukeleber.scandroid.sae.detail.AppendixA;
 
 import java.util.ArrayList;

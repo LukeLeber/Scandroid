@@ -25,7 +25,7 @@ public class MonitorStatus implements Serializable
 
     public int getDiagnosticTroubleCodeCount()
     {
-        return bits & 0x7F000000;
+        return (bits & 0x7F000000) >> 24;
     }
 
     public String getSupportReadinessString()

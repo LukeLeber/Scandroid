@@ -6,11 +6,9 @@
  */
 
 /**
- * All general GUI components to the Scandroid application can be found within this package.
- * Other GUI components may be located in other specialized locations based on the specific
- * domain of the interface.  For example, bluetooth-specific GUI components are found within
- * the {@link killgpl.scandroid.bluetooth.gui} package.  It is safe to assume that any and all
- * GUI components will be located in a package that ends with *.gui.
+ * All general GUI components of the Scandroid application can be found within this package.
+ * It is safe to assume that any and all Scandroid specific GUI components will be located in
+ * a "sub-package" of this package.
  *
  */
 package com.lukeleber.scandroid.gui;

@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.lukeleber.app.EnhancedActivity;
 import com.lukeleber.scandroid.Globals;
 import com.lukeleber.scandroid.R;
-import com.lukeleber.scandroid.database.DiagnosticTroubleCodeDatabase;
+import com.lukeleber.scandroid.database.DTCDatabaseUpdater;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -61,7 +61,7 @@ public class Scandroid
         {
             Toast.makeText(Scandroid.this, "opening connection to vehicle...", Toast.LENGTH_SHORT)
                  .show();
-            GenericScanner.startGenericScanner(this, null);
+            GenericScanner.startGenericScanner(this);
         }
         else
         {
@@ -80,6 +80,8 @@ public class Scandroid
         Toast.makeText(this, "Not Implemented Yet", Toast.LENGTH_SHORT)
              .show();
         // TODO:
+        Intent intent = new Intent(Scandroid.this, DTCDatabaseUpdater.class);
+        startActivity(intent);
 /*        Intent intent = new Intent(Scandroid.this, SelectInterface.class);
         intent.putExtra(Extras.SCANNER_MODE, ConfigurationMode.EXPERT_MODE);
         startActivity(intent);*/

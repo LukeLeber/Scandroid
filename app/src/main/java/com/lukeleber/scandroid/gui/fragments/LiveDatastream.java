@@ -7,7 +7,6 @@
 
 package com.lukeleber.scandroid.gui.fragments;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.lukeleber.scandroid.R;
-import com.lukeleber.scandroid.gui.InterpreterHost;
 import com.lukeleber.scandroid.gui.fragments.util.AbstractParameterAdapter;
 import com.lukeleber.scandroid.gui.fragments.util.ParameterModel;
 import com.lukeleber.scandroid.interpreter.FailureCode;
@@ -23,7 +21,7 @@ import com.lukeleber.scandroid.interpreter.Handler;
 import com.lukeleber.scandroid.interpreter.ServiceRequest;
 import com.lukeleber.scandroid.sae.PID;
 import com.lukeleber.scandroid.sae.Profile;
-import com.lukeleber.scandroid.sae.Service;
+import com.lukeleber.scandroid.sae.j1979.Service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -215,9 +213,6 @@ public class LiveDatastream
         }
     }
 
-    /// The object that is hosting this fragment
-    private InterpreterHost<?, ?> host;
-
     /// The refresher to use for this LiveDatastream
     private Refresher refresher;
 
@@ -230,23 +225,6 @@ public class LiveDatastream
     /// The Listview that displays the live data received from the vehicle
     @InjectView(R.id.fragment_live_datastream_listview)
     ListView datastreamView;
-
-    /**
-     * {@inheritDoc}
-     *
-     */
-    @Override
-    public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-        if (!InterpreterHost.class.isAssignableFrom(activity.getClass()))
-        {
-            throw new ClassCastException(activity.toString()
-                                             + " must implement " +
-                                                 InterpreterHost.class.getName());
-        }
-        this.host = (InterpreterHost) activity;
-    }
 
     /**
      * {@inheritDoc}
@@ -342,27 +320,6 @@ public class LiveDatastream
         this.supportedPIDs = null;
         this.viewedParameters = null;
         this.datastreamView = null;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     */
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-        this.host = null;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     */
-    @Override
-    public Service getService()
-    {
-        return Service.LIVE_DATASTREAM;
     }
 
     /**

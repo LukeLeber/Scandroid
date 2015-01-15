@@ -7,14 +7,12 @@
 
 package com.lukeleber.scandroid.gui.fragments;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.lukeleber.scandroid.R;
-import com.lukeleber.scandroid.sae.Service;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -27,11 +25,6 @@ public class ResetDiagnosticInformation
     void onResetDiagnosticsClicked()
     {
 
-    }
-
-    public ResetDiagnosticInformation()
-    {
-        // Required empty public constructor
     }
 
     @Override
@@ -48,26 +41,6 @@ public class ResetDiagnosticInformation
                                    false);
         ButterKnife.inject(this, rv);
         return rv;
-    }
-
-
-    @Override
-    public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-
-    }
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-    }
-
-    @Override
-    public Service getService()
-    {
-        return Service.CLEAR_DTC;
     }
 
 }

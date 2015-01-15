@@ -105,8 +105,15 @@ public abstract class AbstractPID<T>
     @Override
     public void updateViewModel(Object view, Object value)
     {
-        DefaultModelView dmv = (DefaultModelView) view;
-        dmv.name.setText(this.getDisplayName());
-        dmv.value.setText(value != null ? value.toString() : "N/A");
+        try
+        {
+            DefaultModelView dmv = (DefaultModelView) view;
+            dmv.name.setText(this.getDisplayName());
+            dmv.value.setText(value != null ? value.toString() : "N/A");
+        }
+        catch(ClassCastException cce)
+        {
+            System.out.println("Updating model view for " + getDisplayName());
+        }
     }
 }

@@ -39,7 +39,7 @@
             <ListView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/listView"/>
+                android:id="@+id/fragment_diagnostic_trouble_code_display_code_listview"/>
 
         </LinearLayout>
     </ScrollView>

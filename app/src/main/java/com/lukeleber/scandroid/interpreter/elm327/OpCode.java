@@ -439,7 +439,7 @@ public enum OpCode
      * the word 'AUTO' before the protocol description. Note that the description shows the actual
      * protocol names, not the numbers used by the protocol setting commands.
      */
-    ELM327_DESCRIBE_CURRENT_PROTOCOL("DP"),
+    ELM327_DESCRIBE_CURRENT_PROTOCOL("ATDP"),
 
     /**
      * DPN [ Describe the Protocol by Number ] This command is similar to the DP command, but it
@@ -447,7 +447,7 @@ public enum OpCode
      * also enabled, the number will be preceded with the letter ‘A’. The number is the same one
      * that is used with the set protocol and test protocol commands.
      */
-    ELM327_DESCRIBE_CURRENT_PROTOCOL_BY_NUMBER("DPN"),
+    ELM327_DESCRIBE_CURRENT_PROTOCOL_BY_NUMBER("ATDPN"),
 
     /**
      * E0 and E1 [ Echo off or on ] These commands control whether or not the characters received on
@@ -526,7 +526,7 @@ public enum OpCode
      * in the above code, as the ELM327 automatically performs one when you switch protocols.
      * Protocol 5 must be selected to use the AT FI command, or an error will result.
      */
-    ELM327_ISO_FAST_INITIATION("FI"),
+    ELM327_ISO_FAST_INITIATION("ATFI"),
 
     /**
      * H0 and H1 [ Headers off or on ] These commands control whether or not the additional (header)
@@ -1206,7 +1206,7 @@ public enum OpCode
      * use the one protocol, but is also one that can cause a lot of problems if you do not
      * understand it.
      */
-    ELM327_OBD_SET_PROTOCOL("SP%d"),
+    ELM327_OBD_SET_PROTOCOL("ATSP%01x"),
 
     /**
      * SP 00 [ erase the Stored Protocol ] To speed up protocol initiation and detection, the SP 0
@@ -1229,7 +1229,7 @@ public enum OpCode
      * must write 0 to the EEPROM, use command AT SP 00). Note that the ‘A’ can come before or after
      * the h, so AT SP A3 can also be entered as AT SP 3A.
      */
-    ELM327_OBD_SET_DEFAULT_PROTOCOL_AUTO("SPA%d"),
+    ELM327_OBD_SET_DEFAULT_PROTOCOL_AUTO("ATSPA%01x"),
 
     /**
      * SR hh [Set the Receive address to hh ] Depending on the application, users may wish to
@@ -1318,14 +1318,14 @@ public enum OpCode
      * that you are trying is found to be valid, that protocol will then be stored in memory as the
      * new default.
      */
-    ELM327_OBD_TRY_PROTOCOL("TP%d"),
+    ELM327_OBD_TRY_PROTOCOL("ATTP%01x"),
 
     /**
      * TP Ah [ Try Protocol h with Auto ] This command is very similar to the AT TP command above,
      * except that if the protocol that is tried should fail to initialize, the ELM327 will then
      * automatically sequence through the other protocols, attempting to connect to one of them.
      */
-    ELM327_OBD_TRY_PROTOCOL_FALLBACK_AUTO("TPA%d"),
+    ELM327_OBD_TRY_PROTOCOL_FALLBACK_AUTO("ATTPA%01x"),
 
     /**
      * V0 and V1 [ Variable data lengths off or on ] Many CAN protocols (ie ISO 15765-4) expect to
@@ -1374,7 +1374,7 @@ public enum OpCode
      * rate that was set with the AT BRD command will be lost, and the ELM327 will return to the
      * default baud rate setting.
      */
-    ELM327_RESET_ALL("Z"),
+    ELM327_RESET_ALL("ATZ"),
 
     /**
      * @1 [ display the device description ] This command displays the device description string.

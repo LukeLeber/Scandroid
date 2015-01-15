@@ -41,16 +41,17 @@ public final class DiagnosticTroubleCode
     private final static class SerializationProxy
     {
         private final int code;
+        private final String description;
 
         SerializationProxy(DiagnosticTroubleCode dtc)
         {
-            this.code = dtc.code;
+            this.code = dtc.code; this.description = dtc.description;
         }
 
         @SuppressWarnings("unused")
         private Object readResolve()
         {
-            return new DiagnosticTroubleCode(code);
+            return new DiagnosticTroubleCode(code, description);
         }
     }
 
@@ -105,7 +106,7 @@ public final class DiagnosticTroubleCode
                 @Override
                 public final DiagnosticTroubleCode createFromParcel(Parcel source)
                 {
-                    return new DiagnosticTroubleCode(source.readInt());
+                    return new DiagnosticTroubleCode(source.readString(), source.readString());
                 }
 
                 @Override
@@ -118,8 +119,18 @@ public final class DiagnosticTroubleCode
     /// The encoded 16-bits that make up this DTC
     private final int code;
 
-    /// A user-friendly representation of this DTC (IE. "P0123")
-    private final transient String description;
+    /// The string-encoded representation of this DTC (IE. "P0123")
+    private final transient String encoding;
+
+    /// A user-friendly description of this DTC (IE "Intake Runner 'A' Stuck Open");
+    private final String description;
+
+    public DiagnosticTroubleCode(int code, String description)
+    {
+        this.code = code;
+        this.encoding = MOST_SIG_NIBBLE_LOOKUP_TABLE[(code >> 12) & 0xF] + Integer.toHexString((code >> 8) & 0xF) + Integer.toHexString((code >> 4) & 0xF) + Integer.toHexString(code & 0xF);
+        this.description = description;
+    }
 
     /**
      * {@inheritDoc}
@@ -145,7 +156,7 @@ public final class DiagnosticTroubleCode
     @Override
     public final void writeToParcel(Parcel dest, int flags)
     {
-        dest.writeInt(code);
+        dest.writeInt(code); dest.writeString(description);
     }
 
     /**
@@ -154,7 +165,7 @@ public final class DiagnosticTroubleCode
     @Override
     public final String toString()
     {
-        return description;
+        return encoding + ": " + description;
     }
 
     /**
@@ -182,32 +193,24 @@ public final class DiagnosticTroubleCode
         return new SerializationProxy(this);
     }
 
-    /**
-     * Constructs a DTC with the provided 16 least significant bits of the provided integer
-     *
-     * @param code
-     *         the integer from which to build this DTC from
-     */
-    public DiagnosticTroubleCode(int code)
+    public DiagnosticTroubleCode(String encoding, String description)
     {
+        int code = 0;
+        String value = encoding.substring(0, 2);
+        for(int i = 0; i < MOST_SIG_NIBBLE_LOOKUP_TABLE.length; ++i)
+        {
+            if(MOST_SIG_NIBBLE_LOOKUP_TABLE[i] == value)
+            {
+                code = i;
+            }
+        }
+        code <<= 24;
+        code |= (Integer.parseInt(encoding.substring(2, 2), 16) << 8);
+        code |= (Integer.parseInt(encoding.substring(3, 3), 16) << 4);
+        code |= (Integer.parseInt(encoding.substring(4, 4), 16));
         this.code = code;
-        this.description = MOST_SIG_NIBBLE_LOOKUP_TABLE[code & 0xF000] + Integer.toHexString(
-                code & 0xFFF);
-    }
-
-    /**
-     * Constructs a DTC with the provided pair of bytes.
-     *
-     * @param msb
-     *         the most significant bits of this DTC
-     * @param lsb
-     *         the least significant bits of this DTC
-     */
-    public DiagnosticTroubleCode(byte msb, byte lsb)
-    {
-        this.code = ((msb & 0xFF) << 8) | lsb;
-        this.description = MOST_SIG_NIBBLE_LOOKUP_TABLE[code & 0xF000] + Integer.toHexString(
-                code & 0xFFF);
+        this.encoding = encoding;
+        this.description = description;
     }
 
     /**
@@ -218,6 +221,16 @@ public final class DiagnosticTroubleCode
     public final int getCode()
     {
         return code;
+    }
+
+    public final String getEncoding()
+    {
+        return encoding;
+    }
+
+    public final String getDescription()
+    {
+        return description;
     }
 
     /**
