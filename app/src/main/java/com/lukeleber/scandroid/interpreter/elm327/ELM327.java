@@ -98,7 +98,6 @@ public class ELM327
             ConfigurationRequest<String, ?> cr = (ConfigurationRequest<String, ?>) request;
             String s = String.format(cr.getOption()
                                        .getOption(), cr.getArgs());
-            System.out.println("Sending: " + s);
             toSend = new byte[s.length() + 1];
             System.arraycopy(s.getBytes(), 0, toSend, 0, s.length());
         }
@@ -192,12 +191,12 @@ public class ELM327
      * ELM327 is "40" plus the service ID; thus a request using service ID 1 ({@link
      * com.lukeleber.scandroid.sae.j1979.Service#LIVE_DATASTREAM}) shall produce "41".  The following two
      * characters are the PID/TID/OBDMID/INFOTYPE ID of the request; so PID #1 ({@link
-     * com.lukeleber.scandroid.sae.detail.AppendixB#MONITOR_STATUS}) shall produce "01".  The
+     * com.lukeleber.scandroid.sae.j1979.detail.AppendixB#MONITOR_STATUS}) shall produce "01".  The
      * following characters sequence is the actual data response from the ELM327.  So to sum
      * everything up, a service request $02$04 would produce the following response: "4204??" where
      * "??" is a single hex-byte representing the calculated engine load.  This {@link
      * com.lukeleber.scandroid.interpreter.ResponseListener} trims off the first four characters of
-     * each response, invoking the requested {@link com.lukeleber.scandroid.sae.PID.Unmarshaller}</li>
+     * each response, invoking the requested {@link com.lukeleber.scandroid.sae.j1979.PID.Unmarshaller}</li>
      * on only the actual data. </ul>
      *
      * @param <T>
