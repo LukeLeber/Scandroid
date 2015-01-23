@@ -116,6 +116,52 @@ public final class DiagnosticTroubleCode
                 }
             };
 
+    public static int decode(String encoding)
+    {
+        if(encoding.length() != 5)
+        {
+            throw new InvalidDTCException(encoding, "Invalid encoding length");
+        }
+        char a = encoding.charAt(0);
+        char b = encoding.charAt(1);
+        int msb = a == 'P' ? 0 : (a == 'C' ? 1 : (a == 'B' ? 2 : (a == 'U' ? 3 : -1)));
+        if(msb < 0)
+        {
+            if (b < '0' || b > '3')
+            {
+                throw new InvalidDTCException(encoding, "Invalid System Specifier: " + a + ", Invalid Jurisdiction: " + b);
+            }
+            else
+            {
+                throw new InvalidDTCException(encoding, "Invalid System Specifier: " + a);
+            }
+        }
+        if (b < '0' || b > '3')
+        {
+            throw new InvalidDTCException(encoding, "Invalid Jurisdiction: " + b);
+        }
+        msb <<= 14;
+        msb |= ((b - '0') << 12);
+        return (msb) | Integer.parseInt(encoding.substring(2), 16);
+    }
+
+    public static String encode(int decoded)
+    {
+        int msb = (decoded >> 12) & 0xFF;
+        if(msb < 0 || msb > 16)
+        {
+            throw new InvalidDTCException("??" +
+                    String.format("%1x", (decoded >> 8) & 0xF) +
+                    String.format("%1x", (decoded >> 4) & 0xF) +
+                    String.format("%1x", (decoded) & 0xF),
+                    "Invalid System Specifier: " + msb);
+        }
+        return MOST_SIG_NIBBLE_LOOKUP_TABLE[msb] +
+                String.format("%1x", (decoded >> 8) & 0xF) +
+                String.format("%1x", (decoded >> 4) & 0xF) +
+                String.format("%1x", (decoded) & 0xF).toUpperCase();
+    }
+
     /// The encoded 16-bits that make up this DTC
     private final int code;
 
@@ -199,7 +245,7 @@ public final class DiagnosticTroubleCode
         String value = encoding.substring(0, 2);
         for(int i = 0; i < MOST_SIG_NIBBLE_LOOKUP_TABLE.length; ++i)
         {
-            if(MOST_SIG_NIBBLE_LOOKUP_TABLE[i] == value)
+            if(MOST_SIG_NIBBLE_LOOKUP_TABLE[i].equals(value))
             {
                 code = i;
             }
@@ -299,8 +345,8 @@ public final class DiagnosticTroubleCode
      *
      * @return true if this is a reserved DTC, otherwise false
      */
-    public final boolean isReservedDTC()
-    {
-        return (code & JURISDICTION_MASK) == RESERVED;
-    }
+    //public final boolean isReservedDTC()
+   // {
+   //     return (code & JURISDICTION_MASK) == RESERVED;
+   // }
 }
