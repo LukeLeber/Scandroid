@@ -10,7 +10,7 @@ package com.lukeleber.scandroid;
 import android.content.Context;
 
 import com.lukeleber.scandroid.interpreter.Interpreter;
-import com.lukeleber.scandroid.sae.Profile;
+import com.lukeleber.scandroid.sae.j1979.Profile;
 
 import java.util.Collections;
 import java.util.HashMap;
