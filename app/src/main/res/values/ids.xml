@@ -17,4 +17,6 @@
     <!-- Scandroid Activity Menu -->
 
     <item name="dummy" type="id"/>
+    <item name="abstract_parameter_adapter_layout_id" type="id"/>
+    <item name="abstract_parameter_adapter_view_holder_id" type="id"/>
 </resources>

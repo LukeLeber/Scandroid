@@ -9,6 +9,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="This vehicle does not support this service."
-        android:id="@+id/protocol_checked_text_view_protocol"
+        android:id="@+id/monitor_status_mil_label"
         android:layout_gravity="center"/>
 </FrameLayout>

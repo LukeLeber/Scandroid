@@ -13,16 +13,53 @@
     <string name="title_activity_vehicle_history">VehicleHistory</string>
     <string name="action_settings">Settings</string>
 
-    <!-- Strings for activity_scandroid -->
-    <string name="scandroid_menu_settings_item_title">        Settings</string>
-    <string name="scandroid_menu_logging_item_title">        Logging</string>
-    <string name="scandroid_instruction_label">        Scandroid: The FREE scan-tool for Android!\n
-        Select a function from the choices below to get started.</string>
-    <string name="scandroid_generic_scanner_label">        Scanner (Generic)</string>
-    <string name="scandroid_expert_scanner_label">        Scanner (Expert)</string>
-    <string name="scandroid_vin_decoder_label">        VIN Decoder</string>
+    <!-- General Use Strings -->
+    <string name="yes_caps">YES</string>
+    <string name="no_caps">NO</string>
+    <string name="not_available">N/A</string>
+    <string name="on_caps">ON</string>
+    <string name="off_caps">OFF</string>
+    <string name="touch_to_expand">Touch to expand…</string>
+    <string name="supported_caps">SUPPORTED</string>
+    <string name="unsupported_caps">UNSUPPORTED</string>
+    <!-- General Use Strings -->
 
     <!-- Strings for activity_scandroid -->
+    <string name="scandroid_menu_settings_item_title">Settings</string>
+    <string name="scandroid_menu_logging_item_title">Logging</string>
+    <string name="scandroid_instruction_label">Scandroid: The FREE scan-tool for Android!\n
+        Select a function from the choices below to get started.</string>
+    <string name="scandroid_generic_scanner_label">Scanner (Generic)</string>
+    <string name="scandroid_expert_scanner_label">Scanner (Expert)</string>
+    <string name="scandroid_vin_decoder_label">VIN Decoder</string>
+
+    <!-- Strings for activity_scandroid -->
+
+    <!-- Strings for PID/TID/OBDMID/INFOTYPE expansion dialogs -->
+    <string name="pid_monitor_status_expansion_title">Monitor Status Expanded View</string>
+    <string name="pid_monitor_status_expansion">MIL Status: %1$s\nDTC Count: %2$s\n%3$s</string>
+    <string name="pid_fuel_system_status_expansion_title">Fuel System Expanded View</string>
+    <string name="pid_fuel_system_status_expansion">Fuel System 1: %1$s\nFuel System 2: %2$s</string>
+    <!-- Strings for PID/TID/OBDMID/INFOTYPE expansion dialogs -->
+
+    <!-- Strings for PID/TID/OBDMID/INFOTYPE pop-up descriptions -->
+    <string name="pid_monitor_status_desc_title">Monitor Status PID Overview</string>
+    <string name="pid_monitor_status_desc">This PID offers three distinct pieces of information.
+    First, the status of the MIL (ON or OFF).  Second, the number of stored DTCs (these can be
+    read with service $03).  Third, the status of both continuous and non-continuous monitors
+    is provided.  The monitor statuses are represented with two fields each: SUP (support status
+    [NO or YES]) and RDY (completion status [NO or YES]).\nYou can touch the PID to bring up a
+    dialog that contains all of the information.</string>
+
+    <string name="pid_dtc_that_caused_freeze_frame_desc_title">DTCFRZF PID Overview</string>
+    <string name="pid_dtc_that_caused_freeze_frame_desc">This PID requests the DTC that caused
+    frame data to be stored by one or more on-board modules.</string>
+
+    <string name="pid_fuel_system_status_desc_title">FUELSYS PID Overview</string>
+    <string name="pid_fuel_system_status_desc">This PID requests the loop status of the onboard
+    fuel system(s).  Note that different systems do not necessarily refer to different fuel
+    injector banks, but rather systems that change loop status independently.</string>
+    <!-- Strings for PID/TID/OBDMID/INFOTYPE pop-up descriptions -->
 
 
     <!-- Default Hardware Configuration -->
@@ -30,13 +67,16 @@
     <string name="wifi_device_ssid">OBDII</string>
     <string name="bluetooth_device_name">OBDII</string>
     <string name="title_activity_bluetooth_configuration">BluetoothConfiguration</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_naive_test">NaiveTest</string>
     <string name="title_activity_generic_scanner">GenericScanner</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_protocol_search">ProtocolSearch</string>
+    <string name="select_display_unit">Select Display Unit</string>
+    <string name="touch_to_expand_monitor_status">touch to expand monitor status...</string>
+    <string name="mil_status_label">MIL Status:</string>
+    <string name="number_of_dtcs_label"># DTCs:</string>
+    <string name="short_term_fuel_trim_bank_label">STFT Bank %1$d:</string>
+    <string name="long_term_fuel_trim_bank_label">LTFT Bank %1$d:</string>
+    <string name="oxygen_sensor_location_label">O2SLOC:</string>
+    <string name="wide_range_oxygen_sensor_lambda_label">EQ_RATxy:</string>
+    <string name="wide_range_oxygen_sensor_voltage_label">O2Sxy:</string>
 
 </resources>
