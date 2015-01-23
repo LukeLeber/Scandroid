@@ -5,7 +5,7 @@
  * Copyright (c) Luke A. Leber <LukeLeber@gmail.com> 2014
  */
 
-package com.lukeleber.scandroid.sae;
+package com.lukeleber.scandroid.sae.j1979;
 
 public abstract class AbstractID
         implements ServiceFacet
