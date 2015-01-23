@@ -13,7 +13,7 @@ import com.lukeleber.scandroid.interpreter.Interpreter;
 import com.lukeleber.scandroid.interpreter.elm327.Protocol;
 import com.lukeleber.scandroid.sae.j1979.detail.AppendixA;
 import com.lukeleber.scandroid.sae.j1979.detail.AppendixB;
-import com.lukeleber.scandroid.sae.util.CumulativePIDSupport;
+import com.lukeleber.scandroid.sae.j1979.util.CumulativePIDSupport;
 
 import java.util.HashMap;
 import java.util.Map;

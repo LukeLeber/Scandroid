@@ -7,8 +7,6 @@
 
 package com.lukeleber.scandroid.sae.j1979;
 
-import com.lukeleber.scandroid.sae.PID;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
