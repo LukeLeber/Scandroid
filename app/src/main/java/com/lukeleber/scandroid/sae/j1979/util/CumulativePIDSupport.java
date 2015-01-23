@@ -5,22 +5,22 @@
  * Copyright (c) Luke A. Leber <LukeLeber@gmail.com> 2014
  */
 
-package com.lukeleber.scandroid.sae.util;
+package com.lukeleber.scandroid.sae.j1979.util;
 
 import com.lukeleber.scandroid.interpreter.FailureCode;
 import com.lukeleber.scandroid.interpreter.Handler;
 import com.lukeleber.scandroid.interpreter.Interpreter;
 import com.lukeleber.scandroid.interpreter.ServiceRequest;
-import com.lukeleber.scandroid.sae.PID;
-import com.lukeleber.scandroid.sae.PIDSupport;
+import com.lukeleber.scandroid.sae.j1979.PID;
+import com.lukeleber.scandroid.sae.j1979.PIDSupport;
 import com.lukeleber.scandroid.sae.j1979.Service;
-import com.lukeleber.scandroid.sae.detail.AppendixA;
+import com.lukeleber.scandroid.sae.j1979.detail.AppendixA;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A <code>CumulitivePIDSupport</code> is a form of {@link com.lukeleber.scandroid.sae.PIDSupport}
+ * A <code>CumulitivePIDSupport</code> is a form of {@link com.lukeleber.scandroid.sae.j1979.PIDSupport}
  * that covers the entire support range; that is, from ID 0 to ID 255.  This utility class is a
  * convenience function for obtaining all supported PIDs/TIDs/OBDMIDs from the vehicle in a single
  * statement.
