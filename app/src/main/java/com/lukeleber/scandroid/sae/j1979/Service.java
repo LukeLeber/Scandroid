@@ -129,7 +129,7 @@ public enum Service implements Serializable,
      * <p>The order of the PIDs in the response message is not required to match the order
      * in the request message.</p>
      */
-    FREEZE_FRAME_DATASTREAM(2, "Freeze-Frame Data",
+    FREEZE_FRAME_DATA(2, "Freeze-Frame Data",
                     "Service $02 - Request Powertrain Freeze Frame Data"),
 
     /**
