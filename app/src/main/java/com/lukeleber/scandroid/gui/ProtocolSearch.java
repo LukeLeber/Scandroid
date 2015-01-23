@@ -22,7 +22,7 @@ import com.lukeleber.scandroid.interpreter.ServiceRequest;
 import com.lukeleber.scandroid.interpreter.elm327.Constants;
 import com.lukeleber.scandroid.interpreter.elm327.OpCode;
 import com.lukeleber.scandroid.interpreter.elm327.Protocol;
-import com.lukeleber.scandroid.sae.detail.AppendixA;
+import com.lukeleber.scandroid.sae.j1979.detail.AppendixA;
 import com.lukeleber.scandroid.sae.j1979.Service;
 import com.lukeleber.widget.GenericBaseAdapter;
 
@@ -128,7 +128,7 @@ public class ProtocolSearch
     private volatile int currentAttempt = 0;
     private volatile int retryAttempts = 0;
 
-    @InjectView(R.id.textView2)
+    @InjectView(R.id.wide_range_oxygen_sensor_lambda_value)
     TextView statusText;
 
     @InjectView(R.id.listView)
@@ -277,7 +277,7 @@ public class ProtocolSearch
                     convertView = inflater.inflate(R.layout.protocol_checked_text_view, null);
                     ProtocolViewModel pvm = new ProtocolViewModel(
                             (TextView) convertView.findViewById(
-                                    R.id.protocol_checked_text_view_protocol),
+                                    R.id.monitor_status_mil_label),
                             (ImageView) convertView.findViewById(
                                     R.id.protocol_checked_text_view_image)
                     );

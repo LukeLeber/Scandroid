@@ -33,16 +33,14 @@ import com.lukeleber.scandroid.interpreter.FailureCode;
 import com.lukeleber.scandroid.interpreter.Handler;
 import com.lukeleber.scandroid.interpreter.Interpreter;
 import com.lukeleber.scandroid.interpreter.ResponseListener;
-import com.lukeleber.scandroid.interpreter.ServiceRequest;
 import com.lukeleber.scandroid.interpreter.elm327.Constants;
 import com.lukeleber.scandroid.interpreter.elm327.ELM327;
 import com.lukeleber.scandroid.interpreter.elm327.OpCode;
 import com.lukeleber.scandroid.interpreter.elm327.Protocol;
 import com.lukeleber.scandroid.io.ScandroidIOException;
 import com.lukeleber.scandroid.io.bluetooth.BluetoothInterface;
-import com.lukeleber.scandroid.sae.Profile;
+import com.lukeleber.scandroid.sae.j1979.Profile;
 import com.lukeleber.scandroid.sae.j1979.Service;
-import com.lukeleber.scandroid.sae.detail.AppendixA;
 
 import java.io.IOException;
 

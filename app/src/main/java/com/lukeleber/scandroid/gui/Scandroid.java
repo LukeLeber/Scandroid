@@ -101,6 +101,7 @@ public class Scandroid
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        Globals.initStringCache(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scandroid);
         ButterKnife.inject(this);

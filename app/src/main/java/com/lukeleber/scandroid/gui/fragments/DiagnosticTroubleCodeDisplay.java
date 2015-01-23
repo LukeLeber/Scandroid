@@ -21,9 +21,9 @@ import com.lukeleber.scandroid.interpreter.Handler;
 import com.lukeleber.scandroid.interpreter.ResponseListener;
 import com.lukeleber.scandroid.interpreter.ServiceRequest;
 import com.lukeleber.scandroid.interpreter.elm327.OpCode;
-import com.lukeleber.scandroid.sae.MonitorStatus;
+import com.lukeleber.scandroid.sae.j1979.MonitorStatus;
 import com.lukeleber.scandroid.sae.j1979.Service;
-import com.lukeleber.scandroid.sae.detail.AppendixB;
+import com.lukeleber.scandroid.sae.j1979.detail.AppendixB;
 import com.lukeleber.scandroid.sae.j2012.DiagnosticTroubleCode;
 
 import java.util.ArrayList;

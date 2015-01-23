@@ -155,7 +155,7 @@ public class BluetoothConfiguration
                 population.add(new DeviceWrapper(device));
             }
         }
-        devices.setAdapter(new ArrayAdapter<>(this, R.layout.dummy, population));
+        devices.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, population));
     }
 
     @Override

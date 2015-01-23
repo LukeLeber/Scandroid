@@ -14,14 +14,16 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.lukeleber.scandroid.R;
+import com.lukeleber.scandroid.gui.fragments.detail.SAEJ1979AppendixWrapper;
 import com.lukeleber.scandroid.gui.fragments.util.AbstractParameterAdapter;
 import com.lukeleber.scandroid.gui.fragments.util.ParameterModel;
 import com.lukeleber.scandroid.interpreter.FailureCode;
 import com.lukeleber.scandroid.interpreter.Handler;
 import com.lukeleber.scandroid.interpreter.ServiceRequest;
-import com.lukeleber.scandroid.sae.PID;
-import com.lukeleber.scandroid.sae.Profile;
+import com.lukeleber.scandroid.sae.j1979.PID;
+import com.lukeleber.scandroid.sae.j1979.Profile;
 import com.lukeleber.scandroid.sae.j1979.Service;
+import com.lukeleber.scandroid.util.Unit;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -62,18 +64,18 @@ public class FreezeFrameRecords
     {
         super.onCreate(sis);
         Profile profile = host.getProfile();
-        if (profile.isServiceSupported(Service.FREEZE_FRAME_DATASTREAM))
+        if (profile.isServiceSupported(Service.FREEZE_FRAME_DATA))
         {
             for (int i = 1;
                  i < 0xFF;
                  ++i)
             {
-                if (profile.isSupported(Service.FREEZE_FRAME_DATASTREAM, i))
+                if (profile.isSupported(Service.FREEZE_FRAME_DATA, i))
                 {
-                    PID<?> pid = profile.getID(Service.FREEZE_FRAME_DATASTREAM, i);
+                    PID<?> pid = profile.getID(Service.FREEZE_FRAME_DATA, i);
                     if (pid != null) /// TODO: Remove null check when all PIDs are finished
                     {
-                        viewedParameters.add(new ParameterModel(pid));
+                        viewedParameters.add(new ParameterModel(SAEJ1979AppendixWrapper.getWrapper(pid, profile)));
                     }
                 }
             }
@@ -138,36 +140,42 @@ public class FreezeFrameRecords
             {
                 for (final ParameterModel model : viewedParameters)
                 {
-                    host.getInterpreter()
-                        .sendRequest(new ServiceRequest(Service.FREEZE_FRAME_DATASTREAM,
-                                model.getPID(), new Handler<Serializable>()
+                    final Unit unit = model.getPID().getDisplayUnit();
+                    ServiceRequest sr = new ServiceRequest(Service.FREEZE_FRAME_DATA,
+                            model.getPID().unwrap(), new Handler<Serializable>()
+                    {
+                        @Override
+                        public void onResponse(Serializable value)
                         {
-                            @Override
-                            public void onResponse(Serializable value)
+                            model.update(value, unit);
+                            if (--remaining == 0)
                             {
-                                model.update(value, model.getUnit());
-                                if (--remaining == 0)
+                                if (listView != null)
                                 {
-                                    if (listView != null)
-                                    {
-                                        listView.invalidateViews();
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(FailureCode code)
-                            {
-                                if (--remaining == 0)
-                                {
-                                    if (listView != null)
-                                    {
-                                        listView.invalidateViews();
-                                    }
+                                    listView.invalidateViews();
                                 }
                             }
                         }
-                        ));
+
+                        @Override
+                        public void onFailure(FailureCode code)
+                        {
+                            if (--remaining == 0)
+                            {
+                                if (listView != null)
+                                {
+                                    listView.invalidateViews();
+                                }
+                            }
+                        }
+                    }, unit
+                    );
+                    if(sr.getUnmarshaller() == null)
+                    {
+                        System.out.println("Null Unmarshaller(3): " + sr.getPID().getDisplayName());
+                    }
+                   // host.getInterpreter()
+                  //      .sendRequest(sr);
                 }
             }
         }.run();

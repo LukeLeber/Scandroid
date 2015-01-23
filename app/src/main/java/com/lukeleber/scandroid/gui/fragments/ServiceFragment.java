@@ -16,6 +16,7 @@ public abstract class ServiceFragment
         extends Fragment
 {
     protected InterpreterHost host;
+
     /**
      * {@inheritDoc}
      *

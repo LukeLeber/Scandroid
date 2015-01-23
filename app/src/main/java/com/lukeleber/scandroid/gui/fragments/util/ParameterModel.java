@@ -10,7 +10,7 @@ package com.lukeleber.scandroid.gui.fragments.util;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.lukeleber.scandroid.sae.PID;
+import com.lukeleber.scandroid.gui.fragments.detail.PIDWrapper;
 import com.lukeleber.scandroid.util.Unit;
 
 import java.io.Serializable;
@@ -22,83 +22,32 @@ import java.io.Serializable;
  * vehicle</li> <li>The unit of the last known value</li> <li>The time (unix timestamp) that this
  * model was last updated</li> </ul>
  */
-public final class ParameterModel
+public final class ParameterModel<T extends Serializable>
         implements
-        Comparable<ParameterModel>,
         Parcelable,
         Serializable
 {
 
-    /// Required by the {@link android.os.Parcelable} mechanism
-    /// So why isn't there a <i>compile time</i> error if it is omitted?
-    /// Yet another design deficiency in the cookie cutter machine called android...
-    public static final Creator<ParameterModel> CREATOR
-            = new Creator<ParameterModel>()
-    {
-        @Override
-        public ParameterModel createFromParcel(Parcel in)
-        {
-            ParameterModel rv = new ParameterModel((PID<?>) in.readParcelable(null));
-            rv.lastKnownValue = in.readSerializable();
-            rv.unit = (Unit) in.readSerializable();
-            return rv;
-        }
-
-        @Override
-        public ParameterModel[] newArray(int size)
-        {
-            return new ParameterModel[size];
-        }
-    };
-
     /// The PID that is represented by this model
-    private final PID<?> pid;
+    private final PIDWrapper<?> pid;
 
     /// The last known value of the represented PID
-    private Serializable lastKnownValue;
+    private T lastKnownValue;
 
     /// The unit of the last known value of the represented PID
     private Unit unit;
 
+    private Unit pendingUnit;
+
     /// The time (unix timestamp) that this model was last updated
     private long timestamp;
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int describeContents()
-    {
-        return 0;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void writeToParcel(Parcel dest, int flags)
-    {
-        dest.writeParcelable(pid, flags);
-        dest.writeValue(lastKnownValue);
-        dest.writeSerializable(unit);
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int compareTo(ParameterModel rhs)
-    {
-        return pid.compareTo(rhs.pid);
-    }
 
     /**
      * Retrieves the PID that is represented by this model
      *
      * @return the PID that is represented by this model
      */
-    public PID<?> getPID()
+    public PIDWrapper<?> getPID()
     {
         return pid;
     }
@@ -108,19 +57,9 @@ public final class ParameterModel
      *
      * @return the last known value of the represented PID
      */
-    public Serializable getLastKnownValue()
+    public T getLastKnownValue()
     {
         return lastKnownValue;
-    }
-
-    /**
-     * Retrieves the unit of the last known value of the represented PID
-     *
-     * @return the unit of the last known value of the represented PID
-     */
-    public Unit getUnit()
-    {
-        return unit;
     }
 
     /**
@@ -144,31 +83,17 @@ public final class ParameterModel
      * @throws NullPointerException
      *         if the provided serializable and/or unit are null
      */
-    public void update(Serializable newValue, Unit newUnit)
+    public void update(T newValue, Unit newUnit)
     {
         if (newValue == null)
         {
             throw new NullPointerException("newValue == null");
         }
-        if (newUnit == null)
-        {
-            throw new NullPointerException("newUnit == null");
-        }
         this.lastKnownValue = newValue;
-        this.unit = newUnit;
         this.timestamp = System.currentTimeMillis();
     }
 
-    /**
-     * Constructs a ParameterModel with the provided {@link killgpl.scandroid.sae.PID}
-     *
-     * @param pid
-     *         the {@link killgpl.scandroid.sae.PID} that this model represents
-     *
-     * @throws NullPointerException
-     *         if the provided {@link killgpl.scandroid.sae.PID} is null
-     */
-    public ParameterModel(PID<?> pid)
+    public ParameterModel(PIDWrapper<?> pid)
     {
         if (pid == null)
         {
@@ -176,6 +101,17 @@ public final class ParameterModel
         }
         this.pid = pid;
         this.lastKnownValue = null;
-        this.unit = pid.getDefaultUnit();
+    }
+
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+
     }
 }
