@@ -7,8 +7,8 @@
 
 package com.lukeleber.scandroid.sae.j1979.detail;
 
-import com.lukeleber.scandroid.sae.DefaultPID;
-import com.lukeleber.scandroid.sae.PID;
+import com.lukeleber.scandroid.sae.j1979.DefaultPID;
+import com.lukeleber.scandroid.sae.j1979.PID;
 import com.lukeleber.scandroid.sae.PIDSupport;
 import com.lukeleber.scandroid.util.Unit;
 
