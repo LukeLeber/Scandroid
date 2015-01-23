@@ -5,7 +5,7 @@
  * Copyright (c) Luke A. Leber <LukeLeber@gmail.com> 2014
  */
 
-package com.lukeleber.scandroid.sae.detail;
+package com.lukeleber.scandroid.sae.j1979.detail;
 
 import com.lukeleber.scandroid.sae.DefaultPID;
 import com.lukeleber.scandroid.sae.PID;
@@ -68,8 +68,7 @@ public class AppendixA
                 {
                     super.put(Unit.PID_SUPPORT_STRUCT, APPENDIX_A_BITSET_VALUE_FUNCTION);
                 }
-            },
-            4
+            }
     );
 
     /// A PID that requests support status for PIDs 0x21 to 0x40
@@ -82,8 +81,7 @@ public class AppendixA
                 {
                     super.put(Unit.PID_SUPPORT_STRUCT, APPENDIX_A_BITSET_VALUE_FUNCTION);
                 }
-            },
-            4
+            }
     );
 
     /// A PID that requests support status for PIDs 0x41 to 0x60
@@ -96,8 +94,7 @@ public class AppendixA
                 {
                     super.put(Unit.PID_SUPPORT_STRUCT, APPENDIX_A_BITSET_VALUE_FUNCTION);
                 }
-            },
-            4
+            }
     );
 
     /// A PID that requests support status for PIDs 0x61 to 0x80
@@ -110,8 +107,7 @@ public class AppendixA
                 {
                     super.put(Unit.PID_SUPPORT_STRUCT, APPENDIX_A_BITSET_VALUE_FUNCTION);
                 }
-            },
-            4
+            }
     );
 
     /// A PID that requests support status for PIDs 0x81 to 0xA0
@@ -124,8 +120,7 @@ public class AppendixA
                 {
                     super.put(Unit.PID_SUPPORT_STRUCT, APPENDIX_A_BITSET_VALUE_FUNCTION);
                 }
-            },
-            4
+            }
     );
 
     /// A PID that requests support status for PIDs 0xA1 to 0xC0
@@ -138,8 +133,7 @@ public class AppendixA
                 {
                     super.put(Unit.PID_SUPPORT_STRUCT, APPENDIX_A_BITSET_VALUE_FUNCTION);
                 }
-            },
-            4
+            }
     );
 
     /// A PID that requests support status for PIDs 0xC1 to 0xE0
@@ -152,8 +146,7 @@ public class AppendixA
                 {
                     super.put(Unit.PID_SUPPORT_STRUCT, APPENDIX_A_BITSET_VALUE_FUNCTION);
                 }
-            },
-            4
+            }
     );
 
     /// A PID that requests support status for PIDs 0xE1 to 0xFF
@@ -166,8 +159,7 @@ public class AppendixA
                 {
                     super.put(Unit.PID_SUPPORT_STRUCT, APPENDIX_A_BITSET_VALUE_FUNCTION);
                 }
-            },
-            4
+            }
     );
 
 }

@@ -5,130 +5,88 @@
  * Copyright (c) Luke A. Leber <LukeLeber@gmail.com> 2014
  */
 
-package com.lukeleber.scandroid.sae.detail;
+package com.lukeleber.scandroid.sae.j1979.detail;
 
-import android.view.View;
-import android.widget.TextView;
-
-import com.lukeleber.scandroid.R;
+import com.lukeleber.scandroid.Constants;
+import com.lukeleber.scandroid.Globals;
 import com.lukeleber.scandroid.sae.AuxiliaryInputStatus;
 import com.lukeleber.scandroid.sae.DefaultPID;
-import com.lukeleber.scandroid.sae.j1979.FuelSystemStatus;
+import com.lukeleber.scandroid.sae.j1979.DriveCycleMonitorStatus;
 import com.lukeleber.scandroid.sae.MonitorStatus;
 import com.lukeleber.scandroid.sae.OBDSupport;
 import com.lukeleber.scandroid.sae.OxygenSensor;
 import com.lukeleber.scandroid.sae.PID;
-import com.lukeleber.scandroid.sae.Profile;
 import com.lukeleber.scandroid.sae.SecondaryAirStatus;
+import com.lukeleber.scandroid.sae.j1979.FuelSystemStatus;
 import com.lukeleber.scandroid.sae.j2012.DiagnosticTroubleCode;
 import com.lukeleber.scandroid.util.Unit;
 import com.lukeleber.util.SerializablePair;
 
-import java.util.Collection;
 import java.util.HashMap;
 
+/**
+ * Defined herein are the PIDs mandated by SAE J1979 present in Appendix B.
+ *
+ * Fair warning: This could get ugly...this code is not for the faint of heart.
+ *
+ * This internal class shall not be fully documented.
+ *
+ */
 public class AppendixB
 {
-    /**
-     * As defined in SAE-J1979 Appendix B:
-     * <p/>
-     * The following PIDs are usable in Services 1 and 2 to request either live or freeze-frame
-     * information from the onboard module(s).
-     * <p/>
-     * Prior to using any of the following PIDs in a request, it is desirable to first check whether
-     * or not the desired PID is supported by utilizing one of the PIDs defined by Appendix A
-     * (above).
-     */
 
-    /// A PID that requests the current {@link MonitorStatus}
+    /// PID $01 Definition: Monitor Status Since DTCs Cleared
     public final static PID<MonitorStatus> MONITOR_STATUS
-            = new DefaultPID<MonitorStatus>(
+            = new DefaultPID<>(
             0x01,
             "Monitor Status",
             "Retrieve the monitor status since the last time the DTCs wee cleared",
             new HashMap<Unit, PID.Unmarshaller<MonitorStatus>>()
             {
                 {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, new PID.Unmarshaller<MonitorStatus>()
+                    super.put(Unit.PACKETED, new PID.Unmarshaller<MonitorStatus>()
                     {
                         @Override
                         public MonitorStatus invoke(byte... bytes)
                         {
                             return new MonitorStatus(((bytes[0] & 0xFF) << 24) |
-                                                             ((bytes[1] & 0xFF) << 16) |
-                                                             ((bytes[2] & 0xFF) << 8) |
-                                                             (bytes[3] & 0xFF));
+                                                     ((bytes[1] & 0xFF) << 16) |
+                                                     ((bytes[2] & 0xFF) << 8) |
+                                                     (bytes[3] & 0xFF));
                         }
                     });
                 }
-            },
-            4
-    )
-    {
-
-        final class ModelView
-        {
-            TextView milStatus;
-            TextView dtcCount;
-            TextView monitorStatus;
-        }
-
-        @Override
-        public int getLayoutID()
-        {
-            return R.layout.monitor_status_listview_item;
-        }
-
-        @Override
-        public Object createViewModel(View view)
-        {
-            ModelView dmv = new ModelView();
-            dmv.milStatus = (TextView) view.findViewById(R.id.monitor_status_mil_status);
-            dmv.dtcCount = (TextView) view.findViewById(R.id.monitor_status_dtc_count);
-            dmv.monitorStatus = (TextView)view.findViewById(R.id.monitor_status_support_readiness);
-            return dmv;
-        }
-
-        @Override
-        public void updateViewModel(Object view, Object value)
-        {
-            MonitorStatus ms = (MonitorStatus)value;
-            if(ms != null)
-            {
-                ModelView mv = (ModelView) view;
-                mv.milStatus.setText(ms.isMalfunctionLampOn() ? "ON" : "OFF");
-                mv.dtcCount.setText(String.valueOf(ms.getDiagnosticTroubleCodeCount()));
-                mv.monitorStatus.setText(ms.getSupportReadinessString());
             }
-        }
-    };
+    );
+
     /// A PID that requests the {@link DiagnosticTroubleCode DTC} that caused a freeze-frame
     /// Note: {@link DiagnosticTroubleCode#NO_DTC is returned if there is not a DTC set
     public final static PID<DiagnosticTroubleCode> FREEZE_FRAME_DTC
-            = new DefaultPID<>(
-            0x02,
-            "DTCFRZF",
-            "Check to see whether or not freeze frame data exists",
-            new HashMap<Unit, PID.Unmarshaller<DiagnosticTroubleCode>>()
+        = new DefaultPID<>(
+        0x02,
+        "DTCFRZF",
+        "Check to see whether or not freeze frame data exists",
+        new HashMap<Unit, PID.Unmarshaller<DiagnosticTroubleCode>>()
+        {
             {
-                {
-                    super.put(Unit.INTERNAL_PLACEHOLDER,
-                              new PID.Unmarshaller<DiagnosticTroubleCode>()
-                              {
-                                  @Override
-                                  public DiagnosticTroubleCode invoke(byte... bytes)
-                                  {
-                                      return new DiagnosticTroubleCode((bytes[0] << 8) | bytes[1], "N/A");
-                                  }
-                              });
-                }
-            },
-            2
+                super.put(Unit.INTERNAL_PLACEHOLDER,
+                    new PID.Unmarshaller<DiagnosticTroubleCode>()
+                    {
+                        @Override
+                        public DiagnosticTroubleCode invoke(byte... bytes)
+                        {
+                            return new DiagnosticTroubleCode((bytes[0] << 8) | bytes[1],
+                                    Globals.getString(Globals.I18N_STRING.NOT_AVAILABLE));
+                        }
+                    }
+                );
+            }
+        }
     );
 
     /// A PID that requests the {@link FuelSystemStatus statuses} of all onboard fuel systems
     public final static PID<SerializablePair<FuelSystemStatus, FuelSystemStatus>> FUEL_SYSTEM_STATUS
-            = new DefaultPID<SerializablePair<FuelSystemStatus, FuelSystemStatus>>(
+            = new DefaultPID<>(
             0x03,
             "FSYS_STAT",
             "Retrieves a collection of statuses for all onboard fuel systems",
@@ -136,59 +94,21 @@ public class AppendixB
             {
                 {
                     super.put(Unit.INTERNAL_PLACEHOLDER,
-                              new PID.Unmarshaller<SerializablePair<FuelSystemStatus, FuelSystemStatus>>()
-                              {
+                    new PID.Unmarshaller<SerializablePair<FuelSystemStatus, FuelSystemStatus>>()
+                    {
 
-                                  @Override
-                                  public SerializablePair<FuelSystemStatus, FuelSystemStatus> invoke(
-                                          byte... bytes)
-                                  {
-                                      return new SerializablePair<>(FuelSystemStatus.forByte(
-                                              bytes[0]), FuelSystemStatus.forByte(bytes[1]));
-                                  }
-                              });
+                        @Override
+                        public SerializablePair<FuelSystemStatus, FuelSystemStatus> invoke(
+                                byte... bytes)
+                        {
+                            return new SerializablePair<>(FuelSystemStatus.forByte(bytes[0]),
+                                                          FuelSystemStatus.forByte(bytes[1]));
+                        }
+                    });
                 }
-            },
-            2
-    )
-    {
-        final class ModelView
-        {
-            TextView fSys1;
-            TextView fSys2;
-        }
-
-        @Override
-        public int getLayoutID()
-        {
-            return R.layout.fuel_system_status_listview_item;
-        }
-
-        @Override
-        public Object createViewModel(View view)
-        {
-            ModelView dmv = new ModelView();
-            dmv.fSys1 = (TextView) view.findViewById(R.id.fuel_system_status_1);
-            dmv.fSys2 = (TextView) view.findViewById(R.id.fuel_system_status_2);
-            return dmv;
-        }
-
-        @Override
-        public void updateViewModel(Object view, Object value)
-        {
-            @SuppressWarnings("unchecked")
-            SerializablePair<FuelSystemStatus, FuelSystemStatus> ms =
-                    (SerializablePair<FuelSystemStatus, FuelSystemStatus>)value;
-            if(ms != null)
-            {
-                ModelView mv = (ModelView) view;
-                if(ms.first != null)
-                mv.fSys1.setText(ms.first.toString());
-                if(ms.second != null)
-                mv.fSys2.setText(ms.second.toString());
             }
-        }
-    };
+    );
+
     /// A PID that requests the calculated engine load (LOAD)
     public final static PID<Float> CALCULATED_ENGINE_LOAD = new DefaultPID<>(
             0x04,
@@ -206,9 +126,9 @@ public class AppendixB
                         }
                     });
                 }
-            },
-            1
+            }
     );
+
     /// A PID that requests the coolant temperature (CTS)
     /// NOTE: Diesel vehicles that are unequipped with a coolant temperature sensor are permitted
     ///       to substitute the reading of the engine oil temperature instead!
@@ -236,13 +156,12 @@ public class AppendixB
                         }
                     });
                 }
-            },
-            1
+            }
     );
 
     /// A PID that requests the short term fuel trim value for bank 1 (STFT1)
     public final static PID<SerializablePair<Float, Float>> SHORT_TERM_FUEL_TRIM_BANK_1_3 =
-            new DefaultPID<SerializablePair<Float, Float>>(
+            new DefaultPID<>(
                     0x06,
                     "SHRTFT1",
                     "Retrieve the short term fuel trim for bank 1 (%)",
@@ -264,19 +183,12 @@ public class AppendixB
                                           }
                                       });
                         }
-                    }, 0
-            )
-            {
-                @Override
-                public int getResponseLength(Profile profile)
-                {
-                    return profile.isEquipped(Profile.BANK_3) ? 2 : 1;
-                }
-            };
+                    }
+            );
 
     /// A PID that requests the long term fuel trim value for bank 1 (LTFT1)
     public final static PID<SerializablePair<Float, Float>> LONG_TERM_FUEL_TRIM_BANK_1_3 =
-            new DefaultPID<SerializablePair<Float, Float>>(
+            new DefaultPID<>(
                     0x07,
                     "LONGFT1",
                     "Retrieve the long term fuel trim for bank 1 (%)",
@@ -298,19 +210,12 @@ public class AppendixB
                                           }
                                       });
                         }
-                    }, 0
-            )
-            {
-                @Override
-                public int getResponseLength(Profile profile)
-                {
-                    return profile.isEquipped(Profile.BANK_3) ? 2 : 1;
-                }
-            };
+                    }
+            );
 
     /// A PID that requests the short term fuel trim value for bank 2 (STFT2)
     public final static PID<SerializablePair<Float, Float>> SHORT_TERM_FUEL_TRIM_BANK_2_4 =
-            new DefaultPID<SerializablePair<Float, Float>>(
+            new DefaultPID<>(
                     0x08,
                     "SHRTFT2",
                     "Retrieve the short term fuel trim for bank 2 (%)",
@@ -332,19 +237,12 @@ public class AppendixB
                                           }
                                       });
                         }
-                    }, 0
-            )
-            {
-                @Override
-                public int getResponseLength(Profile profile)
-                {
-                    return profile.isEquipped(Profile.BANK_4) ? 2 : 1;
-                }
-            };
+                    }
+            );
 
     /// A PID that requests the long term fuel trim value for bank 2 (LTFT2)
     public final static PID<SerializablePair<Float, Float>> LONG_TERM_FUEL_TRIM_BANK_2_4 =
-            new DefaultPID<SerializablePair<Float, Float>>(
+            new DefaultPID<>(
                     0x09,
                     "LONGFT2",
                     "Retrieve the long term fuel trim for bank 2 (%)",
@@ -366,15 +264,8 @@ public class AppendixB
                                           }
                                       });
                         }
-                    }, 0
-            )
-            {
-                @Override
-                public int getResponseLength(Profile profile)
-                {
-                    return profile.isEquipped(Profile.BANK_4) ? 2 : 1;
-                }
-            };
+                    }
+            );
 
     /// A PID that requests the fuel pressure at the fuel rail relative to atmosphere (FP)
     /// NOTE: An ECU may ONLY support ONE of the following PIDs: 0x0A, 0x22, or 0x23
@@ -399,9 +290,16 @@ public class AppendixB
                                     return (bytes[0] & 0xFF) * 3;
                                 }
                             });
+                            super.put(Unit.PSI, new PID.Unmarshaller<Integer>()
+                            {
+                                @Override
+                                public Integer invoke(byte... bytes)
+                                {
+                                    return (int)(((bytes[0] & 0xFF) * 3) * Constants.PSI_TO_KILO_PASCAL_FACTOR);
+                                }
+                            });
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the manifold pressure by a manifold absolute pressure sensor. (MAP)
@@ -423,9 +321,16 @@ public class AppendixB
                                     return bytes[0] & 0xFF;
                                 }
                             });
+                            super.put(Unit.PSI, new PID.Unmarshaller<Integer>()
+                            {
+                                @Override
+                                public Integer invoke(byte... bytes)
+                                {
+                                    return (int)((bytes[0] & 0xFF) * Constants.PSI_TO_KILO_PASCAL_FACTOR);
+                                }
+                            });
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the engine speed (RPM)
@@ -446,8 +351,7 @@ public class AppendixB
                                 }
                             });
                         }
-                    },
-                    2
+                    }
             );
 
     /// A PID that requests the vehicle speed (VSS)
@@ -470,10 +374,16 @@ public class AppendixB
                                     return bytes[0] & 0xFF;
                                 }
                             });
-                            /// TODO: MPH Unmarshaller
+                            super.put(Unit.MILES_PER_HOUR, new PID.Unmarshaller<Integer>()
+                            {
+                                @Override
+                                public Integer invoke(byte... bytes)
+                                {
+                                    return (int)((bytes[0] & 0xFF) * Constants.KILOMETERS_TO_MILES);
+                                }
+                            });
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the ignition timing advance for cylinder #1
@@ -494,10 +404,8 @@ public class AppendixB
                                     return ((bytes[0] & 0xFF) - 128) / 2.0f;
                                 }
                             });
-                            /// TODO: Radian Unmarshaller
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the intake air temperature (IAT)
@@ -528,8 +436,7 @@ public class AppendixB
                                 }
                             });
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the airflow rate by a mass airflow sensor (MAF)
@@ -549,9 +456,16 @@ public class AppendixB
                                     return (((bytes[0] & 0xFF) << 8) | (bytes[1] & 0xFF)) / 100.0f;
                                 }
                             });
+                            super.put(Unit.POUNDS_PER_MINUTE, new PID.Unmarshaller<Float>()
+                            {
+                                @Override
+                                public Float invoke(byte... bytes)
+                                {
+                                    return ((((bytes[0] & 0xFF) << 8) | (bytes[1] & 0xFF)) / 100.0f) * Constants.GRAMS_PER_SEC_TO_POUNDS_PER_MIN;
+                                }
+                            });
                         }
-                    },
-                    2
+                    }
             );
 
     /// A PID that requests the absolute throttle position (TPS)
@@ -571,10 +485,8 @@ public class AppendixB
                                     return ((bytes[0] & 0xFF) * 100.0f) / 255.0f;
                                 }
                             });
-                            // TODO: Voltage Conversion? assume 0-5 volts and interpolate?
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the secondary air status (AIR)
@@ -596,32 +508,30 @@ public class AppendixB
                                           }
                                       });
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the location of all onboard conventional oxygen sensors
     /// NOTE: SAE_J1979 specifies that if this PID is supported, then PID 1D must be unsupported
-    public final static PID<Collection<OxygenSensor>> DUAL_BANK_OXYGEN_SENSOR_LOCATIONS =
+    public final static PID<OxygenSensor[]> DUAL_BANK_OXYGEN_SENSOR_LOCATIONS =
             new DefaultPID<>(
                     0x13,
                     "O2SLOC",
                     "Retrieve all equipped oxygen sensors",
-                    new HashMap<Unit, PID.Unmarshaller<Collection<OxygenSensor>>>()
+                    new HashMap<Unit, PID.Unmarshaller<OxygenSensor[]>>()
                     {
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER,
-                                      new PID.Unmarshaller<Collection<OxygenSensor>>()
+                                      new PID.Unmarshaller<OxygenSensor[]>()
                                       {
                                           @Override
-                                          public Collection<OxygenSensor> invoke(byte... bytes)
+                                          public OxygenSensor[] invoke(byte... bytes)
                                           {
                                               return OxygenSensor.DualBank.forByte(bytes[0]);
                                           }
                                       });
                         }
-                    },
-                    1
+                    }
             );
 
     /// A voltage unmarshaller for conventional oxygen sensors.
@@ -656,8 +566,7 @@ public class AppendixB
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
                 }
-            },
-            1
+            }
     );
 
     /// A PID that requests the reading of O2S11 on a quad-bank system
@@ -672,8 +581,7 @@ public class AppendixB
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
                 }
-            },
-            1
+            }
     );
 
     /// A PID that requests the reading of O2S12 on a dual-bank system
@@ -688,8 +596,7 @@ public class AppendixB
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
                 }
-            },
-            1
+            }
     );
     /// A PID that requests the reading of O2S12 on a quad-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $25 is
@@ -703,8 +610,7 @@ public class AppendixB
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
                 }
-            },
-            1
+            }
     );
 
     /// A PID that requests the reading of O2S13 on a dual-bank system
@@ -719,8 +625,7 @@ public class AppendixB
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
                 }
-            },
-            1
+            }
     );
 
     /// A PID that requests the reading of O2S21 on a quad-bank system
@@ -735,8 +640,7 @@ public class AppendixB
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
                 }
-            },
-            1
+            }
     );
 
     /// A PID that requests the reading of O2S14 on a dual-bank system
@@ -751,8 +655,7 @@ public class AppendixB
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
                 }
-            },
-            1
+            }
     );
 
     /// A PID that requests the reading of O2S22 on a quad-bank system
@@ -767,8 +670,7 @@ public class AppendixB
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
                 }
-            },
-            1
+            }
     );
 
     /// A PID that requests the reading of O2S21 on a dual-bank system
@@ -783,8 +685,7 @@ public class AppendixB
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
                 }
-            },
-            1
+            }
     );
 
     /// A PID that requests the reading of O2S31 on a quad-bank system
@@ -799,8 +700,7 @@ public class AppendixB
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
                 }
-            },
-            1
+            }
     );
 
     /// A PID that requests the reading of O2S14 on a dual-bank system
@@ -815,8 +715,7 @@ public class AppendixB
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
                 }
-            },
-            1
+            }
     );
 
     /// A PID that requests the reading of O2S32 on a quad-bank system
@@ -831,8 +730,7 @@ public class AppendixB
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
                 }
-            },
-            1
+            }
     );
 
     /// A PID that requests the reading of O2S23 on a dual-bank system
@@ -847,8 +745,7 @@ public class AppendixB
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
                 }
-            },
-            1
+            }
     );
 
     /// A PID that requests the reading of O2S41 on a quad-bank system
@@ -863,8 +760,7 @@ public class AppendixB
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
                 }
-            },
-            1
+            }
     );
 
     /// A PID that requests the reading of O2S24 on a dual-bank system
@@ -879,8 +775,7 @@ public class AppendixB
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
                 }
-            },
-            1
+            }
     );
 
     /// A PID that requests the reading of O2S42 on a quad-bank system
@@ -895,8 +790,7 @@ public class AppendixB
                     super.put(Unit.VOLTS, O2S_VOLTAGE);
                     super.put(Unit.PERCENT, O2S_FUEL_TRIM);
                 }
-            },
-            1
+            }
     );
 
     /// A PID that requests the type of on-board diagnostics that the vehicle supports
@@ -916,32 +810,30 @@ public class AppendixB
                         }
                     });
                 }
-            },
-            1
+            }
     );
 
     /// A PID that requests the location of all onboard wide range oxygen sensors
     /// NOTE: SAE_J1979 specifies that if this PID is supported, then PID 13 must be unsupported
-    public final static PID<Collection<OxygenSensor>> QUAD_BANK_OXYGEN_SENSOR_LOCATIONS =
+    public final static PID<OxygenSensor[]> QUAD_BANK_OXYGEN_SENSOR_LOCATIONS =
             new DefaultPID<>(
                     0x1D,
                     "O2SLOC",
                     "Retrieve all equipped oxygen sensors",
-                    new HashMap<Unit, PID.Unmarshaller<Collection<OxygenSensor>>>()
+                    new HashMap<Unit, PID.Unmarshaller<OxygenSensor[]>>()
                     {
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER,
-                                      new PID.Unmarshaller<Collection<OxygenSensor>>()
+                                      new PID.Unmarshaller<OxygenSensor[]>()
                                       {
                                           @Override
-                                          public Collection<OxygenSensor> invoke(byte... bytes)
+                                          public OxygenSensor[] invoke(byte... bytes)
                                           {
                                               return OxygenSensor.QuadBank.forByte(bytes[0]);
                                           }
                                       });
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the status of an onboard PTO unit
@@ -961,8 +853,7 @@ public class AppendixB
                         }
                     });
                 }
-            },
-            1
+            }
     );
 
     public final static PID<Integer> TIME_SINCE_ENGINE_START = new DefaultPID<>(
@@ -981,8 +872,7 @@ public class AppendixB
                         }
                     });
                 }
-            },
-            2
+            }
     );
 
     public final static PID<Integer> DISTANCE_TRAVELLED_WHILE_MIL_IS_ACTIVATED = new DefaultPID<>(
@@ -1000,10 +890,16 @@ public class AppendixB
                             return ((bytes[0] & 0xFF) << 8) | bytes[1];
                         }
                     });
-                    // TODO: Miles Conversion
+                    super.put(Unit.MILES, new PID.Unmarshaller<Integer>()
+                    {
+                        @Override
+                        public Integer invoke(byte... bytes)
+                        {
+                            return (int)((((bytes[0] & 0xFF) << 8) | bytes[1]) * Constants.KILOMETERS_TO_MILES);
+                        }
+                    });
                 }
-            },
-            2
+            }
     );
 
     /// A PID that requests the fuel pressure at the fuel rail relative to intake manifold vacuum (FP)
@@ -1029,9 +925,16 @@ public class AppendixB
                                     return (((bytes[0] & 0xFF) << 8) | bytes[1]) * 0.079F;
                                 }
                             });
+                            super.put(Unit.PSI, new PID.Unmarshaller<Float>()
+                            {
+                                @Override
+                                public Float invoke(byte... bytes)
+                                {
+                                    return ((((bytes[0] & 0xFF) << 8) | bytes[1]) * 0.079F) * Constants.KILO_PASCAL_TO_PSI_FACTOR;
+                                }
+                            });
                         }
-                    },
-                    2
+                    }
             );
 
     /// A PID that requests the fuel pressure at the fuel rail relative to atmosphere
@@ -1065,8 +968,7 @@ public class AppendixB
                         }
                     });
                 }
-            },
-            2
+            }
     );
 
     private final static PID.Unmarshaller<SerializablePair<Float, Float>>
@@ -1094,8 +996,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the reading of O2S11 on a quad-bank system
@@ -1110,8 +1011,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the reading of O2S12 on a dual-bank system
@@ -1126,8 +1026,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
-                    },
-                    1
+                    }
             );
     /// A PID that requests the reading of O2S12 on a quad-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $15 is
@@ -1141,8 +1040,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the reading of O2S13 on a dual-bank system
@@ -1157,8 +1055,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the reading of O2S21 on a quad-bank system
@@ -1173,8 +1070,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the reading of O2S14 on a dual-bank system
@@ -1189,8 +1085,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the reading of O2S22 on a quad-bank system
@@ -1205,8 +1100,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the reading of O2S21 on a dual-bank system
@@ -1221,8 +1115,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the reading of O2S31 on a quad-bank system
@@ -1237,8 +1130,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the reading of O2S14 on a dual-bank system
@@ -1253,8 +1145,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the reading of O2S32 on a quad-bank system
@@ -1269,8 +1160,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the reading of O2S23 on a dual-bank system
@@ -1285,8 +1175,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the reading of O2S41 on a quad-bank system
@@ -1301,8 +1190,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the reading of O2S24 on a dual-bank system
@@ -1317,8 +1205,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the reading of O2S42 on a quad-bank system
@@ -1333,8 +1220,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
-                    },
-                    1
+                    }
             );
 
     /// A PID that requests the commanded EGR as a percent.  EGR shall be normalized to the
@@ -1367,8 +1253,7 @@ public class AppendixB
                         }
                     });
                 }
-            },
-            1
+            }
     );
     /// todo: docs.
     public final static PID<Float> EGR_ERROR = new DefaultPID<>(
@@ -1387,8 +1272,7 @@ public class AppendixB
                         }
                     });
                 }
-            },
-            1
+            }
     );
 
     public final static PID<Float> COMMANDED_EVAPORATIVE_PURGE = new DefaultPID<>(
@@ -1407,8 +1291,7 @@ public class AppendixB
                         }
                     });
                 }
-            },
-            1
+            }
     );
 
     public final static PID<Float> FUEL_LEVEL_INPUT = new DefaultPID<>(
@@ -1427,8 +1310,7 @@ public class AppendixB
                         }
                     });
                 }
-            },
-            1
+            }
     );
 
     public final static PID<Integer> WARM_UPS_SINCE_DTC_RESET = new DefaultPID<>(
@@ -1447,8 +1329,7 @@ public class AppendixB
                         }
                     });
                 }
-            },
-            1
+            }
     );
 
     public final static PID<Integer> DISTANCE_TRAVELLED_SINCE_DTC_RESET = new DefaultPID<>(
@@ -1458,7 +1339,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<Integer>>()
             {
                 {
-                    super.put(Unit.ACCUMULATED_NUMBER, new PID.Unmarshaller<Integer>()
+                    super.put(Unit.KILOMETERS, new PID.Unmarshaller<Integer>()
                     {
                         @Override
                         public Integer invoke(byte... bytes)
@@ -1466,9 +1347,16 @@ public class AppendixB
                             return ((bytes[0] & 0xFF) << 8) | bytes[1];
                         }
                     });
+                    super.put(Unit.MILES, new PID.Unmarshaller<Integer>()
+                    {
+                        @Override
+                        public Integer invoke(byte... bytes)
+                        {
+                            return (int)((((bytes[0] & 0xFF) << 8) | bytes[1]) * Constants.KILOMETERS_TO_MILES);
+                        }
+                    });
                 }
-            },
-            2
+            }
     );
 
     public final static PID<Float> EVAP_SYSTEM_VAPOR_PRESSURE = new DefaultPID<>(
@@ -1486,10 +1374,16 @@ public class AppendixB
                             return ((bytes[0] << 8) | bytes[1]) * 0.25f;
                         }
                     });
-                    // TODO: in H2O
+                    super.put(Unit.INCHES_OF_WATER, new PID.Unmarshaller<Float>()
+                    {
+                        @Override
+                        public Float invoke(byte... bytes)
+                        {
+                            return (((bytes[0] << 8) | bytes[1]) * 0.25f) * Constants.PASCALS_TO_INCHES_H2O;
+                        }
+                    });
                 }
-            },
-            2
+            }
     );
 
     public final static PID<Float> BAROMETRIC_PRESSURE = new DefaultPID<>(
@@ -1512,13 +1406,11 @@ public class AppendixB
                         @Override
                         public Float invoke(byte... bytes)
                         {
-                            // TODO: Implement conversion..
-                            return null;
+                            return ((bytes[0] & 0xFF) * Constants.KILO_PASCAL_TO_INCHES_MERCURY);
                         }
                     });
                 }
-            },
-            1
+            }
     );
 
     /// TODO: Override toString? needs to fit in UI display..
@@ -1544,8 +1436,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
-                    },
-                    4
+                    }
             );
 
     public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S12_WIDE_RANGE_ALT =
@@ -1558,8 +1449,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
-                    },
-                    4
+                    }
             );
 
     public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S13_WIDE_RANGE_ALT =
@@ -1572,8 +1462,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
-                    },
-                    4
+                    }
             );
 
     public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S14_WIDE_RANGE_ALT =
@@ -1586,8 +1475,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
-                    },
-                    4
+                    }
             );
 
     public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S21_WIDE_RANGE_ALT =
@@ -1600,8 +1488,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
-                    },
-                    4
+                    }
             );
 
     public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S22_WIDE_RANGE_ALT =
@@ -1614,8 +1501,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
-                    },
-                    4
+                    }
             );
 
     public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S23_WIDE_RANGE_ALT =
@@ -1628,8 +1514,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
-                    },
-                    4
+                    }
             );
 
     public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S24_WIDE_RANGE_ALT =
@@ -1642,8 +1527,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
-                    },
-                    4
+                    }
             );
 
 
@@ -1657,8 +1541,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
-                    },
-                    4
+                    }
             );
 
     public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S12_WIDE_RANGE_ALT =
@@ -1671,8 +1554,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
-                    },
-                    4
+                    }
             );
 
     public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S21_WIDE_RANGE_ALT =
@@ -1685,8 +1567,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
-                    },
-                    4
+                    }
             );
 
     public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S22_WIDE_RANGE_ALT =
@@ -1699,8 +1580,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
-                    },
-                    4
+                    }
             );
 
     public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S31_WIDE_RANGE_ALT =
@@ -1713,8 +1593,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
-                    },
-                    4
+                    }
             );
 
     public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S32_WIDE_RANGE_ALT =
@@ -1727,8 +1606,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
-                    },
-                    4
+                    }
             );
 
     public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S41_WIDE_RANGE_ALT =
@@ -1741,8 +1619,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
-                    },
-                    4
+                    }
             );
 
     public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S42_WIDE_RANGE_ALT =
@@ -1755,8 +1632,7 @@ public class AppendixB
                         {
                             super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
-                    },
-                    4
+                    }
             );
 
     private final static PID.Unmarshaller<Float> CATALYST_TEMPERATURE_CELSIUS_UNMARSHALLER =
@@ -1790,8 +1666,7 @@ public class AppendixB
                     super.put(Unit.TEMPERATURE_FAHRENHEIT,
                               CATALYST_TEMPERATURE_FAHRENHEIT_UNMARSHALLER);
                 }
-            },
-            2
+            }
     );
 
     public final static PID<Float> CATALYST_TEMPERATURE_BANK_1_SENSOR_2 = new DefaultPID<>(
@@ -1805,8 +1680,7 @@ public class AppendixB
                     super.put(Unit.TEMPERATURE_FAHRENHEIT,
                               CATALYST_TEMPERATURE_FAHRENHEIT_UNMARSHALLER);
                 }
-            },
-            2
+            }
     );
 
     public final static PID<Float> CATALYST_TEMPERATURE_BANK_2_SENSOR_1 = new DefaultPID<>(
@@ -1820,8 +1694,7 @@ public class AppendixB
                     super.put(Unit.TEMPERATURE_FAHRENHEIT,
                               CATALYST_TEMPERATURE_FAHRENHEIT_UNMARSHALLER);
                 }
-            },
-            2
+            }
     );
 
     public final static PID<Float> CATALYST_TEMPERATURE_BANK_2_SENSOR_2 = new DefaultPID<>(
@@ -1835,8 +1708,288 @@ public class AppendixB
                     super.put(Unit.TEMPERATURE_FAHRENHEIT,
                               CATALYST_TEMPERATURE_FAHRENHEIT_UNMARSHALLER);
                 }
-            },
-            2
+            }
     );
 
+    public final static PID<DriveCycleMonitorStatus> MONITOR_STATUS_THIS_DRIVING_CYCLE = new DefaultPID<>(
+            0x41,
+            "N/A",
+            "",
+            new HashMap<Unit, PID.Unmarshaller<DriveCycleMonitorStatus>>()
+            {
+                {
+                    super.put(Unit.PACKETED, new PID.Unmarshaller<DriveCycleMonitorStatus>()
+                    {
+                        @Override
+                        public DriveCycleMonitorStatus invoke(byte... bytes)
+                        {
+                            return new DriveCycleMonitorStatus(((bytes[0] & 0xFF) << 24) |
+                                ((bytes[1] & 0xFF) << 16) |
+                                ((bytes[2] & 0xFF) << 8) |
+                                (bytes[3] & 0xFF));
+                        }
+                    });
+                }
+            }
+    );
+
+    public final static PID<Float> CONTROL_MODULE_VOLTAGE = new DefaultPID<>(
+            0x42,
+            "VPWR",
+            "",
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
+                {
+                    super.put(Unit.VOLTS, new PID.Unmarshaller<Float>()
+                    {
+                        @Override
+                        public Float invoke(byte... bytes)
+                        {
+                            return (((bytes[0] & 0xFF) << 8) |
+                                    (bytes[1] & 0xFF)) * 0.001f;
+                        }
+                    });
+                }
+            }
+    );
+
+    public final static PID<Float> ABSOLUTE_LOAD_VALUE = new DefaultPID<>(
+            0x43,
+            "LOAD_ABS",
+            "",
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
+                {
+                    super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
+                    {
+                        @Override
+                        public Float invoke(byte... bytes)
+                        {
+                            return (((bytes[0] & 0xFF) << 8) |
+                                    (bytes[1] & 0xFF)) * 100.0f / 255.0f;
+                        }
+                    });
+                }
+            }
+    );
+
+    public final static PID<Float> COMMANDED_EQUIVALENCE_RATIO = new DefaultPID<>(
+            0x44,
+            "EQ_RAT",
+            "",
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
+                {
+                    super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
+                    {
+                        @Override
+                        public Float invoke(byte... bytes)
+                        {
+                            return (((bytes[0] & 0xFF) << 8) |
+                                    (bytes[1] & 0xFF)) * 0.0000305f;
+                        }
+                    });
+                }
+            }
+    );
+
+    public final static PID<Float> RELATIVE_THROTTLE_POSITION = new DefaultPID<>(
+            0x45,
+            "TP_R",
+            "",
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
+                {
+                    super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
+                    {
+                        @Override
+                        public Float invoke(byte... bytes)
+                        {
+                            return (bytes[0] & 0xFF) * 100.0f / 255.0f;
+                        }
+                    });
+                }
+            }
+    );
+
+    public final static PID<Integer> AMBIENT_AIR_TEMPERATURE = new DefaultPID<>(
+            0x46,
+            "AAT",
+            "",
+            new HashMap<Unit, PID.Unmarshaller<Integer>>()
+            {
+                {
+                    super.put(Unit.TEMPERATURE_CELSIUS, new PID.Unmarshaller<Integer>()
+                    {
+                        @Override
+                        public Integer invoke(byte... bytes)
+                        {
+                            return (bytes[0] & 0xFF) - 40;
+                        }
+                    });
+                    super.put(Unit.TEMPERATURE_FAHRENHEIT, new PID.Unmarshaller<Integer>()
+                    {
+                        @Override
+                        public Integer invoke(byte... bytes)
+                        {
+                            return (int)(((bytes[0] & 0xFF) - 40.0f) * 9.0f / 5.0f + 32.0f);
+                        }
+                    });
+                }
+            }
+    );
+
+    public final static PID<Float> ABSOLUTE_THROTTLE_POSITION_B = new DefaultPID<>(
+            0x47,
+            "TP_B",
+            "",
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
+                {
+                    super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
+                    {
+                        @Override
+                        public Float invoke(byte... bytes)
+                        {
+                            return (bytes[0] & 0xFF) * 100.0f / 255.0f;
+                        }
+                    });
+                }
+            }
+    );
+
+    public final static PID<Float> ABSOLUTE_THROTTLE_POSITION_C = new DefaultPID<>(
+            0x48,
+            "TP_C",
+            "",
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
+                {
+                    super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
+                    {
+                        @Override
+                        public Float invoke(byte... bytes)
+                        {
+                            return (bytes[0] & 0xFF) * 100.0f / 255.0f;
+                        }
+                    });
+                }
+            }
+    );
+
+    public final static PID<Float> ABSOLUTE_THROTTLE_POSITION_D = new DefaultPID<>(
+            0x49,
+            "TP_D",
+            "",
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
+                {
+                    super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
+                    {
+                        @Override
+                        public Float invoke(byte... bytes)
+                        {
+                            return (bytes[0] & 0xFF) * 100.0f / 255.0f;
+                        }
+                    });
+                }
+            }
+    );
+
+    public final static PID<Float> ABSOLUTE_THROTTLE_POSITION_E = new DefaultPID<>(
+            0x4A,
+            "TP_E",
+            "",
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
+                {
+                    super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
+                    {
+                        @Override
+                        public Float invoke(byte... bytes)
+                        {
+                            return (bytes[0] & 0xFF) * 100.0f / 255.0f;
+                        }
+                    });
+                }
+            }
+    );
+
+    public final static PID<Float> ABSOLUTE_THROTTLE_POSITION_F = new DefaultPID<>(
+            0x4B,
+            "TP_F",
+            "",
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
+                {
+                    super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
+                    {
+                        @Override
+                        public Float invoke(byte... bytes)
+                        {
+                            return (bytes[0] & 0xFF) * 100.0f / 255.0f;
+                        }
+                    });
+                }
+            }
+    );
+
+    public final static PID<Float> COMMANDED_THROTTLE_ACTUATOR_CONTROL = new DefaultPID<>(
+            0x4C,
+            "TAC_PCT",
+            "",
+            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            {
+                {
+                    super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
+                    {
+                        @Override
+                        public Float invoke(byte... bytes)
+                        {
+                            return (bytes[0] & 0xFF) * 100.0f / 255.0f;
+                        }
+                    });
+                }
+            }
+    );
+
+    public final static PID<Integer> MINUTES_RAN_BY_ENGINE_WITH_MIL_ACTIVATED = new DefaultPID<>(
+            0x4D,
+            "MIL_TIME",
+            "",
+            new HashMap<Unit, PID.Unmarshaller<Integer>>()
+            {
+                {
+                    super.put(Unit.MINUTES, new PID.Unmarshaller<Integer>()
+                    {
+                        @Override
+                        public Integer invoke(byte... bytes)
+                        {
+                            return ((bytes[0] & 0xFF) << 8) | bytes[1];
+                        }
+                    });
+                }
+            }
+    );
+
+    public final static PID<Integer> TIME_SINCE_DTC_CLEARED = new DefaultPID<>(
+            0x4E,
+            "CLR_TIME",
+            "",
+            new HashMap<Unit, PID.Unmarshaller<Integer>>()
+            {
+                {
+                    super.put(Unit.MINUTES, new PID.Unmarshaller<Integer>()
+                    {
+                        @Override
+                        public Integer invoke(byte... bytes)
+                        {
+                            return ((bytes[0] & 0xFF) << 8) | bytes[1];
+                        }
+                    });
+                }
+            }
+    );
+
+    /// PIDs $4F - $FF are reserved by SAE J1979
 }
