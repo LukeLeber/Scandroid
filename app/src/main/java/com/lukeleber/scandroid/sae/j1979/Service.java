@@ -13,9 +13,9 @@ import java.io.Serializable;
 
 /**
  * <p>An enumeration of all service modes defined by SAE-J1979.  Vehicles are not required to
- * support all services.  It is recommended to use a {@link com.lukeleber.scandroid.sae.Profile}
+ * support all services.  It is recommended to use a {@link Profile}
  * to help determine which services are supported by a vehicle through the
- * {@link com.lukeleber.scandroid.sae.Profile#isServiceSupported(Service)} method.</p>
+ * {@link Profile#isServiceSupported(Service)} method.</p>
  * <p><strong>Note that there are substantial variations in the documentation depending
  * on which protocol the vehicle supports!</strong></p>
  */

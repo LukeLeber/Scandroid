@@ -5,11 +5,10 @@
  * Copyright (c) Luke A. Leber <LukeLeber@gmail.com> 2014
  */
 
-package com.lukeleber.scandroid.sae;
+package com.lukeleber.scandroid.sae.j1979;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public enum OxygenSensor implements Serializable
@@ -68,7 +67,7 @@ public enum OxygenSensor implements Serializable
             return (val & mask) != 0;
         }
 
-        public static Collection<OxygenSensor> forByte(int val)
+        public static OxygenSensor[] forByte(int val)
         {
             List<OxygenSensor> sensors = new ArrayList<>();
             for (DualBank sensor : DualBank.values())
@@ -78,7 +77,8 @@ public enum OxygenSensor implements Serializable
                     sensors.add(OxygenSensor.valueOf(sensor.name()));
                 }
             }
-            return sensors;
+            OxygenSensor[] rv = new OxygenSensor[sensors.size()];
+            return sensors.toArray(rv);
         }
 
         DualBank(int mask)
@@ -105,7 +105,7 @@ public enum OxygenSensor implements Serializable
             return (val & mask) != 0;
         }
 
-        public static Collection<OxygenSensor> forByte(int val)
+        public static OxygenSensor[] forByte(int val)
         {
             List<OxygenSensor> sensors = new ArrayList<>();
             for (QuadBank sensor : QuadBank.values())
@@ -115,7 +115,8 @@ public enum OxygenSensor implements Serializable
                     sensors.add(OxygenSensor.valueOf(sensor.name()));
                 }
             }
-            return sensors;
+            OxygenSensor[] rv = new OxygenSensor[sensors.size()];
+            return sensors.toArray(rv);
         }
 
         QuadBank(int mask)

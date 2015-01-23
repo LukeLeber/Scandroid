@@ -5,17 +5,14 @@
  * Copyright (c) Luke A. Leber <LukeLeber@gmail.com> 2014
  */
 
-package com.lukeleber.scandroid.sae;
+package com.lukeleber.scandroid.sae.j1979;
 
-import com.lukeleber.scandroid.interpreter.ConfigurationRequest;
 import com.lukeleber.scandroid.interpreter.FailureCode;
 import com.lukeleber.scandroid.interpreter.Handler;
 import com.lukeleber.scandroid.interpreter.Interpreter;
-import com.lukeleber.scandroid.interpreter.elm327.OpCode;
 import com.lukeleber.scandroid.interpreter.elm327.Protocol;
-import com.lukeleber.scandroid.sae.detail.AppendixA;
-import com.lukeleber.scandroid.sae.detail.AppendixB;
-import com.lukeleber.scandroid.sae.j1979.Service;
+import com.lukeleber.scandroid.sae.j1979.detail.AppendixA;
+import com.lukeleber.scandroid.sae.j1979.detail.AppendixB;
 import com.lukeleber.scandroid.sae.util.CumulativePIDSupport;
 
 import java.util.HashMap;
@@ -28,6 +25,7 @@ public class Profile
     public final static String BANK_2 = "bank_2";
     public final static String BANK_3 = "bank_3";
     public final static String BANK_4 = "bank_4";
+
     public final static String DUAL_BANK = "dual_bank";
     public final static String QUAD_BANK = "quad_bank";
 
@@ -89,16 +87,24 @@ public class Profile
             {
                 addIfSupported(Service.LIVE_DATASTREAM, pid);
             }
-            for (PID<?> pid : SAE_J1979.SAE_J1979_STATIC_PIDS)
-            {
-                addIfSupported(Service.FREEZE_FRAME_DATASTREAM, pid);
-            }
+
         }
     }
 
     private void populateService02()
     {
-
+        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_1_TO_20);
+        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_21_TO_40);
+        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_41_TO_60);
+        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_61_TO_80);
+        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_81_TO_A0);
+        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_A1_TO_C0);
+        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_C1_TO_E0);
+        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_E1_TO_FF);
+        for (PID<?> pid : SAE_J1979.SAE_J1979_STATIC_PIDS)
+        {
+            addIfSupported(Service.FREEZE_FRAME_DATA, pid);
+        }
     }
 
     private void addIfSupported(Service service, PID<?> pid)
