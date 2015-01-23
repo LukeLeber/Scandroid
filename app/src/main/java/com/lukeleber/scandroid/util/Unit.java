@@ -1,10 +1,3 @@
-/*
- * This file is protected under the KILLGPL.
- * For more information visit <insert_valid_link_to_killgpl_here>
- * <p/>
- * Copyright (c) Luke A. Leber <LukeLeber@gmail.com> 2014
- */
-
 package com.lukeleber.scandroid.util;
 
 @SuppressWarnings("unused")
@@ -47,7 +40,10 @@ public enum Unit
     TEMPERATURE_FAHRENHEIT("°F"),
     TEMPERATURE_CELSIUS("°C"),
     BOOLEAN(""), PSI("psi"),
-    ACCUMULATED_NUMBER("");
+    ACCUMULATED_NUMBER(""), PACKETED(""),
+    DIAGNOSTIC_TROUBLE_CODE(""),
+    POUNDS_PER_MINUTE("lb/min"),
+    INCHES_OF_WATER("in/h2o");
 
     private final String string;
 
