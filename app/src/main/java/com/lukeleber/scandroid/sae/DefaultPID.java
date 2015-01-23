@@ -18,20 +18,19 @@ public class DefaultPID<T>
         extends
         AbstractPID<T>
 {
-    private final int responseLength;
-
-    public static final Parcelable.Creator<AbstractPID> CREATOR
-            = new Parcelable.Creator<AbstractPID>()
+    public static final Parcelable.Creator<DefaultPID> CREATOR
+            = new Parcelable.Creator<DefaultPID>()
     {
-        public AbstractPID createFromParcel(Parcel in)
+        @SuppressWarnings("unchecked")
+        public DefaultPID createFromParcel(Parcel in)
         {
             return new DefaultPID(in.readInt(), in.readString(), in.readString(), in.readHashMap(
-                    null), in.readInt(), in.readInt());
+                    null));
         }
 
-        public AbstractPID[] newArray(int size)
+        public DefaultPID[] newArray(int size)
         {
-            return new AbstractPID[size];
+            return new DefaultPID[size];
         }
     };
 
@@ -42,15 +41,6 @@ public class DefaultPID<T>
         dest.writeString(getDisplayName());
         dest.writeString(getDescription());
         dest.writeMap(getUnmarshallers());
-        try
-        {
-            dest.writeInt(getResponseLength(null));
-        }
-        catch (Exception e)
-        {
-            dest.writeInt(0);
-        }
-        dest.writeInt(getLayoutID());
     }
 
     @Override
@@ -60,22 +50,8 @@ public class DefaultPID<T>
     }
 
     public DefaultPID(int id, String displayName, String description,
-                      Map<Unit, Unmarshaller<T>> unmarshallers, int responseLength)
+                      Map<Unit, Unmarshaller<T>> unmarshallers)
     {
         super(id, displayName, description, unmarshallers);
-        this.responseLength = responseLength;
-    }
-
-    public DefaultPID(int id, String displayName, String description,
-                      Map<Unit, Unmarshaller<T>> unmarshallers, int responseLength, int layoutID)
-    {
-        super(id, displayName, description, unmarshallers, layoutID);
-        this.responseLength = responseLength;
-    }
-
-    @Override
-    public int getResponseLength(Profile profile)
-    {
-        return responseLength;
     }
 }

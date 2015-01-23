@@ -9,7 +9,10 @@ package com.lukeleber.scandroid.sae;
 
 import android.view.View;
 
+import com.lukeleber.scandroid.gui.fragments.util.ParameterModel;
 import com.lukeleber.scandroid.util.Unit;
+
+import java.util.Map;
 
 /**
  * Utilized in Services $01 and $02, this type of ServiceFacet is called a "Parameter ID" or "PID"
@@ -52,15 +55,7 @@ public interface PID<T>
      */
     Unmarshaller<T> getUnmarshallerForUnit(Unit unit);
 
-    /**
-     * Retrieves the number of bytes that the response to this PID consists of
-     *
-     * @param profile
-     *         the Profile to reference
-     *
-     * @return the number of bytes that the response to this PID consists of
-     */
-    int getResponseLength(Profile profile);
+    Map<Unit, Unmarshaller<T>> getUnmarshallers();
 
     /**
      * A function object that acts to unmarshall a byte array into a meaningful object.
@@ -72,15 +67,4 @@ public interface PID<T>
     {
         T invoke(byte... bytes);
     }
-
-    /**
-     * Retrieves the layout resource ID that adapts this PID to a user interface
-     *
-     * @return the layout resource ID that adapts this PID to a user interface
-     */
-    int getLayoutID();
-
-    Object createViewModel(View view);
-
-    void updateViewModel(Object view, Object value);
 }
