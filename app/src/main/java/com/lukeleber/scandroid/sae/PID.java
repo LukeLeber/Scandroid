@@ -7,9 +7,6 @@
 
 package com.lukeleber.scandroid.sae;
 
-import android.view.View;
-
-import com.lukeleber.scandroid.gui.fragments.util.ParameterModel;
 import com.lukeleber.scandroid.util.Unit;
 
 import java.util.Map;

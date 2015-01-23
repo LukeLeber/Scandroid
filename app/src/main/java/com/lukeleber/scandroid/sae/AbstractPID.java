@@ -38,16 +38,11 @@ public abstract class AbstractPID<T>
     {
         super(id, displayName, description);
         this.unmarshallers = unmarshallers;
-        if(unmarshallers.size() == 0)
-        {
-            System.out.println("Fucked: " + this.getDisplayName());
-        }
         Map.Entry<Unit, Unmarshaller<T>> defaults = unmarshallers.entrySet()
                                                                  .iterator()
                                                                  .next();
         this.defaultUnit = defaults.getKey();
         this.defaultUnmarshaller = defaults.getValue();
-        System.out.println(defaultUnit + " " + defaultUnmarshaller);
     }
 
     @Override
