@@ -2,6 +2,19 @@
 // For more information, visit http://www.lukeleber.github.io/KILLGPL.html
 //
 // Copyright (c) Luke Leber <LukeLeber@gmail.com>
+//
+// "This software is provided freely under a single condition.  You can't force anyone
+// that uses this software to release any source code.  It is their decision alone.
+// Other than that, anything goes.
+//
+// PS. If you like this work, please hire me!  I'm uneducated (no CS degree)
+// and as such it's borderline impossible to get into the industry.  My current
+// career is absolute hell and I am trapped in it.  I leave this message here
+// in the vain hope that someone, somewhere might read this and give me the
+// opportunity to join their association as a programmer."
+//
+// Cheers,
+// Luke
 
 package com.lukeleber.scandroid.gui.fragments;
 
@@ -12,16 +25,14 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.lukeleber.scandroid.R;
-import com.lukeleber.scandroid.gui.fragments.detail.SAEJ1979AppendixWrapper;
 import com.lukeleber.scandroid.gui.fragments.util.AbstractParameterAdapter;
 import com.lukeleber.scandroid.gui.fragments.util.ParameterModel;
 import com.lukeleber.scandroid.interpreter.FailureCode;
 import com.lukeleber.scandroid.interpreter.Handler;
 import com.lukeleber.scandroid.interpreter.ServiceRequest;
-import com.lukeleber.scandroid.sae.j1979.PID;
-import com.lukeleber.scandroid.sae.j1979.Profile;
+import com.lukeleber.scandroid.sae.PID;
+import com.lukeleber.scandroid.sae.Profile;
 import com.lukeleber.scandroid.sae.j1979.Service;
-import com.lukeleber.scandroid.util.Unit;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -75,7 +86,7 @@ public class LiveDatastream
     private final class Refresher implements Runnable
     {
         /// The default refresh rate
-        public final static long DEFAULT_REFRESH_RATE = 1000;
+        public final static long DEFAULT_REFRESH_RATE = 250;
 
         /// The executor service to schedule updates on
         private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
@@ -144,6 +155,7 @@ public class LiveDatastream
             {
                 datastreamView.invalidateViews();
                 remaining = viewedParameters.size();
+                System.out.println("Remaining: " + remaining);
                 long nextRefresh = refreshRate - (System.currentTimeMillis() - lastRefresh);
                 if(nextRefresh < 0)
                 {
@@ -172,7 +184,7 @@ public class LiveDatastream
         {
             executor.shutdownNow();
         }
-        int counter = 0;
+
         /**
          * {@inheritDoc}
          *
@@ -181,18 +193,16 @@ public class LiveDatastream
         @Override
         public void run()
         {
-            System.out.println(counter++);
             for(final ParameterModel model : viewedParameters)
             {
-                final Unit unit = model.getPID().getDisplayUnit();
-
-                ServiceRequest sr = new ServiceRequest(Service.LIVE_DATASTREAM, model.getPID().unwrap(),
+                host.getInterpreter().sendRequest(
+                    new ServiceRequest(Service.LIVE_DATASTREAM, model.getPID(),
                         new Handler<Serializable>()
                         {
                             @Override
                             public void onResponse(Serializable value)
                             {
-                                model.update(value, unit);
+                                model.update(value, model.getUnit());
                                 if(--remaining == 0)
                                 {
                                     scheduleRefresh();
@@ -207,15 +217,8 @@ public class LiveDatastream
                                     scheduleRefresh();
                                 }
                             }
-                        },
-                        unit
-                );
-                if(sr.getUnmarshaller() == null)
-                {
-                    System.out.println("Null Unmarshaller(2): " + sr.getPID().getDisplayName());
-                }
-                host.getInterpreter().sendRequest(
-                    sr
+                        }
+                    )
                 );
             }
         }
@@ -238,7 +241,6 @@ public class LiveDatastream
      * {@inheritDoc}
      *
      */
-    @SuppressWarnings("unchecked")
     @Override
     public void onCreate(Bundle sis)
     {
@@ -259,7 +261,7 @@ public class LiveDatastream
                     if (pid != null)
                     {
                         supportedPIDs.add(pid);
-                        viewedParameters.add(new ParameterModel(SAEJ1979AppendixWrapper.getWrapper(pid, profile)));
+                        viewedParameters.add(new ParameterModel(pid));
                     }
                 }
             }
@@ -310,7 +312,6 @@ public class LiveDatastream
                 {
                     return viewedParameters.get(position);
                 }
-
             }
         );
         refresher.start();
