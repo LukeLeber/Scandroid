@@ -9,6 +9,12 @@ import com.lukeleber.scandroid.interpreter.Option;
 
 /**
  * All of the op-codes provided with the ELM327 documentation.
+ *
+ * <p><strong>The documentation contained within this file is the intellectual property of
+ * <a href=http://www.elmelectronics.com>ELM Electronics</a> and is embedded herein with
+ * written permission.  To obtain the latest documentation from ELM Electronics, please visit
+ * their <a href=http://elmelectronics.com/obdic.html>ELM327 page</a>.</strong></p>
+ *
  */
 public enum OpCode
         implements Option<String>
