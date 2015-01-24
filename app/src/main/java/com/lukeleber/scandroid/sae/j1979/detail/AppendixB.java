@@ -1,9 +1,7 @@
-/*
- * This file is protected under the com.lukeleber.
- * For more information visit <insert_valid_link_to_com.lukeleber._here>
- * <p/>
- * Copyright (c) Luke A. Leber <LukeLeber@gmail.com> 2014
- */
+// This file is protected under the KILLGPL.
+// For more information, visit http://www.lukeleber.github.io/KILLGPL.html
+//
+// Copyright (c) Luke Leber <LukeLeber@gmail.com>
 
 package com.lukeleber.scandroid.sae.j1979.detail;
 

@@ -1,9 +1,7 @@
-/*
- * This file is protected under the KILLGPL.
- * For more information visit <insert_valid_link_to_killgpl_here>
- * <p/>
- * Copyright (c) Luke A. Leber <LukeLeber@gmail.com> 2014
- */
+// This file is protected under the KILLGPL.
+// For more information, visit http://www.lukeleber.github.io/KILLGPL.html
+//
+// Copyright (c) Luke Leber <LukeLeber@gmail.com>
 
 package com.lukeleber.scandroid.io.bluetooth;
 

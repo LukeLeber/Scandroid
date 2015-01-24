@@ -1,3 +1,8 @@
+// This file is protected under the KILLGPL.
+// For more information, visit http://www.lukeleber.github.io/KILLGPL.html
+//
+// Copyright (c) Luke Leber <LukeLeber@gmail.com>
+
 /**
  * Artifacts modeled after the information contained in SAE-J1979 ("E/E Diagnostic Test Modes")
  * can be found within this package.  Two types of terminology are provided by the artifacts of

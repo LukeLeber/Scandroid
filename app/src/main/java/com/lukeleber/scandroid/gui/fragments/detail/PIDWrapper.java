@@ -1,3 +1,8 @@
+// This file is protected under the KILLGPL.
+// For more information, visit http://www.lukeleber.github.io/KILLGPL.html
+//
+// Copyright (c) Luke Leber <LukeLeber@gmail.com>
+
 package com.lukeleber.scandroid.gui.fragments.detail;
 
 import android.app.AlertDialog;
@@ -17,12 +22,6 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 
-/**
- * This file is protected under the KILLGPL. For more information visit
- * https://www.github.com/lukeleber/KILLGPL
- * <p/>
- * Copyright Luke <LukeLeber@gmail.com> 1/21/2015.
- */
 public class PIDWrapper<T extends Serializable> extends ServiceFacetWrapper<T>
 {
 

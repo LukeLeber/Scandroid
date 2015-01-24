@@ -1,11 +1,10 @@
+// This file is protected under the KILLGPL.
+// For more information, visit http://www.lukeleber.github.io/KILLGPL.html
+//
+// Copyright (c) Luke Leber <LukeLeber@gmail.com>
+
 package com.lukeleber.scandroid.sae.j2012;
 
-/**
- * This file is protected under the KILLGPL. For more information visit
- * https://www.github.com/lukeleber/KILLGPL
- * <p/>
- * Copyright Luke <LukeLeber@gmail.com> 1/15/2015.
- */
 public class InvalidDTCException extends RuntimeException
 {
     public InvalidDTCException(String badEncoding, String reason)
