@@ -1,0 +1,19 @@
+<!-- This file is protected under the KILLGPL. -->
+<!-- For more information, visit http://www.lukeleber.github.io/KILLGPL.html -->
+<!-- -->
+<!-- Copyright (c) Luke Leber <LukeLeber@gmail.com> -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".gui.fragments.UnsupportedService">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fragment_unsupported_service_message"
+        android:id="@+id/protocol_search_listview_item_protocol_textview"
+        android:layout_gravity="center"/>
+</FrameLayout>

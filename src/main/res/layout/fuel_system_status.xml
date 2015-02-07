@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file is protected under the KILLGPL. -->
+<!-- For more information, visit http://www.lukeleber.github.io/KILLGPL.html -->
+<!-- -->
+<!-- Copyright (c) Luke Leber <LukeLeber@gmail.com> -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FUELSYS1:"
+        android:id="@+id/fuel_system_1_label"
+        android:layout_alignParentTop="true"
+        android:paddingRight="@dimen/activity_horizontal_margin"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/not_available"
+        android:id="@+id/fuel_system_1_status"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/fuel_system_1_label"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FUELSYS2:"
+        android:id="@+id/fuel_system_2_label"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:layout_below="@+id/fuel_system_1_label"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/not_available"
+        android:id="@+id/fuel_system_2_status"
+        android:layout_below="@+id/fuel_system_1_label"
+        android:layout_toRightOf="@+id/fuel_system_2_label"/>
+
+</RelativeLayout>

@@ -1,0 +1,32 @@
+<!-- This file is protected under the KILLGPL. -->
+<!-- For more information, visit http://www.lukeleber.github.io/KILLGPL.html -->
+<!-- -->
+<!-- Copyright (c) Luke Leber <LukeLeber@gmail.com> -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent"
+             tools:context="killgpl.scandroid.gui.fragments.LiveDatastream">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Viewing live data for vehicle"
+        android:id="@+id/textView7"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_alignParentLeft="false"
+        android:layout_marginLeft="210dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="0dp"
+        android:layout_centerHorizontal="true"/>
+
+    <ListView
+        android:id="@+id/fragment_live_datastream_listview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:layout_below="@+id/textView7"
+        android:layout_alignParentStart="true"/>
+
+</RelativeLayout>

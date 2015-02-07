@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- This file is protected under the KILLGPL. -->
+<!-- For more information, visit http://www.lukeleber.github.io/KILLGPL.html -->
+<!-- -->
+<!-- Copyright (c) Luke Leber <LukeLeber@gmail.com> -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/activity_vertical_margin"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/protocol_search_listview_item_protocol_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:enabled="true"
+        android:gravity="center_horizontal"
+        android:text="@string/scandroid_instruction_label"
+        android:textStyle="bold"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/activity_vertical_margin"
+        android:layout_gravity="center_horizontal"/>
+
+    <Button
+        android:id="@+id/scanToolGeneric"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/scandroid_generic_scanner_label"/>
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/activity_vertical_margin"
+        android:layout_gravity="center_horizontal"/>
+
+    <Button
+        android:id="@+id/scanToolExpert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/scandroid_expert_scanner_label"/>
+
+    <Space
+        android:id="@+id/space2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/activity_vertical_margin"
+        android:layout_gravity="center_horizontal"/>
+
+    <Button
+        android:id="@+id/vinDecoder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/scandroid_vin_decoder_label"/>
+
+    <Space
+        android:id="@+id/space3"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/activity_vertical_margin"
+        android:layout_gravity="center_horizontal"/>
+
+</LinearLayout>

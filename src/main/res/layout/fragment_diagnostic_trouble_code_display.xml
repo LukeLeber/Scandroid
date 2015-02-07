@@ -1,0 +1,45 @@
+<!-- This file is protected under the KILLGPL. -->
+<!-- For more information, visit http://www.lukeleber.github.io/KILLGPL.html -->
+<!-- -->
+<!-- Copyright (c) Luke Leber <LukeLeber@gmail.com> -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="com.lukeleber.scandroid.gui.fragments.DiagnosticTroubleCodeDisplay">
+
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/scrollView2"
+        android:layout_gravity="center">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Retrieve and display diagnostic trouble codes"
+                android:layout_gravity="center_horizontal"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Code Scan"
+                android:id="@+id/fragment_diagnostic_trouble_code_display_code_scan_button"
+                android:layout_gravity="center_horizontal"/>
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fragment_diagnostic_trouble_code_display_code_listview"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

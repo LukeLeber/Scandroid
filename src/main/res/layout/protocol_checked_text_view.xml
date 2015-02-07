@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file is protected under the KILLGPL. -->
+<!-- For more information, visit http://www.lukeleber.github.io/KILLGPL.html -->
+<!-- -->
+<!-- Copyright (c) Luke Leber <LukeLeber@gmail.com> -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="protocol"
+        android:id="@+id/protocol_search_listview_item_protocol_textview"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentLeft="true"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/protocol_search_listview_item_imageview"
+        android:layout_gravity="right"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:maxHeight="@dimen/activity_vertical_margin"
+        android:maxWidth="@dimen/activity_horizontal_margin"
+        android:adjustViewBounds="true"/>
+
+</RelativeLayout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file is protected under the KILLGPL. -->
+<!-- For more information, visit http://www.lukeleber.github.io/KILLGPL.html -->
+<!-- -->
+<!-- Copyright (c) Luke Leber <LukeLeber@gmail.com> -->
+
+<resources>
+
+    <item name="parameter_icon" type="id"/>
+
+    <!-- Scandroid Activity Menu -->
+    <item name="scandroid_menu_settings_item" type="id"/>
+    <item name="scandroid_menu_test_group" type="id"/>
+    <item name="scandroid_menu_logging_item" type="id"/>
+    <!-- Scandroid Activity Menu -->
+
+    <item name="dummy" type="id"/>
+    <item name="abstract_parameter_adapter_layout_id" type="id"/>
+    <item name="abstract_parameter_adapter_view_holder_id" type="id"/>
+</resources>

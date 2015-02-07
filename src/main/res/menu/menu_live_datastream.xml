@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/menu_live_datastream_settings_group">
+        <item
+            android:id="@+id/menu_live_datastream_viewed_pids"
+            android:title="@string/menu_live_datastream_viewed_pids_title"/>
+        <item
+            android:id="@+id/menu_live_datastream_logging"
+            android:title="@string/menu_live_datastream_logging_title"/>
+    </group>
+    <group android:id="@+id/menu_live_datastream_info_group">
+        <item
+            android:id="@+id/menu_live_datastream_bridge_info"
+            android:title="@string/menu_live_datastream_bridge_info_title"/>
+    </group>
+</menu>

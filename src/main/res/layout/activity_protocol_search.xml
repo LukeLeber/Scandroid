@@ -1,0 +1,45 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.lukeleber.scandroid.gui.ProtocolSearch">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/activity_protocol_search_instruction_label"
+        android:id="@+id/protocol_search_protocol_instruction_textview"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar2"
+        android:indeterminate="true"
+        android:layout_below="@+id/protocol_search_protocol_instruction_textview"
+        android:layout_alignParentStart="true"
+        android:indeterminateOnly="false"
+        android:indeterminateDrawable="@android:drawable/progress_horizontal"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/protocol_search_current_protocol"
+        android:layout_below="@+id/protocol_search_protocol_instruction_textview"
+        android:layout_centerHorizontal="true"/>
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/protocol_search_listview"
+        android:drawSelectorOnTop="true"
+        android:layout_below="@+id/protocol_search_current_protocol"
+        android:layout_centerHorizontal="true"
+        android:headerDividersEnabled="true"
+        android:isScrollContainer="true"/>
+
+</RelativeLayout>
