@@ -8,18 +8,24 @@ package com.lukeleber.scandroid.gui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.lukeleber.app.EnhancedActivity;
 import com.lukeleber.scandroid.Globals;
 import com.lukeleber.scandroid.R;
-import com.lukeleber.scandroid.database.DTCDatabaseUpdater;
+import com.lukeleber.scandroid.gui.dialogs.ParameterSelector;
+import com.lukeleber.scandroid.sae.j1979.PID;
+import com.lukeleber.scandroid.sae.j1979.ServiceFacet;
+import com.lukeleber.scandroid.sae.j1979.detail.AppendixA;
+import com.lukeleber.scandroid.sae.j1979.detail.AppendixB;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
@@ -31,26 +37,13 @@ import butterknife.OnClick;
 public class Scandroid
         extends
         EnhancedActivity
+        implements ParameterSelector.ParameterSelectorHost
 {
 
     private final static String TAG = Scandroid.class.getName();
-    /// The button for selecting "Generic Mode"
-    @InjectView(R.id.scanToolGeneric)
-    Button scanToolGeneric;
-    /// The button for selecting "Expert Mode"
-    @InjectView(R.id.scanToolExpert)
-    Button scanToolExpert;
-    /// The button for starting the VIN decoder service
-    @InjectView(R.id.vinDecoder)
-    Button vinDecoder;
 
     /*package*/ Handler handler = new Handler();
 
-    /**
-     * Invoked when the "Generic OBDII Mode" button is clicked.  This method creates a new {@link
-     * killgpl.scandroid.gui.SelectInterface} intent with the {@link killgpl.scandroid.gui.ConfigurationMode#GENERIC_MODE}
-     * extra field.
-     */
     @OnClick(R.id.scanToolGeneric)
     void onScanToolGenericClicked()
     {
@@ -67,30 +60,37 @@ public class Scandroid
         }
     }
 
-    /**
-     * Invoked when the "Expert Mode" button is clicked.  This method creates a new {@link
-     * killgpl.scandroid.gui.SelectInterface} intent with the {@link killgpl.scandroid.gui.ConfigurationMode#EXPERT_MODE}
-     * extra field.
-     */
-    @OnClick(R.id.scanToolExpert)
-    void onScanToolExpertClicked()
+    List<ServiceFacet> mockPIDs = new ArrayList<ServiceFacet>()
     {
-        Toast.makeText(this, "Not Implemented Yet", Toast.LENGTH_SHORT)
-             .show();
-        // TODO:
-        Intent intent = new Intent(Scandroid.this, DTCDatabaseUpdater.class);
-        startActivity(intent);
-/*        Intent intent = new Intent(Scandroid.this, SelectInterface.class);
-        intent.putExtra(Extras.SCANNER_MODE, ConfigurationMode.EXPERT_MODE);
-        startActivity(intent);*/
+        {
+            super.add(AppendixB.AUXILIARY_INPUT_STATUS);
+            super.add(AppendixB.MONITOR_STATUS);
+            super.add(AppendixB.ENGINE_COOLANT_TEMPERATURE);
+            super.add(AppendixB.ABSOLUTE_LOAD_VALUE);
+            super.add(AppendixB.ABSOLUTE_THROTTLE_POSITION);
+            super.add(AppendixB.CALCULATED_ENGINE_LOAD);
+        }
+
+    };
+
+    @Override
+    public @NonNull List<ServiceFacet> getSupportedParameters()
+    {
+        return mockPIDs;
+    }
+
+    @Override
+    public void onParameterSelection(@NonNull List<? extends ServiceFacet> selectedParameters)
+    {
+        System.out.println(selectedParameters);
     }
 
     @OnClick(R.id.vinDecoder)
     void onVINDecoderClicked()
     {
-        Toast.makeText(this, "Not Implemented Yet", Toast.LENGTH_SHORT)
-             .show();
-        //TODO
+
+        new ParameterSelector().show(super.getFragmentManager(), ParameterSelector.class.getSimpleName());
+//        new BridgeStatus().show(super.getFragmentManager(), BridgeStatus.class.getSimpleName());
     }
 
     /**

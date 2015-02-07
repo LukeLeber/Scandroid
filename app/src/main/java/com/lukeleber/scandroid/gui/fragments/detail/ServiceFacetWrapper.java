@@ -36,7 +36,7 @@ public abstract class ServiceFacetWrapper<T extends Serializable>
     private final ServiceFacet facet;
 
     /**
-     * Constructs a {@link com.lukeleber.scandroid.gui.fragments.detail.ServiceFacetWrapper}
+     * Constructs a {@link ServiceFacetWrapper}
      * around the provided {@link com.lukeleber.scandroid.sae.j1979.ServiceFacet}
      *
      * @param facet the {@link com.lukeleber.scandroid.sae.j1979.ServiceFacet} to wrap

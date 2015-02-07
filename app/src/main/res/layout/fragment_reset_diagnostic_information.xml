@@ -11,20 +11,20 @@
               tools:context="com.lukeleber.scandroid.gui.fragments.ResetDiagnosticInformation">
 
     <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:id="@+id/scrollView"
         android:layout_gravity="center_horizontal|top">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="This service will reset all onboard diagnostics related information.  This is generally considered to be 'Clearing the Codes', however that is not a very accurate description of what is really going to happen."
+                android:text="@string/fragment_reset_diagnostic_information_intro_message"
                 android:gravity="center_horizontal"
                 android:id="@+id/wide_range_oxygen_sensor_lambda_value"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -35,8 +35,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="The following information will be erased:\n\n- Number of diagnostic trouble codes\n- Diagnostic trouble codes\n- Trouble code for freeze frame data\n- Freeze frame data\n- Status of system monitoring tests\n- On-board monitoring test results\n- Distance travelled while MIL is activated\n- Number of warm-ups since DTC cleared\n- Distance since diagnostic trouble codes cleared\n- Minutes run by the engine while MIL activated\n- Time since diagnostic trouble codes cleared\n- Other manufacturer specific 'clearing/resetting' actions"
-                android:id="@+id/monitor_status_mil_label"
+                android:text="@string/fragment_reset_diagnostic_information_body_message"
+                android:id="@+id/protocol_search_listview_item_protocol_textview"
                 android:layout_gravity="center_horizontal|top"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
@@ -46,7 +46,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="It is conceivable that the vehicle may experience temporary driveability issues following this operation, as manufacturer specified adaptive strategies are also subject to erasing in some cases.  Resetting this information may also prevent a vehicle from passing an inspection in some states or provinces.  Depending on driving habits, it may take a very long time for the system to re-run all of its monitors."
+                android:text="@string/fragment_reset_diagnostic_information_conclusion_message"
                 android:id="@+id/fuel_trim_value_1"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"
@@ -58,7 +58,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reset Diagnostic Information"
+                android:text="@string/fragment_reset_diagnostic_information_button_text"
                 android:id="@+id/reset_diagnostic_information"
                 android:layout_gravity="center_horizontal|bottom"/>
 

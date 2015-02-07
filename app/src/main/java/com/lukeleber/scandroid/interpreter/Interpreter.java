@@ -23,14 +23,14 @@ public interface Interpreter<T>
         Closeable
 {
     /**
-     * An optional function object that can be provided to the {@link com.lukeleber.scandroid.interpreter.Interpreter#start(com.lukeleber.scandroid.interpreter.Interpreter.ErrorListener)}
+     * An optional function object that can be provided to the {@link Interpreter#start(com.lukeleber.scandroid.interpreter.Interpreter.ErrorListener)}
      * to provide custom handling for any exceptions arising during the asynchronous execution of
      * the interpreter
      */
     public interface ErrorListener
     {
         /**
-         * Invoked when the {@link com.lukeleber.scandroid.interpreter.Interpreter} encounters an
+         * Invoked when the {@link Interpreter} encounters an
          * error of any kind
          *
          * @param error
@@ -51,43 +51,43 @@ public interface Interpreter<T>
 
     /**
      * Retrieves the {@link com.lukeleber.scandroid.io.CommunicationInterface} that this {@link
-     * com.lukeleber.scandroid.interpreter.Interpreter} utilizes.
+     * Interpreter} utilizes.
      *
      * @return the {@link com.lukeleber.scandroid.io.CommunicationInterface} that this {@link
-     * com.lukeleber.scandroid.interpreter.Interpreter} utilizes.
+     * Interpreter} utilizes.
      *
      * @since 1.0
      */
     CommunicationInterface getCommunicationInterface();
 
     /**
-     * Retrieves a user-friendly name of this {@link com.lukeleber.scandroid.interpreter.Interpreter}
+     * Retrieves a user-friendly name of this {@link Interpreter}
      *
-     * @return a user-friendly name of this {@link com.lukeleber.scandroid.interpreter.Interpreter}
+     * @return a user-friendly name of this {@link Interpreter}
      *
      * @since 1.0
      */
     String getName();
 
     /**
-     * Sends an asynchronous request over this {@link com.lukeleber.scandroid.interpreter.Interpreter}
+     * Sends an asynchronous request over this {@link Interpreter}
      * and invokes a default {@link ResponseListener} on the UI thread when a reply is received, the
      * request times out, or an error occurs.
      *
      * @param request
-     *         the {@link Request} to send over this {@link com.lukeleber.scandroid.interpreter.Interpreter}
+     *         the {@link com.lukeleber.scandroid.interpreter.Request} to send over this {@link Interpreter}
      *
      * @since 1.0
      */
     <V> void sendRequest(Request<T, V> request);
 
     /**
-     * Sends an asynchronous request over this {@link com.lukeleber.scandroid.interpreter.Interpreter}
+     * Sends an asynchronous request over this {@link Interpreter}
      * and invokes the provided {@link ResponseListener} on the UI thread when a reply is received,
      * the request times out, or an error occurs.
      *
      * @param request
-     *         the {@link Request} to send over this {@link com.lukeleber.scandroid.interpreter.Interpreter}
+     *         the {@link com.lukeleber.scandroid.interpreter.Request} to send over this {@link Interpreter}
      * @param listener
      *         the {@link ResponseListener} to handle the reply from the remote hardware
      *
@@ -102,15 +102,15 @@ public interface Interpreter<T>
     void addShutdownListener(ShutdownListener listener);
 
     /**
-     * Asynchronously starts this {@link com.lukeleber.scandroid.interpreter.Interpreter}
+     * Asynchronously starts this {@link Interpreter}
      *
      */
     void start();
 
     /**
-     * Asynchronously stops this {@link com.lukeleber.scandroid.interpreter.Interpreter}
+     * Asynchronously stops this {@link Interpreter}
      *
-     * @return true if this {@link com.lukeleber.scandroid.interpreter.Interpreter} was successfully
+     * @return true if this {@link Interpreter} was successfully
      * signalled to stop, otherwise false
      */
     boolean stop();

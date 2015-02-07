@@ -18,6 +18,8 @@ import com.lukeleber.scandroid.sae.j1979.PID;
 import com.lukeleber.scandroid.util.Unit;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -25,22 +27,19 @@ import butterknife.ButterKnife;
 public class PIDWrapper<T extends Serializable> extends ServiceFacetWrapper<T>
 {
 
-    protected final static class DisplayUnitSelector implements View.OnClickListener
+    protected final static class DisplayUnitSelector<T extends Serializable> implements View.OnClickListener
     {
-        private final PIDWrapper<?> wrapper;
+        private final PIDWrapper<T> wrapper;
         private final String[] units;
-        DisplayUnitSelector(PIDWrapper<?> wrapper)
+        DisplayUnitSelector(PIDWrapper<T> wrapper)
         {
             this.wrapper = wrapper;
-            Map<Unit, ?> unmarshallers = wrapper.unwrap().getUnmarshallers();
-            units = new String[unmarshallers.size()];
+            List<String> units = new ArrayList<>();
+            for(Map.Entry<Unit, PID.Unmarshaller<T>> entry : wrapper.unwrap())
             {
-                int i = 0;
-                for(Unit unit : unmarshallers.keySet())
-                {
-                    units[i++] = unit.name();
-                }
+                units.add(entry.getKey().name());
             }
+            this.units = units.toArray(new String[units.size()]);
         }
 
         @Override
@@ -118,9 +117,9 @@ public class PIDWrapper<T extends Serializable> extends ServiceFacetWrapper<T>
 
     protected final void addUnitSelector(@NonNull View view)
     {
-        if(unwrap().getUnmarshallers().size() > 1)
+        if(unwrap().getUnmarshallerCount() > 1)
         {
-            view.setOnClickListener(new DisplayUnitSelector(this));
+            view.setOnClickListener(new DisplayUnitSelector<>(this));
         }
     }
 

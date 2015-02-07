@@ -9,8 +9,6 @@
              android:layout_height="match_parent"
              tools:context="killgpl.scandroid.gui.fragments.FreezeFrameRecords">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

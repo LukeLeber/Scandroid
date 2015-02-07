@@ -20,10 +20,10 @@ public abstract class Request<T, U>
     private final Handler<U> handler;
 
     /**
-     * Constructs a Request with the provided {@link com.lukeleber.scandroid.interpreter.Handler}
+     * Constructs a Request with the provided {@link Handler}
      *
      * @param handler
-     *         the {@link com.lukeleber.scandroid.interpreter.Handler} that is invoked when a
+     *         the {@link Handler} that is invoked when a
      *         response to this request is received from the remote hardware
      */
     public Request(Handler<U> handler)
@@ -32,10 +32,10 @@ public abstract class Request<T, U>
     }
 
     /**
-     * Retrieves the {@link com.lukeleber.scandroid.interpreter.Handler} that is invoked when a
+     * Retrieves the {@link Handler} that is invoked when a
      * response to this request is received from the remote hardware
      *
-     * @return the {@link com.lukeleber.scandroid.interpreter.Handler} that is invoked when a
+     * @return the {@link Handler} that is invoked when a
      * response to this request is received from the remote hardware
      */
     public final Handler<U> getHandler()

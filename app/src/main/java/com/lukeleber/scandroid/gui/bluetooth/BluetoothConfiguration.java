@@ -31,7 +31,7 @@ import butterknife.OnClick;
 import butterknife.OnItemClick;
 
 /**
- * <p>The {@link com.lukeleber.scandroid.gui.bluetooth.BluetoothConfiguration} Activity presents the
+ * <p>The {@link BluetoothConfiguration} Activity presents the
  * user with a means by which to choose the bluetooth device that is to act as a bridge between the
  * vehicle's onboard systems and the Scandroid API.  The default device for Scandroid is the ELM327
  * interpreter which usually has the device name "OBDII", although that is not set in stone.</p>

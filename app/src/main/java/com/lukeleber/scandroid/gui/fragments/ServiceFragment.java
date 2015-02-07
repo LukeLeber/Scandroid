@@ -25,7 +25,7 @@ public abstract class ServiceFragment
         super.onAttach(activity);
         if (!InterpreterHost.class.isAssignableFrom(activity.getClass()))
         {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(activity.getClass().getName()
                     + " must implement " +
                     InterpreterHost.class.getName());
         }

@@ -5,21 +5,33 @@
 
 package com.lukeleber.scandroid.sae.j1979;
 
-import com.lukeleber.scandroid.util.UserFriendlyToString;
+import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
+
+import com.lukeleber.scandroid.R;
+import com.lukeleber.scandroid.util.Internationalized;
 
 import java.io.Serializable;
 
 /**
  * <p>An enumeration of all service modes defined by SAE-J1979.  Vehicles are not required to
- * support all services.  It is recommended to use a {@link Profile}
- * to help determine which services are supported by a vehicle through the
- * {@link Profile#isServiceSupported(Service)} method.</p>
+ * support all services.  It is recommended to use a
+ * {@link com.lukeleber.scandroid.sae.j1979.Profile} to help determine which services are
+ * supported by a vehicle through the
+ * {@link com.lukeleber.scandroid.sae.j1979.Profile#isServiceSupported(Service)} method.</p>
  * <p><strong>Note that there are substantial variations in the documentation depending
  * on which protocol the vehicle supports!</strong></p>
+ *
  */
-public enum Service implements Serializable,
-                               UserFriendlyToString
+public enum Service implements
+        Internationalized,
+        Serializable,
+        Parcelable
 {
+
     /**
      * <p><strong>The following documentation applies to vehicles supporting ISO 9141-2,
      * ISO 14230-4, and SAE J1850 protocols only.</strong></p>
@@ -59,9 +71,11 @@ public enum Service implements Serializable,
      * ECUs that do not respond to additional service $01 request messages.</p>
      * <p>The order of the PIDs in the response message is not required to match the order
      * in the request message.</p>
+     *
      */
-    LIVE_DATASTREAM(1, "Live Datastream",
-                    "Service $01 - Request Current Powertrain Diagnostic Data"),
+    LIVE_DATASTREAM(1,
+            "Service $01 - Request Current Powertrain Diagnostic Data",
+            R.string.service_01_desc),
 
     /**
      * <p><strong>The following documentation applies to vehicles supporting ISO 9141-2,
@@ -126,9 +140,11 @@ public enum Service implements Serializable,
      * ECUs that do not respond to additional service $02 request messages.</p>
      * <p>The order of the PIDs in the response message is not required to match the order
      * in the request message.</p>
+     *
      */
-    FREEZE_FRAME_DATA(2, "Freeze-Frame Data",
-                    "Service $02 - Request Powertrain Freeze Frame Data"),
+    FREEZE_FRAME_DATA(2,
+            "Service $02 - Request Powertrain Freeze Frame Data",
+            R.string.service_02_desc),
 
     /**
      * <p><strong>The following documentation applies to vehicles supporting ISO 9141-2,
@@ -150,9 +166,11 @@ public enum Service implements Serializable,
      * of the DTC (0 through 3).  The second (2) nibble of the first (1) byte and the entire
      * second (2) byte are the next three (3) hexadecimal characters of the actual DTC reported
      * as hexadecimal.  A Powertrain DTC transmitted as $0143 shall be displayed as P0143.</p>
+     *
      */
-    RETRIEVE_DTC(3, "Read Codes",
-                    "Service $03 - Request Emission-Related Diagnostic Trouble Codes"),
+    RETRIEVE_DTC(3,
+                    "Service $03 - Request Emission-Related Diagnostic Trouble Codes",
+            R.string.service_03_desc),
 
     /**
      * <p><strong>The following documentation applies to vehicles supporting ISO 9141-2,
@@ -214,9 +232,11 @@ public enum Service implements Serializable,
      * <p>For safety and/or technical design reasons, ECUs that cannot perform this operation
      * under other conditions, such as with the engine running shall send a negative response
      * message with response code $22 - conditionsNotCorrect.</p>
+     *
      */
-    CLEAR_DTC(4, "Reset Diagnostic Info",
-                    "Service $04 - Clear/Reset Emission-Related Diagnostic Information"),
+    CLEAR_DTC(4,
+                    "Service $04 - Clear/Reset Emission-Related Diagnostic Information",
+            R.string.service_04_desc),
 
     /**
      * <p><strong>The following documentation applies to vehicles supporting ISO 9141-2,
@@ -246,9 +266,11 @@ public enum Service implements Serializable,
      * protocols only.</strong></p>
      * <p>Service $05 is not supported for CAN.  The functionality of service $05 is implemented
      * in service $06.</p>
+     *
      */
-    OXYGEN_SENSOR_TEST_RESULTS(5, "Oxygen Sensor Test Results",
-                    "Service $05 - Request Oxygen Sensor Monitoring Test Results"),
+    OXYGEN_SENSOR_TEST_RESULTS(5,
+                    "Service $05 - Request Oxygen Sensor Monitoring Test Results",
+            R.string.service_05_desc),
 
     /**
      * <p><strong>The following documentation applies to vehicles supporting ISO 9141-2,
@@ -304,9 +326,11 @@ public enum Service implements Serializable,
      * to a corresponding service $06 request message as specified in Appendix A.  On-Board
      * Diagnostic Monitor ID $00 is optional for those ECUs that do not respond to additional
      * service $06 request messages.</p>
+     *
      */
-    OTHER_TEST_RESULTS(6, "Other Test Results",
-                    "Service $06 - Request On-Board Monitoring Test Results for Specific Monitored Systems"),
+    OTHER_TEST_RESULTS(6,
+                    "Service $06 - Request On-Board Monitoring Test Results for Specific Monitored Systems",
+            R.string.service_06_desc),
 
     /**
      * <p><strong>The following documentation applies to vehicles supporting ISO 9141-2,
@@ -350,9 +374,11 @@ public enum Service implements Serializable,
      * a DTC.</p>
      * <p>Test results for these components/systems are reported in the same format as the DTCs
      * in service $03 - refer to the functional description for service $03.</p>
+     *
      */
-    RETRIEVE_PENDING_DTC(7, "Read Pending Codes",
-                    "Service $07 - Request Emission-Related Diagnostic Trouble Codes Detected During Current or Last Completed Driving Cycle"),
+    RETRIEVE_PENDING_DTC(7,
+                    "Service $07 - Request Emission-Related Diagnostic Trouble Codes Detected During Current or Last Completed Driving Cycle",
+            R.string.service_07_desc),
 
     /**
      * <p><strong>The following documentation applies to vehicles supporting ISO 9141-2,
@@ -406,46 +432,176 @@ public enum Service implements Serializable,
      * respond to additional service $08 request messages.</p>
      * <p>The order of the TIDs in the response message is not required to match the order in
      * the request message.</p>
+     *
      */
-    REMOTE_CONTROL(8, "Remote Control",
-                    "Service $08 - Request Control of On-Board System, Test, or Component"),
+    REMOTE_CONTROL(8,
+                    "Service $08 - Request Control of On-Board System, Test, or Component",
+            R.string.service_08_desc),
 
     /**
      * <p><strong>The following documentation applies to vehicles supporting ISO 9141-2,
      * ISO 14230-4, and SAE J1850 protocols only.</strong></p>
-     * TODO: Monkey work... :(
+     * <p>The purpose of this service is to enable the external test equipment to request
+     * vehicle specific vehicle information such as Vehicle Identification Number (VIN) and
+     * Calibration IDs.  Some of this information may be required by regulations and some
+     * may be desirable to be reported in a standard format if supported by the vehicle
+     * manufacturer.  INFOTYPEs are defined in Appendix G.</p>
+     * <p>An optional feature of this service is for the ECU to indicate which INFOTYPEs are
+     * supported (support of INFOTYPE $00 is required for ISO-9141-2).  INFOTYPE $00 is a
+     * bit-encoded value that indicates support for INFOTYPEs from $01 to $20.  INFOTYPE $20
+     * indicates support for INFOTYPEs $21 through $40, etc.  This is the same concept as used
+     * for PID support in services $01 and $02 as specified in Appendix A.  If PID (Parameter ID)
+     * /TID (Test ID)/INFOTYPE $00 is not supported, then the ECU does not use this feature
+     * to indicate PID (Parameter ID)/TID(Test ID)/INFOTYPE support.</p>
+     * <p>For request messages with INFOTYPEs not equal to $00 the positive response messages
+     * may not be sent by the ECU(s) within the P2max timing window as specified in Section
+     * 4.1.2.  The external test equipment shall maintain a list of ECUs, which support the
+     * INFOTYPEs not equal to $00 in order to justify whether it shall expect a response
+     * message from this ECU or not.  This applies to the following protocols:
+     * <ol>
+     *     <li>
+     *         <p>ISO 9141-2: If the positive response message is not received within
+     *         P2<sub>K-Line</sub> the external test equipment shall stop retrying the
+     *         request message after one (1) minute from the original request.  The
+     *         retry message shall be sent at least every four (4) seconds.  The retry
+     *         message keeps the bus alive and prevents the external test equipment from
+     *         having to re-initialise the service $09 internal routine.  Refer to section
+     *         4.1.4.3.1.</p>
+     *     </li>
+     *     <li>SAE J1850: If the response message is not received within thirty (30) seconds,
+     *     the external test equipment shall re-send (retry) the request message.  The ECU
+     *     shall not re-initiate the service $09 internal routine, but send the positive response
+     *     message if not already sent.  In order to achieve a maximum time out of one (1)
+     *     minute the external test equipment shall perform no more than one (1) retry.  Refer
+     *     to section 4.1.4.3.3.</li>
+     * </ol></p>
      * <br\>
      * <p><strong>The following documentation applies to vehicles supporting ISO 15765-4
      * protocols only.</strong></p>
+     * <p>The purpose of this service is to enable the external test equipment to request
+     * vehicle specific vehicle information such as Vehicle Identification Number (VIN) and
+     * Calibration IDs.  Some of this information may be required by regulations and some
+     * may be desirable to be reported in a standard format if supported by the vehicle
+     * manufacturer.</p>
+     * <p>Not all Infotypes are applicable or supported by all systems.  Infotype $00 is a
+     * bit-encoded value that indicates for each ECU which Infotypes are supported.  Infotype
+     * $00 indicates support for Infotypes from $01 to $20.  Infotype $20 indicates support
+     * for Infotypes $21 through $40, etc.  This is the same concept for PIDs/TIDs/Infotypes
+     * support in services $01, $02, $06, $08, $09.  Infotype $00 is required for those
+     * ECUs that respond to a corresponding service $09 request message as specified in
+     * Appendix A.  Infotype $00 is optional for those ECUs that do not respond to additional
+     * service $09 request messages.</p>
+     *
      */
-    VEHICLE_INFORMATION(9, "Vehicle Information",
-                    "Service $09 - Request Vehicle Information");
+    VEHICLE_INFORMATION(9,
+                    "Service $09 - Request Vehicle Information",
+            R.string.service_09_desc);
 
-    private final int id;
-    private final String brief;
-    private final String description;
-
-    private Service(int id, String brief, String description)
+    /// Required for {@link android.os.Parcelable}
+    public static Parcelable.Creator<Service> CREATOR = new Parcelable.Creator<Service>()
     {
-        this.id = id;
-        this.brief = brief;
-        this.description = description;
+        /**
+         * {@inheritDoc}
+         *
+         */
+        @Override
+        public Service createFromParcel(Parcel source)
+        {
+            return Service.values()[source.readByte()];
+        }
+
+        /**
+         * {@inheritDoc}
+         *
+         */
+        @Override
+        public Service[] newArray(int size)
+        {
+            return new Service[size];
+        }
+    };
+
+    /// The SAE defined ID of this <code>Service</code>
+    private final int id;
+
+    /// The SAE defined name of this <code>Service</code>
+    private final String saeDefinedName;
+
+    @StringRes
+    private final int stringID;
+
+    /**
+     * {@inheritDoc}
+     *
+     */
+    @Override
+    public int describeContents()
+    {
+        return 0;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     */
+    @Override
+    public void writeToParcel(Parcel out, int flags)
+    {
+        out.writeByte((byte) ordinal());
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     */
+    @Override
+    public final String toString()
+    {
+        return saeDefinedName;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param context
+     */
+    @Override
+    public final String toI18NString(Context context)
+    {
+        return context.getString(stringID);
+    }
+
+    /**
+     * Retrieves the SAE defined ID of this <code>Service</code>
+     *
+     * @return the SAE defined ID of this <code>Service</code>
+     *
+     */
     public final int getID()
     {
         return id;
     }
 
-    @Override
-    public final String toString()
+    /**
+     * Constructs a <code>Service</code> with the provided ID, user friendly name, and SAE
+     * defined name.
+     *
+     * @param id The SAE defined ID of this <code>Service</code>
+     *     *
+     * @param saeDefinedName The SAE defined name of this <code>Service</code>
+     *
+     * @throws IllegalArgumentException if <i>id > 255</i>
+     *
+     */
+    private Service(int id, @NonNull String saeDefinedName, @StringRes int stringID)
     {
-        return description;
+        if(id > 255)
+        {
+            throw new IllegalArgumentException("id > 255");
+        }
+        this.id = id;
+        this.stringID = stringID;
+        this.saeDefinedName = saeDefinedName;
     }
 
-    @Override
-    public final String toUserFriendlyString()
-    {
-        return brief;
-    }
 }

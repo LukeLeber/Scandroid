@@ -5,13 +5,14 @@
 <!-- Copyright (c) Luke Leber <LukeLeber@gmail.com> -->
 <resources>
 
+
     <string name="app_name">Scandroid</string>
     <string name="title_activity_scandroid">Scandroid</string>
     <string name="title_activity_select_interface">Interface Configuration</string>
     <string name="title_activity_vehicle_history">VehicleHistory</string>
     <string name="action_settings">Settings</string>
 
-    <!-- General Use Strings -->
+<!-- General Use Strings -->
     <string name="yes_caps">YES</string>
     <string name="no_caps">NO</string>
     <string name="not_available">N/A</string>
@@ -20,9 +21,24 @@
     <string name="touch_to_expand">Touch to expand…</string>
     <string name="supported_caps">SUPPORTED</string>
     <string name="unsupported_caps">UNSUPPORTED</string>
-    <!-- General Use Strings -->
+<!-- General Use Strings -->
 
-    <!-- Strings for activity_scandroid -->
+
+<!-- Activity GUI Strings -->
+
+  <!-- ProtocolSearch.java -->
+    <string name="activity_protocol_search_instruction_label">Searching for the correct communication protocol, please wait or press back to cancel…</string>
+    <string name="activity_protocol_search_failure_message">Communication could not be established with the
+    vehicle.\n\n-Confirm that the key is in the \"ON\" position\n-Check the emissions label
+    or vehicle service information to confirm that the vehicle is OBD equipped and compliant\n
+    -Confirm that the external test equipment is securely connected to the vehicle diagnostic port
+    \n\nRetry Attempt (%1$d)</string>
+    <string name="activity_protocol_search_initializing_bus_label">Initializing bus (%1$s)</string>
+    <string name="activity_protocol_search_available_protocols_label">Available Protocols:</string>
+    <string name="activity_protocol_search_fatal_error_message">Protocol detection has failed with a fatal error (%1$s)\n\nGenerally this indicates a hardware / range  problem with the interpreter such as a poor physical connection or being too far away from the vehicle.</string>
+  <!-- ProtocolSearch.java-->
+
+  <!-- Scandroid.java -->
     <string name="scandroid_menu_settings_item_title">Settings</string>
     <string name="scandroid_menu_logging_item_title">Logging</string>
     <string name="scandroid_instruction_label">Scandroid: The FREE scan-tool for Android!\n
@@ -30,8 +46,51 @@
     <string name="scandroid_generic_scanner_label">Scanner (Generic)</string>
     <string name="scandroid_expert_scanner_label">Scanner (Expert)</string>
     <string name="scandroid_vin_decoder_label">VIN Decoder</string>
+  <!-- Scandroid.java -->
 
-    <!-- Strings for activity_scandroid -->
+<!-- Activity GUI Strings -->
+
+<!-- Fragment GUI Strings -->
+
+  <!-- UnsupportedService.java -->
+    <string name="fragment_unsupported_service_message">This vehicle does not support this service.</string>
+  <!-- UnsupportedService.java-->
+
+  <!-- ResetDiagnosticInformation.java -->
+    <string name="fragment_reset_diagnostic_information_dialog_title">Confirm Action</string>
+    <string name="fragment_reset_diagnostic_information_dialog_message">External test equipment is required to show a confirmation dialog before sending a service $04 request.\n\nDo you really want to reset all diagnostic information?</string>
+    <string name="fragment_reset_diagnostic_information_dialog_positive_button_label">Send Request</string>
+    <string name="fragment_reset_diagnostic_information_success">Diagnostic information has been reset</string>
+    <string name="fragment_reset_diagnostic_information_failure">Failed to reset diagnostic information (%1$s)</string>
+    <string name="fragment_reset_diagnostic_information_dialog_negative_button_label">Cancel</string>
+    <string name="fragment_reset_diagnostic_information_intro_message">This service will reset all onboard diagnostics related information.  This is generally considered to be \'Clearing the Codes\', however that is not a very accurate naming of what is really going to happen.</string>
+    <string name="fragment_reset_diagnostic_information_body_message">The following information will be erased:\n\n- Number of diagnostic trouble codes\n- Diagnostic trouble codes\n- Trouble code for freeze frame data\n- Freeze frame data\n- Status of system monitoring tests\n- On-board monitoring test results\n- Distance travelled while MIL is activated\n- Number of warm-ups since DTC cleared\n- Distance since diagnostic trouble codes cleared\n- Minutes run by the engine while MIL activated\n- Time since diagnostic trouble codes cleared\n- Other manufacturer specific \'clearing/resetting\' actions</string>
+    <string name="fragment_reset_diagnostic_information_conclusion_message">It is conceivable that the vehicle may experience temporary driveability issues following this operation, as manufacturer specified adaptive strategies are also subject to erasing in some cases.  Resetting this information may also prevent a vehicle from passing an inspection in some states or provinces.  Depending on driving habits, it may take a very long time for the system to re-run all of its monitors.</string>
+    <string name="fragment_reset_diagnostic_information_button_text">Reset Diagnostic Information</string>
+  <!-- ResetDiagnosticInformation.java -->
+
+<!-- Fragment GUI Strings -->
+
+<!-- Dialog Strings -->
+
+  <!-- dialog_bridge_status -->
+    <string name="dialog_bridge_status_title">Bridge Status</string>
+    <string name="dialog_bridge_status_dismiss_button_text">Dismiss</string>
+    <string name="dialog_bridge_status_hardware_label">Hardware:</string>
+    <string name="dialog_bridge_status_hardware_version_label">Version:</string>
+    <string name="dialog_bridge_status_link_status_label">Link Status:</string>
+    <string name="dialog_bridge_status_average_latency_label">Latency:</string>
+    <string name="dialog_bridge_status_system_voltage_label">System Voltage:</string>
+    <string name="dialog_bridge_status_refresh_button_text">Refresh</string>
+  <!-- dialog_bridge_status -->
+
+  <!-- dialog_parameter_selector -->
+    <string name="dialog_parameter_selector_title">Select Parameters</string>
+    <string name="dialog_parameter_selector_positive_button_text">Select</string>
+    <string name="dialog_parameter_selector_negative_button_text">Cancel</string>
+  <!-- dialog_parameter_selector -->
+
+<!-- Dialog Strings -->
 
     <!-- Strings for PID/TID/OBDMID/INFOTYPE expansion dialogs -->
     <string name="pid_monitor_status_expansion_title">Monitor Status Expanded View</string>
@@ -68,7 +127,7 @@
     <string name="title_activity_generic_scanner">GenericScanner</string>
     <string name="title_activity_protocol_search">ProtocolSearch</string>
     <string name="select_display_unit">Select Display Unit</string>
-    <string name="touch_to_expand_monitor_status">touch to expand monitor status...</string>
+    <string name="touch_to_expand_monitor_status">touch to expand monitor status…</string>
     <string name="mil_status_label">MIL Status:</string>
     <string name="number_of_dtcs_label"># DTCs:</string>
     <string name="short_term_fuel_trim_bank_label">STFT Bank %1$d:</string>
@@ -76,5 +135,34 @@
     <string name="oxygen_sensor_location_label">O2SLOC:</string>
     <string name="wide_range_oxygen_sensor_lambda_label">EQ_RATxy:</string>
     <string name="wide_range_oxygen_sensor_voltage_label">O2Sxy:</string>
+
+    <!-- Menus -->
+    <string name="live_datastream_settings_menu_item_title">Settings</string>
+    <string name="menu_live_datastream_viewed_pids_title">Select PIDs</string>
+    <string name="menu_live_datastream_logging_title">Logging</string>
+    <string name="menu_live_datastream_bridge_info_title">Bridge Status</string>
+    <string name="diagnostic_trouble_code_p0000_desc">No Codes</string>
+    <string name="fuel_system_status_enum_open_loop_desc">Open Loop</string>
+    <string name="fuel_system_status_enum_closed_loop_desc">Closed Loop</string>
+    <string name="fuel_system_status_enum_open_loop_drive_desc">Open Loop (driving conditions)</string>
+    <string name="fuel_system_status_enum_open_loop_fault_desc">Open Loop (system fault)</string>
+    <string name="fuel_system_status_enum_closed_loop_fault_desc">Closed Loop (oxygen sensor fault)</string>
+    <string name="auxiliary_input_status_off_desc">Off</string>
+    <string name="auxiliary_input_status_on_desc">On</string>
+    <string name="service_01_desc">Live Datastream</string>
+    <string name="service_02_desc">Freeze-Frame Data</string>
+    <string name="service_03_desc">Read Codes</string>
+    <string name="service_04_desc">Reset Diagnostic Info</string>
+    <string name="service_05_desc">Oxygen Sensor Test Results</string>
+    <string name="service_06_desc">Other Test Results</string>
+    <string name="service_07_desc">Read Pending Codes</string>
+    <string name="service_08_desc">Remote Control</string>
+    <string name="service_09_desc">Vehicle Information</string>
+    <string name="secondary_air_status_ups_desc">upstream of the first catalytic converter</string>
+    <string name="secondary_air_status_dns_desc">downstream of the first catalytic converter inlet</string>
+    <string name="secondary_air_status_off_desc">atmosphere / off</string>
+
+
+    <!-- Menus -->
 
 </resources>

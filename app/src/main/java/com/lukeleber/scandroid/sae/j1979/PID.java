@@ -5,8 +5,11 @@
 
 package com.lukeleber.scandroid.sae.j1979;
 
+import android.support.annotation.NonNull;
+
 import com.lukeleber.scandroid.util.Unit;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -21,10 +24,29 @@ import java.util.Map;
  *
  * @param <T>
  *         the data type that this PID should retrieve from a vehicle
+ *
+ * @see java.lang.Iterable
+ * @see com.lukeleber.scandroid.sae.j1979.ServiceFacet
+ * @see java.util.Map.Entry
+ * @see com.lukeleber.scandroid.util.Unit
  */
 public interface PID<T>
-        extends ServiceFacet
+        extends
+            Iterable<Map.Entry<Unit, PID.Unmarshaller<T>>>,
+            ServiceFacet
 {
+
+    /**
+     * A function object that acts to unmarshall a byte array into a meaningful object.
+     *
+     * @param <T>
+     *         the type of data that this Unmarshaller creates
+     */
+    interface Unmarshaller<T>
+        extends Serializable
+    {
+        T invoke(@NonNull byte... bytes);
+    }
 
     /**
      * Retrieves the default Unit for this PID
@@ -32,13 +54,6 @@ public interface PID<T>
      * @return the default Unit for this PID
      */
     Unit getDefaultUnit();
-
-    /**
-     * Retrieves the default unmarshaller for this PID
-     *
-     * @return the default unmarshaller for this PID
-     */
-    Unmarshaller<T> getDefaultUnmarshaller();
 
     /**
      * Retrieves an unmarshaller for the provided Unit
@@ -50,16 +65,15 @@ public interface PID<T>
      */
     Unmarshaller<T> getUnmarshallerForUnit(Unit unit);
 
-    Map<Unit, Unmarshaller<T>> getUnmarshallers();
-
     /**
-     * A function object that acts to unmarshall a byte array into a meaningful object.
+     * Retrieves the number of
+     * {@link com.lukeleber.scandroid.sae.j1979.PID.Unmarshaller unmarshallers} provided by this
+     * <code>PID</code>
      *
-     * @param <T>
-     *         the type of data that this Unmarshaller creates
+     * @return the number of
+     * {@link com.lukeleber.scandroid.sae.j1979.PID.Unmarshaller unmarshallers} provided by this
+     * <code>PID</code>
      */
-    interface Unmarshaller<T>
-    {
-        T invoke(byte... bytes);
-    }
+    int getUnmarshallerCount();
+
 }

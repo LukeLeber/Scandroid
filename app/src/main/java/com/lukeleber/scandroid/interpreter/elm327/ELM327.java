@@ -36,7 +36,7 @@ public class ELM327
     private final static String TAG = ELM327.class.getName();
 
     /**
-     * Constructs an {@link com.lukeleber.scandroid.interpreter.elm327.ELM327} with the provided
+     * Constructs an {@link ELM327} with the provided
      * {@link com.lukeleber.scandroid.io.CommunicationInterface}
      *
      * @param com
@@ -246,8 +246,8 @@ public class ELM327
                 }
                 if (resp.startsWith("44")) // Special case for "clear DTCs"
                 {
-                    handler.onResponse(serviceRequest.getUnmarshaller()
-                                                     .invoke("DTCs Cleared".getBytes()));
+                    /// TODO custom handler?
+                    handler.onResponse((T)"DTCs Cleared");
                     return;
                 }
                 resp = resp.substring(2);

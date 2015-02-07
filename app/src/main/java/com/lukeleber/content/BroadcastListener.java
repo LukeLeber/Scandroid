@@ -12,7 +12,7 @@ import android.content.Intent;
  * <p>An <strong>INTERFACE</strong> for {@link android.content.BroadcastReceiver broadcast
  * receivers} that allows the use of such receivers in the same way as we have registered such
  * things in swing for the last decade.  This interface is for use with the {@link
- * com.lukeleber.app.EnhancedActivity#addBroadcastReceiver(BroadcastListener,
+ * com.lukeleber.app.EnhancedActivity#addBroadcastReceiver(com.lukeleber.content.BroadcastListener,
  * android.content.IntentFilter)} method such that the following pattern is valid:</p> <p/> <pre
  * class="prettyprint"> public class MyActivity extends EnhancedActivity implements
  * BroadcastListener { public final void onReceive(Context ctx, Intent intent) { ... } <p/>

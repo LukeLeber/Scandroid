@@ -19,20 +19,29 @@
 package com.lukeleber.scandroid.gui.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.lukeleber.scandroid.R;
+import com.lukeleber.scandroid.gui.dialogs.BridgeStatus;
+import com.lukeleber.scandroid.gui.dialogs.ParameterSelector;
+import com.lukeleber.scandroid.gui.fragments.detail.SAEJ1979AppendixWrapper;
 import com.lukeleber.scandroid.gui.fragments.util.AbstractParameterAdapter;
 import com.lukeleber.scandroid.gui.fragments.util.ParameterModel;
 import com.lukeleber.scandroid.interpreter.FailureCode;
 import com.lukeleber.scandroid.interpreter.Handler;
 import com.lukeleber.scandroid.interpreter.ServiceRequest;
-import com.lukeleber.scandroid.sae.PID;
-import com.lukeleber.scandroid.sae.Profile;
+import com.lukeleber.scandroid.sae.j1979.PID;
+import com.lukeleber.scandroid.sae.j1979.Profile;
 import com.lukeleber.scandroid.sae.j1979.Service;
+import com.lukeleber.scandroid.sae.j1979.ServiceFacet;
+import com.lukeleber.scandroid.util.Unit;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -67,6 +76,7 @@ import butterknife.InjectView;
 public class LiveDatastream
         extends
         ServiceFragment
+    implements ParameterSelector.ParameterSelectorHost
 {
     /// Key for the "supportedPIDs" bundle value
     private final static String SUPPORTED_PIDS_KEY = "supported_pids";
@@ -86,13 +96,16 @@ public class LiveDatastream
     private final class Refresher implements Runnable
     {
         /// The default refresh rate
-        public final static long DEFAULT_REFRESH_RATE = 250;
+        public final static long DEFAULT_REFRESH_RATE = 1;
 
         /// The executor service to schedule updates on
         private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
         /// The target refresh rate
         private volatile long refreshRate;
+
+        /// Has this refresher been stopped?
+        private volatile boolean stopped;
 
         /// The unix timestamp of the last successful refresh
         private long lastRefresh;
@@ -151,11 +164,10 @@ public class LiveDatastream
          */
         void scheduleRefresh()
         {
-            if(datastreamView != null)
+            if(!stopped && datastreamView != null)
             {
                 datastreamView.invalidateViews();
                 remaining = viewedParameters.size();
-                System.out.println("Remaining: " + remaining);
                 long nextRefresh = refreshRate - (System.currentTimeMillis() - lastRefresh);
                 if(nextRefresh < 0)
                 {
@@ -183,6 +195,7 @@ public class LiveDatastream
         public void stop()
         {
             executor.shutdownNow();
+            stopped = true;
         }
 
         /**
@@ -195,14 +208,15 @@ public class LiveDatastream
         {
             for(final ParameterModel model : viewedParameters)
             {
+                final Unit unit = model.getPID().getDisplayUnit();
                 host.getInterpreter().sendRequest(
-                    new ServiceRequest(Service.LIVE_DATASTREAM, model.getPID(),
+                    new ServiceRequest(Service.LIVE_DATASTREAM, model.getPID().unwrap(),
                         new Handler<Serializable>()
                         {
                             @Override
                             public void onResponse(Serializable value)
                             {
-                                model.update(value, model.getUnit());
+                                model.update(value, unit);
                                 if(--remaining == 0)
                                 {
                                     scheduleRefresh();
@@ -217,7 +231,8 @@ public class LiveDatastream
                                     scheduleRefresh();
                                 }
                             }
-                        }
+                        },
+                        unit
                     )
                 );
             }
@@ -250,19 +265,17 @@ public class LiveDatastream
             supportedPIDs = new ArrayList<>();
             viewedParameters = new ArrayList<>();
             Profile profile = host.getProfile();
-            for (int i = 0;
+            for (int i = 1;
                  i < 0xFF;
                  ++i)
             {
+                /// Skip PIDs found in Appendix A
+                if((i % 20) == 0) continue;
                 if (profile.isSupported(Service.LIVE_DATASTREAM, i))
                 {
                     PID<?> pid = profile.getID(Service.LIVE_DATASTREAM, i);
-                    /// TODO: remove conditional when all $01 PIDs are implemented!
-                    if (pid != null)
-                    {
                         supportedPIDs.add(pid);
-                        viewedParameters.add(new ParameterModel(pid));
-                    }
+                        viewedParameters.add(new ParameterModel<>(SAEJ1979AppendixWrapper.getWrapper(pid, profile)));
                 }
             }
             this.refresher = new Refresher();
@@ -284,7 +297,7 @@ public class LiveDatastream
     {
         outState.putParcelableArrayList(SUPPORTED_PIDS_KEY, (ArrayList<PID<?>>) supportedPIDs);
         outState.putParcelableArrayList(VIEWED_PARAMETERS_KEY,
-                                        (ArrayList<ParameterModel>) viewedParameters);
+                (ArrayList<ParameterModel>) viewedParameters);
         outState.putLong(REFRESH_RATE_KEY, refresher.getRefreshRate());
     }
 
@@ -331,6 +344,64 @@ public class LiveDatastream
         this.supportedPIDs = null;
         this.viewedParameters = null;
         this.datastreamView = null;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        inflater.inflate(R.menu.menu_live_datastream, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+            case R.id.menu_live_datastream_bridge_info:
+                new BridgeStatus().show(super.getFragmentManager(), BridgeStatus.class.getSimpleName());
+                break;
+            case R.id.menu_live_datastream_logging:
+                onLoggingClicked();
+                break;
+            case R.id.menu_live_datastream_viewed_pids:
+                new ParameterSelector().show(super.getFragmentManager(), ParameterSelector.class.getSimpleName());
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return true;
+    }
+
+    @Override
+    public @NonNull List<PID<?>> getSupportedParameters()
+    {
+        return supportedPIDs;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onParameterSelection(@NonNull List<? extends ServiceFacet> selectedParameters)
+    {
+        Profile profile = host.getProfile();
+        refresher.stop();
+        this.viewedParameters.clear();
+        for(PID<?> pid : (List<PID<?>>)selectedParameters)
+        {
+            viewedParameters.add(new ParameterModel<>(SAEJ1979AppendixWrapper.getWrapper(pid, profile)));
+        }
+        this.refresher = new Refresher();
+        refresher.start();
+    }
+
+    private void onLoggingClicked()
+    {
+
+    }
+
+    public LiveDatastream()
+    {
+        super();
+        super.setHasOptionsMenu(true);
     }
 
     /**

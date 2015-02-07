@@ -50,7 +50,7 @@ public class BluetoothInterface
     private final OutputStream outputStream;
 
     /**
-     * Constructs a {@link com.lukeleber.scandroid.io.bluetooth.BluetoothInterface} from the
+     * Constructs a {@link BluetoothInterface} from the
      * provided {@link android.bluetooth.BluetoothDevice remote device} and {@link
      * android.os.ParcelUuid UUID}
      *

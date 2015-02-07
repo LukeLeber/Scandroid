@@ -6,7 +6,7 @@
 package com.lukeleber.scandroid.interpreter;
 
 /**
- * A type of {@link com.lukeleber.scandroid.interpreter.Request} that is used to configure a piece
+ * A type of {@link Request} that is used to configure a piece
  * of remote hardware.
  *
  * @param <T>
@@ -25,11 +25,11 @@ public class ConfigurationRequest<T, U>
 
     /**
      * Constructs a <code>ConfigurationRequest</code> with the provided {@link
-     * com.lukeleber.scandroid.interpreter.Option}.  This constructor is equivalent to
+     * Option}.  This constructor is equivalent to
      * <code>ConfigurationRequest(option, null);</code>
      *
      * @param option
-     *         the {@link Option} to configure
+     *         the {@link com.lukeleber.scandroid.interpreter.Option} to configure
      * @param args
      */
     public ConfigurationRequest(Option<T> option, Object... args)
@@ -39,13 +39,13 @@ public class ConfigurationRequest<T, U>
 
     /**
      * Constructs a <code>ConfigurationRequest</code> with the provided {@link
-     * com.lukeleber.scandroid.interpreter.Option} and {@link com.lukeleber.scandroid.interpreter.Handler}
+     * Option} and {@link Handler}
      *
      * @param handler
-     *         the {@link Handler} that is invoked when a response to this request is received from
+     *         the {@link com.lukeleber.scandroid.interpreter.Handler} that is invoked when a response to this request is received from
      *         the remote hardware
      * @param option
-     *         the {@link Option} to configure
+     *         the {@link com.lukeleber.scandroid.interpreter.Option} to configure
      * @param args
      */
     public ConfigurationRequest(Handler<U> handler, Option<T> option, Object... args)
@@ -56,9 +56,9 @@ public class ConfigurationRequest<T, U>
     }
 
     /**
-     * Retrieves the {@link com.lukeleber.scandroid.interpreter.Option} that is being configured
+     * Retrieves the {@link Option} that is being configured
      *
-     * @return the {@link com.lukeleber.scandroid.interpreter.Option} that is being configured
+     * @return the {@link Option} that is being configured
      */
     public final Option<T> getOption()
     {

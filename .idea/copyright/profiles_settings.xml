@@ -1,5 +1,5 @@
 <component name="CopyrightManager">
-  <settings default="KILLGPL">
+  <settings default="">
     <LanguageOptions name="__TEMPLATE__">
       <option name="block" value="false" />
     </LanguageOptions>

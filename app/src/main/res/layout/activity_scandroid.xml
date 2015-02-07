@@ -16,7 +16,7 @@
         android:layout_gravity="center_horizontal"/>
 
     <TextView
-        android:id="@+id/monitor_status_mil_label"
+        android:id="@+id/protocol_search_listview_item_protocol_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

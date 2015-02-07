@@ -51,7 +51,7 @@ import java.util.concurrent.Callable;
     protected final Context context;
 
     /**
-     * Constructs a {@link com.lukeleber.scandroid.gui.Detector}
+     * Constructs a {@link Detector}
      *
      * @param context
      *         the calling context
@@ -63,10 +63,10 @@ import java.util.concurrent.Callable;
 
     /**
      * Retrieves the {@link killgpl.scandroid.gui.SelectInterface.InterfaceSelectionMode} that this
-     * {@link com.lukeleber.scandroid.gui.Detector} detects
+     * {@link Detector} detects
      *
      * @return the {@link killgpl.scandroid.gui.SelectInterface.InterfaceSelectionMode} that this
-     * {@link com.lukeleber.scandroid.gui.Detector} detects
+     * {@link Detector} detects
      */
     /*package*/
     abstract SelectInterface.InterfaceSelectionMode getMode();

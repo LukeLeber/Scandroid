@@ -352,7 +352,7 @@ public final class SAEJ1979AppendixWrapper
                                                                       @NonNull DiagnosticTroubleCode value)
         {
             ViewHolder vh = (ViewHolder)viewHolder;
-            if(value.getCode() == 0)
+            if(value.getBits() == 0)
             {
                 vh.dtcEncoding.setText(Globals.getString(
                         Globals.I18N_STRING.NOT_AVAILABLE));
@@ -360,8 +360,8 @@ public final class SAEJ1979AppendixWrapper
             }
             else
             {
-                vh.dtcEncoding.setText(value.getEncoding());
-                vh.dtcDescription.setText(value.getDescription());
+                vh.dtcEncoding.setText(value.getCode());
+                vh.dtcDescription.setText(value.getNaming());
             }
         }
     }
@@ -384,7 +384,7 @@ public final class SAEJ1979AppendixWrapper
 
             final TextView fSys2Label;
 
-            ViewHolder(@NonNull View view)
+            ViewHolder(@NonNull final View view)
             {
                 this.fSys1 = ButterKnife.findById(view, R.id.fuel_system_1_status);
                 this.fSys2 = ButterKnife.findById(view, R.id.fuel_system_2_status);
@@ -402,10 +402,10 @@ public final class SAEJ1979AppendixWrapper
                                                         R.string.pid_fuel_system_status_expansion),
                                                 NA.equals(fSys1.getText()) ? NA :
                                                         FuelSystemStatus.valueOf(fSys1.getText().toString())
-                                                                        .toUserFriendlyString(),
+                                                                        .toI18NString(view.getContext()),
                                                 NA.equals(fSys2.getText()) ? NA :
                                                         FuelSystemStatus.valueOf(fSys2.getText().toString())
-                                                                        .toUserFriendlyString()
+                                                                        .toI18NString(view.getContext())
                                                      ))
                                 .setTitle(v.getContext().getString(
                                         R.string.pid_fuel_system_status_expansion_title))
@@ -918,18 +918,19 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// Base class for PIDs $14 - $1B
-    private abstract static class ConventionalOxygenSensorPIDWrapper extends PIDWrapper<Float>
+    private abstract static class ConventionalOxygenSensorPIDWrapper extends PIDWrapper<SerializablePair<Float, Float>>
     {
 
-        ConventionalOxygenSensorPIDWrapper(PID<Float> pid)
+        ConventionalOxygenSensorPIDWrapper(PID<SerializablePair<Float, Float>> pid)
         {
             super(pid);
         }
 
+        // TODO: Create dual layout...
+
         @Override
         public final ViewHolderBase createViewHolder(@NonNull final View view)
         {
-            super.addUnitSelector(view);
             return super.createViewHolder(view);
         }
     }

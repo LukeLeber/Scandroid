@@ -5,6 +5,8 @@
 
 package com.lukeleber.scandroid.sae.j1979.detail;
 
+import android.support.annotation.NonNull;
+
 import com.lukeleber.scandroid.sae.j1979.DefaultPID;
 import com.lukeleber.scandroid.sae.j1979.PID;
 import com.lukeleber.scandroid.sae.j1979.PIDSupport;
@@ -44,7 +46,7 @@ public class AppendixA
             = new PID.Unmarshaller<PIDSupport>()
     {
         @Override
-        public PIDSupport invoke(byte... bytes)
+        public PIDSupport invoke(@NonNull byte... bytes)
         {
             int ctr = 0;
             while (bytes.length > 4 && bytes[ctr] == 0)

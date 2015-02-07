@@ -19,7 +19,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * A reasonable skeletal implementation of much of the {@link com.lukeleber.scandroid.interpreter.Interpreter}
+ * A reasonable skeletal implementation of much of the {@link Interpreter}
  * interface.
  *
  * @param <T>
@@ -27,7 +27,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @param <U>
  *         the type of data that is to be received over this Interpreter
  *
- * @see com.lukeleber.scandroid.interpreter.Interpreter
+ * @see Interpreter
  * @see android.os.AsyncTask
  */
 public abstract class AbstractInterpreter<T, U>
@@ -69,7 +69,7 @@ public abstract class AbstractInterpreter<T, U>
     }
 
     /**
-     * Constructs an {@link com.lukeleber.scandroid.interpreter.AbstractInterpreter}
+     * Constructs an {@link AbstractInterpreter}
      */
     protected AbstractInterpreter(CommunicationInterface com)
     {
@@ -222,7 +222,7 @@ public abstract class AbstractInterpreter<T, U>
 
     /**
      * Performs a best-attempt cleanup.  Closes the {@link com.lukeleber.scandroid.io.CommunicationInterface}
-     * associated with this {@link com.lukeleber.scandroid.interpreter.Interpreter} and invokes the
+     * associated with this {@link Interpreter} and invokes the
      * virtual {@link java.io.Closeable#close()} method on itself.
      */
     private void cleanup()
@@ -260,7 +260,7 @@ public abstract class AbstractInterpreter<T, U>
      * this method will be dependent on the type of remote system being interacted with.
      *
      * @param request
-     *         the {@link com.lukeleber.scandroid.interpreter.Request} to write
+     *         the {@link Request} to write
      *
      * @throws java.io.IOException
      *         if any I/O error occurs during the write

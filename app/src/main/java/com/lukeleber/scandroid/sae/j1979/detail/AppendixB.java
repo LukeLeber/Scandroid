@@ -5,6 +5,8 @@
 
 package com.lukeleber.scandroid.sae.j1979.detail;
 
+import android.support.annotation.NonNull;
+
 import com.lukeleber.scandroid.Constants;
 import com.lukeleber.scandroid.Globals;
 import com.lukeleber.scandroid.sae.j1979.AuxiliaryInputStatus;
@@ -45,7 +47,7 @@ public class AppendixB
                     super.put(Unit.PACKETED, new PID.Unmarshaller<MonitorStatus>()
                     {
                         @Override
-                        public MonitorStatus invoke(byte... bytes)
+                        public MonitorStatus invoke(@NonNull byte... bytes)
                         {
                             return new MonitorStatus(((bytes[0] & 0xFF) << 24) |
                                                      ((bytes[1] & 0xFF) << 16) |
@@ -71,7 +73,7 @@ public class AppendixB
                     new PID.Unmarshaller<DiagnosticTroubleCode>()
                     {
                         @Override
-                        public DiagnosticTroubleCode invoke(byte... bytes)
+                        public DiagnosticTroubleCode invoke(@NonNull byte... bytes)
                         {
                             return new DiagnosticTroubleCode((bytes[0] << 8) | bytes[1],
                                     Globals.getString(Globals.I18N_STRING.NOT_AVAILABLE));
@@ -97,7 +99,7 @@ public class AppendixB
 
                         @Override
                         public SerializablePair<FuelSystemStatus, FuelSystemStatus> invoke(
-                                byte... bytes)
+                                @NonNull byte... bytes)
                         {
                             return new SerializablePair<>(FuelSystemStatus.forByte(bytes[0]),
                                                           FuelSystemStatus.forByte(bytes[1]));
@@ -118,7 +120,7 @@ public class AppendixB
                     super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return (bytes[0] & 0xFF) * 100.0f / 255.0f;
                         }
@@ -140,7 +142,7 @@ public class AppendixB
                     super.put(Unit.TEMPERATURE_CELSIUS, new PID.Unmarshaller<Integer>()
                     {
                         @Override
-                        public Integer invoke(byte... bytes)
+                        public Integer invoke(@NonNull byte... bytes)
                         {
                             return (bytes[0] & 0xFF) - 40;
                         }
@@ -148,7 +150,7 @@ public class AppendixB
                     super.put(Unit.TEMPERATURE_FAHRENHEIT, new PID.Unmarshaller<Integer>()
                     {
                         @Override
-                        public Integer invoke(byte... bytes)
+                        public Integer invoke(@NonNull byte... bytes)
                         {
                             return (int) (((bytes[0] & 0xFF) - 40) * (9.0f / 5.0f) + 32);
                         }
@@ -171,7 +173,7 @@ public class AppendixB
                                       {
                                           @Override
                                           public SerializablePair<Float, Float> invoke(
-                                                  byte... bytes)
+                                                  @NonNull byte... bytes)
                                           {
                                               return new SerializablePair<>(
                                                       ((bytes[0] & 0xFF) - 128) * 100.0f / 128.0f,
@@ -198,7 +200,7 @@ public class AppendixB
                                       {
                                           @Override
                                           public SerializablePair<Float, Float> invoke(
-                                                  byte... bytes)
+                                                  @NonNull byte... bytes)
                                           {
                                               return new SerializablePair<>(
                                                       ((bytes[0] & 0xFF) - 128) * 100.0f / 128.0f,
@@ -225,7 +227,7 @@ public class AppendixB
                                       {
                                           @Override
                                           public SerializablePair<Float, Float> invoke(
-                                                  byte... bytes)
+                                                  @NonNull byte... bytes)
                                           {
                                               return new SerializablePair<>(
                                                       ((bytes[0] & 0xFF) - 128) * 100.0f / 128.0f,
@@ -252,7 +254,7 @@ public class AppendixB
                                       {
                                           @Override
                                           public SerializablePair<Float, Float> invoke(
-                                                  byte... bytes)
+                                                  @NonNull byte... bytes)
                                           {
                                               return new SerializablePair<>(
                                                       ((bytes[0] & 0xFF) - 128) * 100.0f / 128.0f,
@@ -283,7 +285,7 @@ public class AppendixB
                             super.put(Unit.KILO_PASCALS, new PID.Unmarshaller<Integer>()
                             {
                                 @Override
-                                public Integer invoke(byte... bytes)
+                                public Integer invoke(@NonNull byte... bytes)
                                 {
                                     return (bytes[0] & 0xFF) * 3;
                                 }
@@ -291,7 +293,7 @@ public class AppendixB
                             super.put(Unit.PSI, new PID.Unmarshaller<Integer>()
                             {
                                 @Override
-                                public Integer invoke(byte... bytes)
+                                public Integer invoke(@NonNull byte... bytes)
                                 {
                                     return (int)(((bytes[0] & 0xFF) * 3) * Constants.PSI_TO_KILO_PASCAL_FACTOR);
                                 }
@@ -314,7 +316,7 @@ public class AppendixB
                             super.put(Unit.KILO_PASCALS, new PID.Unmarshaller<Integer>()
                             {
                                 @Override
-                                public Integer invoke(byte... bytes)
+                                public Integer invoke(@NonNull byte... bytes)
                                 {
                                     return bytes[0] & 0xFF;
                                 }
@@ -322,7 +324,7 @@ public class AppendixB
                             super.put(Unit.PSI, new PID.Unmarshaller<Integer>()
                             {
                                 @Override
-                                public Integer invoke(byte... bytes)
+                                public Integer invoke(@NonNull byte... bytes)
                                 {
                                     return (int)((bytes[0] & 0xFF) * Constants.PSI_TO_KILO_PASCAL_FACTOR);
                                 }
@@ -343,7 +345,7 @@ public class AppendixB
                             super.put(Unit.ROTATIONS_PER_MINUTE, new PID.Unmarshaller<Float>()
                             {
                                 @Override
-                                public Float invoke(byte... bytes)
+                                public Float invoke(@NonNull byte... bytes)
                                 {
                                     return (((bytes[0] & 0xFF) << 8) | (bytes[1] & 0xFF)) / 4.0f;
                                 }
@@ -367,7 +369,7 @@ public class AppendixB
                             super.put(Unit.KILOMETERS_PER_HOUR, new PID.Unmarshaller<Integer>()
                             {
                                 @Override
-                                public Integer invoke(byte... bytes)
+                                public Integer invoke(@NonNull byte... bytes)
                                 {
                                     return bytes[0] & 0xFF;
                                 }
@@ -375,7 +377,7 @@ public class AppendixB
                             super.put(Unit.MILES_PER_HOUR, new PID.Unmarshaller<Integer>()
                             {
                                 @Override
-                                public Integer invoke(byte... bytes)
+                                public Integer invoke(@NonNull byte... bytes)
                                 {
                                     return (int)((bytes[0] & 0xFF) * Constants.KILOMETERS_TO_MILES);
                                 }
@@ -397,7 +399,7 @@ public class AppendixB
                             super.put(Unit.ANGLE_DEGREES, new PID.Unmarshaller<Float>()
                             {
                                 @Override
-                                public Float invoke(byte... bytes)
+                                public Float invoke(@NonNull byte... bytes)
                                 {
                                     return ((bytes[0] & 0xFF) - 128) / 2.0f;
                                 }
@@ -420,7 +422,7 @@ public class AppendixB
                             super.put(Unit.TEMPERATURE_FAHRENHEIT, new PID.Unmarshaller<Integer>()
                             {
                                 @Override
-                                public Integer invoke(byte... bytes)
+                                public Integer invoke(@NonNull byte... bytes)
                                 {
                                     return (int) (((bytes[0] & 0xFF) - 40) * (9.0f / 5.0f) + 32);
                                 }
@@ -428,7 +430,7 @@ public class AppendixB
                             super.put(Unit.TEMPERATURE_CELSIUS, new PID.Unmarshaller<Integer>()
                             {
                                 @Override
-                                public Integer invoke(byte... bytes)
+                                public Integer invoke(@NonNull byte... bytes)
                                 {
                                     return (bytes[0] & 0xFF) - 40;
                                 }
@@ -449,7 +451,7 @@ public class AppendixB
                             super.put(Unit.GRAMS_PER_SECOND, new PID.Unmarshaller<Float>()
                             {
                                 @Override
-                                public Float invoke(byte... bytes)
+                                public Float invoke(@NonNull byte... bytes)
                                 {
                                     return (((bytes[0] & 0xFF) << 8) | (bytes[1] & 0xFF)) / 100.0f;
                                 }
@@ -457,7 +459,7 @@ public class AppendixB
                             super.put(Unit.POUNDS_PER_MINUTE, new PID.Unmarshaller<Float>()
                             {
                                 @Override
-                                public Float invoke(byte... bytes)
+                                public Float invoke(@NonNull byte... bytes)
                                 {
                                     return ((((bytes[0] & 0xFF) << 8) | (bytes[1] & 0xFF)) / 100.0f) * Constants.GRAMS_PER_SEC_TO_POUNDS_PER_MIN;
                                 }
@@ -478,7 +480,7 @@ public class AppendixB
                             super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
                             {
                                 @Override
-                                public Float invoke(byte... bytes)
+                                public Float invoke(@NonNull byte... bytes)
                                 {
                                     return ((bytes[0] & 0xFF) * 100.0f) / 255.0f;
                                 }
@@ -500,7 +502,7 @@ public class AppendixB
                                       new PID.Unmarshaller<SecondaryAirStatus>()
                                       {
                                           @Override
-                                          public SecondaryAirStatus invoke(byte... bytes)
+                                          public SecondaryAirStatus invoke(@NonNull byte... bytes)
                                           {
                                               return SecondaryAirStatus.forByte(bytes[0]);
                                           }
@@ -523,7 +525,7 @@ public class AppendixB
                                       new PID.Unmarshaller<OxygenSensor[]>()
                                       {
                                           @Override
-                                          public OxygenSensor[] invoke(byte... bytes)
+                                          public OxygenSensor[] invoke(@NonNull byte... bytes)
                                           {
                                               return OxygenSensor.DualBank.forByte(bytes[0]);
                                           }
@@ -532,261 +534,237 @@ public class AppendixB
                     }
             );
 
-    /// A voltage unmarshaller for conventional oxygen sensors.
-    private final static PID.Unmarshaller<Float> O2S_VOLTAGE = new PID.Unmarshaller<Float>()
-    {
-        @Override
-        public Float invoke(byte... bytes)
+    private final static PID.Unmarshaller<SerializablePair<Float, Float>> CONVENTIONAL_O2S =
+        new PID.Unmarshaller<SerializablePair<Float, Float>>()
         {
-            return (bytes[0] & 0xFF) * 0.005f;
-        }
-    };
+            @Override
+            public SerializablePair<Float, Float> invoke(@NonNull byte... bytes)
+            {
+                return new SerializablePair<>((bytes[0] & 0xFF) * 0.005f, 0.78125f * (bytes[0] & 0xFF) - 100.0f);
+            }
+        };
 
-    /// A fuel trim % unmarshaller for conventional oxygen sensors
-    private final static PID.Unmarshaller<Float> O2S_FUEL_TRIM = new PID.Unmarshaller<Float>()
-    {
-        @Override
-        public Float invoke(byte... bytes)
-        {
-            return 0.78125f * (bytes[0] & 0xFF) - 100.0f;
-        }
-    };
+
 
     /// A PID that requests the reading of O2S11 on a dual-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $24 is
-    public final static PID<Float> DUAL_BANK_O2S11_CONVENTIONAL = new DefaultPID<>(
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S11_CONVENTIONAL = new DefaultPID<>(
             0x14,
             "O2S11",
             "Retrieve O2S11 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.VOLTS, O2S_VOLTAGE);
-                    super.put(Unit.PERCENT, O2S_FUEL_TRIM);
+                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
                 }
             }
     );
 
     /// A PID that requests the reading of O2S11 on a quad-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $24 is
-    public final static PID<Float> QUAD_BANK_O2S11_CONVENTIONAL = new DefaultPID<>(
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S11_CONVENTIONAL = new DefaultPID<>(
             0x14,
             "O2S11",
             "Retrieve O2S11 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.VOLTS, O2S_VOLTAGE);
-                    super.put(Unit.PERCENT, O2S_FUEL_TRIM);
+                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
                 }
             }
     );
 
     /// A PID that requests the reading of O2S12 on a dual-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $25 is
-    public final static PID<Float> DUAL_BANK_O2S12_CONVENTIONAL = new DefaultPID<>(
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S12_CONVENTIONAL = new DefaultPID<>(
             0x15,
             "O2S12",
             "Retrieve O2S12 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.VOLTS, O2S_VOLTAGE);
-                    super.put(Unit.PERCENT, O2S_FUEL_TRIM);
+                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
                 }
             }
     );
     /// A PID that requests the reading of O2S12 on a quad-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $25 is
-    public final static PID<Float> QUAD_BANK_O2S12_CONVENTIONAL = new DefaultPID<>(
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S12_CONVENTIONAL = new DefaultPID<>(
             0x15,
             "O2S12",
             "Retrieve O2S12 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.VOLTS, O2S_VOLTAGE);
-                    super.put(Unit.PERCENT, O2S_FUEL_TRIM);
+                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
                 }
             }
     );
 
     /// A PID that requests the reading of O2S13 on a dual-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $26 is
-    public final static PID<Float> DUAL_BANK_O2S13_CONVENTIONAL = new DefaultPID<>(
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S13_CONVENTIONAL = new DefaultPID<>(
             0x16,
             "O2S13",
             "Retrieve O2S13 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.VOLTS, O2S_VOLTAGE);
-                    super.put(Unit.PERCENT, O2S_FUEL_TRIM);
+                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
                 }
             }
     );
 
     /// A PID that requests the reading of O2S21 on a quad-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $28 is
-    public final static PID<Float> QUAD_BANK_O2S21_CONVENTIONAL = new DefaultPID<>(
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S21_CONVENTIONAL = new DefaultPID<>(
             0x16,
             "O2S21",
             "Retrieve O2S21 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.VOLTS, O2S_VOLTAGE);
-                    super.put(Unit.PERCENT, O2S_FUEL_TRIM);
+                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
                 }
             }
     );
 
     /// A PID that requests the reading of O2S14 on a dual-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $27 is
-    public final static PID<Float> DUAL_BANK_O2S14_CONVENTIONAL = new DefaultPID<>(
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S14_CONVENTIONAL = new DefaultPID<>(
             0x17,
             "O2S14",
             "Retrieve O2S14 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.VOLTS, O2S_VOLTAGE);
-                    super.put(Unit.PERCENT, O2S_FUEL_TRIM);
+                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
                 }
             }
     );
 
     /// A PID that requests the reading of O2S22 on a quad-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $27 is
-    public final static PID<Float> QUAD_BANK_O2S22_CONVENTIONAL = new DefaultPID<>(
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S22_CONVENTIONAL = new DefaultPID<>(
             0x17,
             "O2S22",
             "Retrieve O2S22 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.VOLTS, O2S_VOLTAGE);
-                    super.put(Unit.PERCENT, O2S_FUEL_TRIM);
+                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
                 }
             }
     );
 
     /// A PID that requests the reading of O2S21 on a dual-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $28 is
-    public final static PID<Float> DUAL_BANK_O2S21_CONVENTIONAL = new DefaultPID<>(
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S21_CONVENTIONAL = new DefaultPID<>(
             0x18,
             "O2S21",
             "Retrieve O2S21 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.VOLTS, O2S_VOLTAGE);
-                    super.put(Unit.PERCENT, O2S_FUEL_TRIM);
+                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
                 }
             }
     );
 
     /// A PID that requests the reading of O2S31 on a quad-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $28 is
-    public final static PID<Float> QUAD_BANK_O2S31_CONVENTIONAL = new DefaultPID<>(
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S31_CONVENTIONAL = new DefaultPID<>(
             0x18,
             "O2S31",
             "Retrieve O2S31 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.VOLTS, O2S_VOLTAGE);
-                    super.put(Unit.PERCENT, O2S_FUEL_TRIM);
+                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
                 }
             }
     );
 
     /// A PID that requests the reading of O2S14 on a dual-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $29 is
-    public final static PID<Float> DUAL_BANK_O2S22_CONVENTIONAL = new DefaultPID<>(
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S22_CONVENTIONAL = new DefaultPID<>(
             0x19,
             "O2S22",
             "Retrieve O2S22 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.VOLTS, O2S_VOLTAGE);
-                    super.put(Unit.PERCENT, O2S_FUEL_TRIM);
+                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
                 }
             }
     );
 
     /// A PID that requests the reading of O2S32 on a quad-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $29 is
-    public final static PID<Float> QUAD_BANK_O2S32_CONVENTIONAL = new DefaultPID<>(
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S32_CONVENTIONAL = new DefaultPID<>(
             0x19,
             "O2S32",
             "Retrieve O2S32 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.VOLTS, O2S_VOLTAGE);
-                    super.put(Unit.PERCENT, O2S_FUEL_TRIM);
+                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
                 }
             }
     );
 
     /// A PID that requests the reading of O2S23 on a dual-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $2A is
-    public final static PID<Float> DUAL_BANK_O2S23_CONVENTIONAL = new DefaultPID<>(
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S23_CONVENTIONAL = new DefaultPID<>(
             0x1A,
             "O2S23",
             "Retrieve O2S23 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.VOLTS, O2S_VOLTAGE);
-                    super.put(Unit.PERCENT, O2S_FUEL_TRIM);
+                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
                 }
             }
     );
 
     /// A PID that requests the reading of O2S41 on a quad-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $2A is
-    public final static PID<Float> QUAD_BANK_O2S41_CONVENTIONAL = new DefaultPID<>(
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S41_CONVENTIONAL = new DefaultPID<>(
             0x1A,
             "O2S41",
             "Retrieve O2S41 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.VOLTS, O2S_VOLTAGE);
-                    super.put(Unit.PERCENT, O2S_FUEL_TRIM);
+                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
                 }
             }
     );
 
     /// A PID that requests the reading of O2S24 on a dual-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $2B is
-    public final static PID<Float> DUAL_BANK_O2S24_CONVENTIONAL = new DefaultPID<>(
+    public final static PID<SerializablePair<Float, Float>> DUAL_BANK_O2S24_CONVENTIONAL = new DefaultPID<>(
             0x1B,
             "O2S24",
             "Retrieve O2S24 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.VOLTS, O2S_VOLTAGE);
-                    super.put(Unit.PERCENT, O2S_FUEL_TRIM);
+                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
                 }
             }
     );
 
     /// A PID that requests the reading of O2S42 on a quad-bank system
     /// NOTE: SAE-J1979 specifies that this PID cannot be supported if PID $2B is
-    public final static PID<Float> QUAD_BANK_O2S42_CONVENTIONAL = new DefaultPID<>(
+    public final static PID<SerializablePair<Float, Float>> QUAD_BANK_O2S42_CONVENTIONAL = new DefaultPID<>(
             0x1B,
             "O2S42",
             "Retrieve O2S42 value",
-            new HashMap<Unit, PID.Unmarshaller<Float>>()
+            new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.VOLTS, O2S_VOLTAGE);
-                    super.put(Unit.PERCENT, O2S_FUEL_TRIM);
+                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
                 }
             }
     );
@@ -802,7 +780,7 @@ public class AppendixB
                     super.put(Unit.INTERNAL_PLACEHOLDER, new PID.Unmarshaller<OBDSupport>()
                     {
                         @Override
-                        public OBDSupport invoke(byte... bytes)
+                        public OBDSupport invoke(@NonNull byte... bytes)
                         {
                             return OBDSupport.forByte(bytes[0]);
                         }
@@ -825,7 +803,7 @@ public class AppendixB
                                       new PID.Unmarshaller<OxygenSensor[]>()
                                       {
                                           @Override
-                                          public OxygenSensor[] invoke(byte... bytes)
+                                          public OxygenSensor[] invoke(@NonNull byte... bytes)
                                           {
                                               return OxygenSensor.QuadBank.forByte(bytes[0]);
                                           }
@@ -845,7 +823,7 @@ public class AppendixB
                     super.put(Unit.BOOLEAN, new PID.Unmarshaller<AuxiliaryInputStatus>()
                     {
                         @Override
-                        public AuxiliaryInputStatus invoke(byte... bytes)
+                        public AuxiliaryInputStatus invoke(@NonNull byte... bytes)
                         {
                             return AuxiliaryInputStatus.forByte(bytes[0]);
                         }
@@ -864,7 +842,7 @@ public class AppendixB
                     super.put(Unit.SECONDS, new PID.Unmarshaller<Integer>()
                     {
                         @Override
-                        public Integer invoke(byte... bytes)
+                        public Integer invoke(@NonNull byte... bytes)
                         {
                             return ((bytes[0] & 0xFF) << 8) | bytes[0];
                         }
@@ -883,7 +861,7 @@ public class AppendixB
                     super.put(Unit.KILOMETERS, new PID.Unmarshaller<Integer>()
                     {
                         @Override
-                        public Integer invoke(byte... bytes)
+                        public Integer invoke(@NonNull byte... bytes)
                         {
                             return ((bytes[0] & 0xFF) << 8) | bytes[1];
                         }
@@ -891,7 +869,7 @@ public class AppendixB
                     super.put(Unit.MILES, new PID.Unmarshaller<Integer>()
                     {
                         @Override
-                        public Integer invoke(byte... bytes)
+                        public Integer invoke(@NonNull byte... bytes)
                         {
                             return (int)((((bytes[0] & 0xFF) << 8) | bytes[1]) * Constants.KILOMETERS_TO_MILES);
                         }
@@ -918,7 +896,7 @@ public class AppendixB
                             super.put(Unit.KILO_PASCALS, new PID.Unmarshaller<Float>()
                             {
                                 @Override
-                                public Float invoke(byte... bytes)
+                                public Float invoke(@NonNull byte... bytes)
                                 {
                                     return (((bytes[0] & 0xFF) << 8) | bytes[1]) * 0.079F;
                                 }
@@ -926,7 +904,7 @@ public class AppendixB
                             super.put(Unit.PSI, new PID.Unmarshaller<Float>()
                             {
                                 @Override
-                                public Float invoke(byte... bytes)
+                                public Float invoke(@NonNull byte... bytes)
                                 {
                                     return ((((bytes[0] & 0xFF) << 8) | bytes[1]) * 0.079F) * Constants.KILO_PASCAL_TO_PSI_FACTOR;
                                 }
@@ -952,7 +930,7 @@ public class AppendixB
                     super.put(Unit.KILO_PASCALS, new PID.Unmarshaller<Integer>()
                     {
                         @Override
-                        public Integer invoke(byte... bytes)
+                        public Integer invoke(@NonNull byte... bytes)
                         {
                             return (((bytes[0] & 0xFF) << 8) | bytes[1]) * 10;
                         }
@@ -960,7 +938,7 @@ public class AppendixB
                     super.put(Unit.PSI, new PID.Unmarshaller<Integer>()
                     {
                         @Override
-                        public Integer invoke(byte... bytes)
+                        public Integer invoke(@NonNull byte... bytes)
                         {
                             return (int) ((((bytes[0] & 0xFF) << 8) | bytes[1]) * 1.450377f);
                         }
@@ -973,7 +951,7 @@ public class AppendixB
             WIDE_RANGE_O2S_UNMARSHALLER = new PID.Unmarshaller<SerializablePair<Float, Float>>()
     {
         @Override
-        public SerializablePair<Float, Float> invoke(byte... bytes)
+        public SerializablePair<Float, Float> invoke(@NonNull byte... bytes)
         {
             return new SerializablePair<>(
                     (((bytes[0] << 8) | bytes[1]) * 0.0000305f),
@@ -1245,7 +1223,7 @@ public class AppendixB
                     super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return (bytes[0] & 0xFF) * 100.0f / 255.0f;
                         }
@@ -1264,7 +1242,7 @@ public class AppendixB
                     super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return bytes[0] * 100.0f / 128.0f;
                         }
@@ -1283,7 +1261,7 @@ public class AppendixB
                     super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return (bytes[0] & 0xFF) * 100.0f / 255.0f;
                         }
@@ -1302,7 +1280,7 @@ public class AppendixB
                     super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return (bytes[0] & 0xFF) * 100.0f / 255.0f;
                         }
@@ -1321,7 +1299,7 @@ public class AppendixB
                     super.put(Unit.ACCUMULATED_NUMBER, new PID.Unmarshaller<Integer>()
                     {
                         @Override
-                        public Integer invoke(byte... bytes)
+                        public Integer invoke(@NonNull byte... bytes)
                         {
                             return bytes[0] & 0xFF;
                         }
@@ -1340,7 +1318,7 @@ public class AppendixB
                     super.put(Unit.KILOMETERS, new PID.Unmarshaller<Integer>()
                     {
                         @Override
-                        public Integer invoke(byte... bytes)
+                        public Integer invoke(@NonNull byte... bytes)
                         {
                             return ((bytes[0] & 0xFF) << 8) | bytes[1];
                         }
@@ -1348,7 +1326,7 @@ public class AppendixB
                     super.put(Unit.MILES, new PID.Unmarshaller<Integer>()
                     {
                         @Override
-                        public Integer invoke(byte... bytes)
+                        public Integer invoke(@NonNull byte... bytes)
                         {
                             return (int)((((bytes[0] & 0xFF) << 8) | bytes[1]) * Constants.KILOMETERS_TO_MILES);
                         }
@@ -1367,7 +1345,7 @@ public class AppendixB
                     super.put(Unit.PASCALS, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return ((bytes[0] << 8) | bytes[1]) * 0.25f;
                         }
@@ -1375,7 +1353,7 @@ public class AppendixB
                     super.put(Unit.INCHES_OF_WATER, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return (((bytes[0] << 8) | bytes[1]) * 0.25f) * Constants.PASCALS_TO_INCHES_H2O;
                         }
@@ -1394,7 +1372,7 @@ public class AppendixB
                     super.put(Unit.KILO_PASCALS, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return (float) (bytes[0] & 0xFF);
                         }
@@ -1402,7 +1380,7 @@ public class AppendixB
                     super.put(Unit.INCHES_OF_MERCURY, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return ((bytes[0] & 0xFF) * Constants.KILO_PASCAL_TO_INCHES_MERCURY);
                         }
@@ -1417,7 +1395,7 @@ public class AppendixB
             = new PID.Unmarshaller<SerializablePair<Float, Float>>()
     {
         @Override
-        public SerializablePair<Float, Float> invoke(byte... bytes)
+        public SerializablePair<Float, Float> invoke(@NonNull byte... bytes)
         {
             return new SerializablePair<>((((bytes[0] & 0xFF) << 8) | bytes[1]) * 0.0000305f,
                                           (((short) bytes[2] << 8) | bytes[3]) * 0.00390825f);
@@ -1637,7 +1615,7 @@ public class AppendixB
             new PID.Unmarshaller<Float>()
             {
                 @Override
-                public Float invoke(byte... bytes)
+                public Float invoke(@NonNull byte... bytes)
                 {
                     return ((((bytes[0] & 0xFF) << 8) | bytes[1]) * 0.1f) - 40.0f;
                 }
@@ -1647,7 +1625,7 @@ public class AppendixB
             new PID.Unmarshaller<Float>()
             {
                 @Override
-                public Float invoke(byte... bytes)
+                public Float invoke(@NonNull byte... bytes)
                 {
                     return (((((bytes[0] & 0xFF) << 8) | bytes[1]) * 0.1f) - 40.0f) * 9.0f / 5.0f + 32.0f;
                 }
@@ -1719,7 +1697,7 @@ public class AppendixB
                     super.put(Unit.PACKETED, new PID.Unmarshaller<DriveCycleMonitorStatus>()
                     {
                         @Override
-                        public DriveCycleMonitorStatus invoke(byte... bytes)
+                        public DriveCycleMonitorStatus invoke(@NonNull byte... bytes)
                         {
                             return new DriveCycleMonitorStatus(((bytes[0] & 0xFF) << 24) |
                                 ((bytes[1] & 0xFF) << 16) |
@@ -1741,7 +1719,7 @@ public class AppendixB
                     super.put(Unit.VOLTS, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return (((bytes[0] & 0xFF) << 8) |
                                     (bytes[1] & 0xFF)) * 0.001f;
@@ -1761,7 +1739,7 @@ public class AppendixB
                     super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return (((bytes[0] & 0xFF) << 8) |
                                     (bytes[1] & 0xFF)) * 100.0f / 255.0f;
@@ -1781,7 +1759,7 @@ public class AppendixB
                     super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return (((bytes[0] & 0xFF) << 8) |
                                     (bytes[1] & 0xFF)) * 0.0000305f;
@@ -1801,7 +1779,7 @@ public class AppendixB
                     super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return (bytes[0] & 0xFF) * 100.0f / 255.0f;
                         }
@@ -1820,7 +1798,7 @@ public class AppendixB
                     super.put(Unit.TEMPERATURE_CELSIUS, new PID.Unmarshaller<Integer>()
                     {
                         @Override
-                        public Integer invoke(byte... bytes)
+                        public Integer invoke(@NonNull byte... bytes)
                         {
                             return (bytes[0] & 0xFF) - 40;
                         }
@@ -1828,7 +1806,7 @@ public class AppendixB
                     super.put(Unit.TEMPERATURE_FAHRENHEIT, new PID.Unmarshaller<Integer>()
                     {
                         @Override
-                        public Integer invoke(byte... bytes)
+                        public Integer invoke(@NonNull byte... bytes)
                         {
                             return (int)(((bytes[0] & 0xFF) - 40.0f) * 9.0f / 5.0f + 32.0f);
                         }
@@ -1847,7 +1825,7 @@ public class AppendixB
                     super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return (bytes[0] & 0xFF) * 100.0f / 255.0f;
                         }
@@ -1866,7 +1844,7 @@ public class AppendixB
                     super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return (bytes[0] & 0xFF) * 100.0f / 255.0f;
                         }
@@ -1885,7 +1863,7 @@ public class AppendixB
                     super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return (bytes[0] & 0xFF) * 100.0f / 255.0f;
                         }
@@ -1904,7 +1882,7 @@ public class AppendixB
                     super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return (bytes[0] & 0xFF) * 100.0f / 255.0f;
                         }
@@ -1923,7 +1901,7 @@ public class AppendixB
                     super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return (bytes[0] & 0xFF) * 100.0f / 255.0f;
                         }
@@ -1942,7 +1920,7 @@ public class AppendixB
                     super.put(Unit.PERCENT, new PID.Unmarshaller<Float>()
                     {
                         @Override
-                        public Float invoke(byte... bytes)
+                        public Float invoke(@NonNull byte... bytes)
                         {
                             return (bytes[0] & 0xFF) * 100.0f / 255.0f;
                         }
@@ -1961,7 +1939,7 @@ public class AppendixB
                     super.put(Unit.MINUTES, new PID.Unmarshaller<Integer>()
                     {
                         @Override
-                        public Integer invoke(byte... bytes)
+                        public Integer invoke(@NonNull byte... bytes)
                         {
                             return ((bytes[0] & 0xFF) << 8) | bytes[1];
                         }
@@ -1980,7 +1958,7 @@ public class AppendixB
                     super.put(Unit.MINUTES, new PID.Unmarshaller<Integer>()
                     {
                         @Override
-                        public Integer invoke(byte... bytes)
+                        public Integer invoke(@NonNull byte... bytes)
                         {
                             return ((bytes[0] & 0xFF) << 8) | bytes[1];
                         }

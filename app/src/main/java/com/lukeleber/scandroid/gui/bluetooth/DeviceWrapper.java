@@ -19,7 +19,7 @@ public class DeviceWrapper
     private final BluetoothDevice device;
 
     /**
-     * Constructs a {@link com.lukeleber.scandroid.gui.bluetooth.DeviceWrapper} with the provided
+     * Constructs a {@link DeviceWrapper} with the provided
      * {@link android.bluetooth.BluetoothDevice}
      *
      * @param device

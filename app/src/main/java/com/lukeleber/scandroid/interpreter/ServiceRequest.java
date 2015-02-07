@@ -10,7 +10,7 @@ import com.lukeleber.scandroid.sae.j1979.Service;
 import com.lukeleber.scandroid.util.Unit;
 
 /**
- * <p>A type of {@link com.lukeleber.scandroid.interpreter.Request} that is used to request a piece
+ * <p>A type of {@link Request} that is used to request a piece
  * of information from a remote system.  <code>ServiceRequests</code> consist of a {@link
  * com.lukeleber.scandroid.sae.j1979.PID} and a {@link com.lukeleber.scandroid.sae.j1979.Service} on which the
  * PID should be requested under.  This is typically represented textually as "$XX$YY" where "XX" is
@@ -53,7 +53,7 @@ public class ServiceRequest<T, U>
 
     /**
      * Constructs a ServiceRequest with the provided {@link com.lukeleber.scandroid.sae.j1979.Service},
-     * {@link com.lukeleber.scandroid.sae.j1979.PID}, {@link com.lukeleber.scandroid.interpreter.Handler},
+     * {@link com.lukeleber.scandroid.sae.j1979.PID}, {@link Handler},
      * and {@link com.lukeleber.scandroid.util.Unit}.  This constructor is equivalent to
      * <code>ServiceRequest(service, pid, handler, pid.getDefaultUnit());</code>
      *
@@ -62,7 +62,7 @@ public class ServiceRequest<T, U>
      * @param pid
      *         the {@link com.lukeleber.scandroid.sae.j1979.PID} that is being requested
      * @param handler
-     *         the {@link com.lukeleber.scandroid.interpreter.Handler} that is invoked when a
+     *         the {@link Handler} that is invoked when a
      *         response to this request is received from the remote hardware
      */
     public ServiceRequest(Service service, final PID<U> pid, Handler<U> handler)
@@ -72,7 +72,7 @@ public class ServiceRequest<T, U>
 
     /**
      * Constructs a ServiceRequest with the provided {@link com.lukeleber.scandroid.sae.j1979.Service},
-     * {@link com.lukeleber.scandroid.sae.j1979.PID}, {@link com.lukeleber.scandroid.interpreter.Handler},
+     * {@link com.lukeleber.scandroid.sae.j1979.PID}, {@link Handler},
      * and {@link com.lukeleber.scandroid.util.Unit}.
      *
      * @param service
@@ -80,7 +80,7 @@ public class ServiceRequest<T, U>
      * @param pid
      *         the {@link com.lukeleber.scandroid.sae.j1979.PID} that is being requested
      * @param handler
-     *         the {@link com.lukeleber.scandroid.interpreter.Handler} that is invoked when a
+     *         the {@link Handler} that is invoked when a
      *         response to this request is received from the remote hardware
      * @param preferredUnit
      *         the {@link com.lukeleber.scandroid.util.Unit} whose unmarshaller should be called

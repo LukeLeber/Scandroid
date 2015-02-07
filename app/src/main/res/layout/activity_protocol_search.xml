@@ -1,24 +1,15 @@
-<!-- This file is protected under the KILLGPL. -->
-<!-- For more information, visit http://www.lukeleber.github.io/KILLGPL.html -->
-<!-- -->
-<!-- Copyright (c) Luke Leber <LukeLeber@gmail.com> -->
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.lukeleber.scandroid.gui.ProtocolSearch">
 
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Searching for the correct communication protocol, please wait or press back to cancel..."
-        android:id="@+id/monitor_status_mil_label"
+        android:text="@string/activity_protocol_search_instruction_label"
+        android:id="@+id/protocol_search_protocol_instruction_textview"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"/>
@@ -29,7 +20,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/progressBar2"
         android:indeterminate="true"
-        android:layout_below="@+id/monitor_status_mil_label"
+        android:layout_below="@+id/protocol_search_protocol_instruction_textview"
         android:layout_alignParentStart="true"
         android:indeterminateOnly="false"
         android:indeterminateDrawable="@android:drawable/progress_horizontal"/>
@@ -37,27 +28,16 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/wide_range_oxygen_sensor_lambda_value"
-        android:layout_below="@+id/monitor_status_mil_label"
+        android:id="@+id/protocol_search_current_protocol"
+        android:layout_below="@+id/protocol_search_protocol_instruction_textview"
         android:layout_centerHorizontal="true"/>
-
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/scrollView">
-
-    </ScrollView>
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/listView"
+        android:id="@+id/protocol_search_listview"
         android:drawSelectorOnTop="true"
-        tools:listitem="@android:layout/simple_list_item_single_choice"
-        android:focusable="false"
-        android:clickable="false"
-        android:layout_below="@+id/wide_range_oxygen_sensor_lambda_value"
+        android:layout_below="@+id/protocol_search_current_protocol"
         android:layout_centerHorizontal="true"
         android:headerDividersEnabled="true"
         android:isScrollContainer="true"/>

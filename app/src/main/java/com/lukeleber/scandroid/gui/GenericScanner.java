@@ -8,6 +8,7 @@ package com.lukeleber.scandroid.gui;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -20,6 +21,7 @@ import com.lukeleber.app.EnhancedActivity;
 import com.lukeleber.scandroid.BuildConfig;
 import com.lukeleber.scandroid.Globals;
 import com.lukeleber.scandroid.R;
+import com.lukeleber.scandroid.gui.dialogs.ParameterSelector;
 import com.lukeleber.scandroid.gui.fragments.DiagnosticTroubleCodeDisplay;
 import com.lukeleber.scandroid.gui.fragments.FreezeFrameRecords;
 import com.lukeleber.scandroid.gui.fragments.LiveDatastream;
@@ -39,8 +41,10 @@ import com.lukeleber.scandroid.io.ScandroidIOException;
 import com.lukeleber.scandroid.io.bluetooth.BluetoothInterface;
 import com.lukeleber.scandroid.sae.j1979.Profile;
 import com.lukeleber.scandroid.sae.j1979.Service;
+import com.lukeleber.scandroid.sae.j1979.ServiceFacet;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * A scan tool implementation that supports the bare minimum required by SAE-J1979.
@@ -48,7 +52,8 @@ import java.io.IOException;
  */
 public class GenericScanner
         extends EnhancedActivity
-        implements InterpreterHost
+        implements InterpreterHost,
+                   ParameterSelector.ParameterSelectorHost
 {
 
     /// @internal tag for debug logging
@@ -64,34 +69,17 @@ public class GenericScanner
         ResetDiagnosticInformation.class
     };
 
-    private final static class InitListener implements ResponseListener<String>
+    @NonNull
+    @Override
+    public List<? extends ServiceFacet> getSupportedParameters()
     {
-        private final Handler<?> handler;
+        return ((LiveDatastream)getServiceFragment(Service.LIVE_DATASTREAM)).getSupportedParameters();
+    }
 
-        InitListener(Handler<?> handler)
-        {
-            this.handler = handler;
-        }
-
-        @Override
-        public void onSuccess(String message)
-        {
-            message = message.replace(Constants.ELM327_SEARCHING_FOR_PROTOCOL + (char)13, "");
-            if(!message.equals(Constants.ELM327_UNABLE_TO_CONNECT + (char)13))
-            {
-                handler.onResponse(null);
-            }
-            else
-            {
-                onFailure(FailureCode.CONDITIONS_NOT_CORRECT);
-            }
-        }
-
-        @Override
-        public void onFailure(FailureCode code)
-        {
-            handler.onFailure(code);
-        }
+    @Override
+    public void onParameterSelection(@NonNull List<? extends ServiceFacet> selectedParameters)
+    {
+        ((LiveDatastream)getServiceFragment(Service.LIVE_DATASTREAM)).onParameterSelection(selectedParameters);
     }
 
     /**
@@ -200,6 +188,14 @@ public class GenericScanner
         super.finish();
     }
 
+    private ServiceFragment[] fragments = new ServiceFragment[services.length];
+
+    @SuppressWarnings("unchecked")
+    public <T extends ServiceFragment> T getServiceFragment(Service service)
+    {
+        return (T)fragments[service.getID() - 1];
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -220,7 +216,7 @@ public class GenericScanner
                 {
                     case ProtocolSearch.PROTOCOL_FOUND:
                         Profile.createProfile(interpreter,
-                                (Protocol)data.getSerializableExtra(ProtocolSearch.PROTOCOL_RESULT),
+                                (Protocol)data.getSerializableExtra(ProtocolSearch.PROTOCOL_RESULT_KEY),
                                 new Handler<Profile>()
                                 {
                                     /// Upon success, launch the scanner activity
@@ -234,25 +230,19 @@ public class GenericScanner
                                         /// Everything checks out
                                         /// Start the scan tool
                                         ((ViewPager) findViewById(R.id.pager)).setAdapter(
-                                                new FragmentStatePagerAdapter(getFragmentManager())
-                                                {
+                                                new FragmentStatePagerAdapter(getFragmentManager()) {
                                                     @Override
-                                                    public Fragment getItem(int position)
-                                                    {
+                                                    public Fragment getItem(int position) {
                                                         Service service = Service.values()[position];
-                                                        if(!getProfile().isServiceSupported(service) || position >= services.length)
-                                                        {
+                                                        if (!getProfile().isServiceSupported(service) || position >= services.length) {
                                                             /// TODO: Remove second part of conditional upon completing all service fragments
                                                             return new UnsupportedService();
-                                                        }
-                                                        else
-                                                        {
-                                                            try
-                                                            {
-                                                                return services[position].newInstance();
-                                                            }
-                                                            catch (InstantiationException | IllegalAccessException e)
-                                                            {
+                                                        } else {
+                                                            try {
+                                                                ServiceFragment sf = services[position].newInstance();
+                                                                fragments[position] = sf;
+                                                                return sf;
+                                                            } catch (InstantiationException | IllegalAccessException e) {
                                                                 throw new IllegalStateException(services[position].getName() +
                                                                         " does not have a public default constructor.");
                                                             }
@@ -260,14 +250,12 @@ public class GenericScanner
                                                     }
 
                                                     @Override
-                                                    public int getCount()
-                                                    {
+                                                    public int getCount() {
                                                         return Service.values().length;
                                                     }
 
                                                     @Override
-                                                    public CharSequence getPageTitle(int position)
-                                                    {
+                                                    public CharSequence getPageTitle(int position) {
                                                         return Service.values()[position].toString();
                                                     }
                                                 });

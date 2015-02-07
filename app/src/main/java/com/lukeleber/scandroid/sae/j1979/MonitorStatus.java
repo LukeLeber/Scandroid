@@ -7,6 +7,7 @@ package com.lukeleber.scandroid.sae.j1979;
 
 import java.io.Serializable;
 
+/// TODO: Write Unit Tests
 public class MonitorStatus implements Serializable
 {
     private final int bits;
@@ -81,7 +82,7 @@ public class MonitorStatus implements Serializable
      * <p/>
      * Continuous monitors may be either supported or unsupported based on the vehicle's OEM
      * equipment.  For example, diesel vehicles may not support {@link
-     * MonitorStatus.ContinuousMonitorSupport#FUEL_SUP}. <br> For more
+     * com.lukeleber.scandroid.sae.j1979.MonitorStatus.ContinuousMonitorSupport#FUEL_SUP}. <br> For more
      * detailed documentation on whether or not a monitor is required to be supported, refer to each
      * individual monitor enumerated member.
      */
@@ -110,7 +111,7 @@ public class MonitorStatus implements Serializable
         private final int mask;
 
         /**
-         * Constructs a {@link MonitorStatus.ContinuousMonitorSupport} with
+         * Constructs a {@link com.lukeleber.scandroid.sae.j1979.MonitorStatus.ContinuousMonitorSupport} with
          * the provided mask
          *
          * @param mask
@@ -158,7 +159,7 @@ public class MonitorStatus implements Serializable
         private final int mask;
 
         /**
-         * Constructs a {@link MonitorStatus.ContinuousMonitorReadiness} with
+         * Constructs a {@link com.lukeleber.scandroid.sae.j1979.MonitorStatus.ContinuousMonitorReadiness} with
          * the provided mask
          *
          * @param mask
@@ -185,7 +186,7 @@ public class MonitorStatus implements Serializable
      * <p/>
      * Noncontinuous monitors may be either supported or unsupported based on the vehicle's OEM
      * equipment.  For example, many vehicles may not be equipped with secondary air injection, thus
-     * the monitor support for {@link MonitorStatus.NonContinuousMonitorSupport#AIR_SUP}
+     * the monitor support for {@link com.lukeleber.scandroid.sae.j1979.MonitorStatus.NonContinuousMonitorSupport#AIR_SUP}
      * will show as unsupported.
      */
     public static enum NonContinuousMonitorSupport
@@ -234,7 +235,7 @@ public class MonitorStatus implements Serializable
         private final int mask;
 
         /**
-         * Constructs a {@link MonitorStatus.NonContinuousMonitorSupport}
+         * Constructs a {@link com.lukeleber.scandroid.sae.j1979.MonitorStatus.NonContinuousMonitorSupport}
          *
          * @param mask
          *         the SAE J1979 defined bit mask
@@ -301,7 +302,7 @@ public class MonitorStatus implements Serializable
         private final int mask;
 
         /**
-         * Constructs a {@link MonitorStatus.NonContinuousMonitorReadiness}
+         * Constructs a {@link com.lukeleber.scandroid.sae.j1979.MonitorStatus.NonContinuousMonitorReadiness}
          *
          * @param mask
          *         the SAE J1979 defined bit mask
