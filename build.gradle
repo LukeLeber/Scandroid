@@ -95,6 +95,7 @@ dependencies {
         exclude module: 'wagon-http-lightweight'
         exclude module: 'wagon-provider-api'
     }
+    compile 'com.jakewharton:butterknife:5.1.1'
 }
 
 

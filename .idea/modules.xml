@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Scandroid_UnitTest_Friendly.iml" filepath="$PROJECT_DIR$/Scandroid_UnitTest_Friendly.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Scandroid.iml" filepath="$PROJECT_DIR$/Scandroid.iml" />
     </modules>
   </component>
 </project>
