@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file is protected under the KILLGPL. -->
+<!-- For more information, visit http://www.lukeleber.github.io/KILLGPL.html -->
+<!-- -->
+<!-- Copyright (c) Luke Leber <LukeLeber@gmail.com> -->
+<resources>
+
+
+    <string name="app_name">Scandroid</string>
+    <string name="title_activity_scandroid">Scandroid</string>
+    <string name="title_activity_select_interface">Interface Configuration</string>
+    <string name="title_activity_vehicle_history">VehicleHistory</string>
+    <string name="action_settings">Settings</string>
+
+<!-- General Use Strings -->
+    <string name="yes_caps">YES</string>
+    <string name="no_caps">NO</string>
+    <string name="not_available">N/A</string>
+    <string name="on_caps">ON</string>
+    <string name="off_caps">OFF</string>
+    <string name="touch_to_expand">Touch to expand…</string>
+    <string name="supported_caps">SUPPORTED</string>
+    <string name="unsupported_caps">UNSUPPORTED</string>
+    <string name="short_term">short term</string>
+    <string name="long_term">long term</string>
+
+    <string name="short_term_fuel_trim_acronym">STFT</string>
+    <string name="long_term_fuel_trim_acronym">LTFT</string>
+<!-- General Use Strings -->
+
+
+<!-- Activity GUI Strings -->
+
+  <!-- ProtocolSearch.java -->
+    <string name="activity_protocol_search_instruction_label">Searching for the correct communication protocol, please wait or press back to cancel…</string>
+    <string name="activity_protocol_search_failure_message">Communication could not be established with the
+    vehicle.\n\n-Confirm that the key is in the \"ON\" position\n-Check the emissions label
+    or vehicle service information to confirm that the vehicle is OBD equipped and compliant\n
+    -Confirm that the external test equipment is securely connected to the vehicle diagnostic port
+    \n\nRetry Attempt (%1$d)</string>
+    <string name="activity_protocol_search_initializing_bus_label">Initializing bus (%1$s)</string>
+    <string name="activity_protocol_search_available_protocols_label">Available Protocols:</string>
+    <string name="activity_protocol_search_fatal_error_message">Protocol detection has failed with a fatal error (%1$s)\n\nGenerally this indicates a hardware / range  problem with the interpreter such as a poor physical connection or being too far away from the vehicle.</string>
+  <!-- ProtocolSearch.java-->
+
+  <!-- Scandroid.java -->
+    <string name="scandroid_menu_settings_item_title">Settings</string>
+    <string name="scandroid_menu_logging_item_title">Logging</string>
+    <string name="scandroid_instruction_label">Scandroid: The FREE scan-tool for Android!\n
+        Select a function from the choices below to get started.</string>
+    <string name="scandroid_generic_scanner_label">Scanner (Generic)</string>
+    <string name="scandroid_expert_scanner_label">Scanner (Expert)</string>
+    <string name="scandroid_vin_decoder_label">VIN Decoder</string>
+  <!-- Scandroid.java -->
+
+<!-- Activity GUI Strings -->
+
+<!-- Fragment GUI Strings -->
+
+  <!-- UnsupportedService.java -->
+    <string name="fragment_unsupported_service_message">This vehicle does not support this service.</string>
+  <!-- UnsupportedService.java-->
+
+  <!-- ResetDiagnosticInformation.java -->
+    <string name="fragment_reset_diagnostic_information_dialog_title">Confirm Action</string>
+    <string name="fragment_reset_diagnostic_information_dialog_message">External test equipment is required to show a confirmation dialog before sending a service $04 request.\n\nDo you really want to reset all diagnostic information?</string>
+    <string name="fragment_reset_diagnostic_information_dialog_positive_button_label">Send Request</string>
+    <string name="fragment_reset_diagnostic_information_success">Diagnostic information has been reset</string>
+    <string name="fragment_reset_diagnostic_information_failure">Failed to reset diagnostic information (%1$s)</string>
+    <string name="fragment_reset_diagnostic_information_dialog_negative_button_label">Cancel</string>
+    <string name="fragment_reset_diagnostic_information_intro_message">This service will reset all onboard diagnostics related information.  This is generally considered to be \'Clearing the Codes\', however that is not a very accurate naming of what is really going to happen.</string>
+    <string name="fragment_reset_diagnostic_information_body_message">The following information will be erased:\n\n- Number of diagnostic trouble codes\n- Diagnostic trouble codes\n- Trouble code for freeze frame data\n- Freeze frame data\n- Status of system monitoring tests\n- On-board monitoring test results\n- Distance travelled while MIL is activated\n- Number of warm-ups since DTC cleared\n- Distance since diagnostic trouble codes cleared\n- Minutes run by the engine while MIL activated\n- Time since diagnostic trouble codes cleared\n- Other manufacturer specific \'clearing/resetting\' actions</string>
+    <string name="fragment_reset_diagnostic_information_conclusion_message">It is conceivable that the vehicle may experience temporary driveability issues following this operation, as manufacturer specified adaptive strategies are also subject to erasing in some cases.  Resetting this information may also prevent a vehicle from passing an inspection in some states or provinces.  Depending on driving habits, it may take a very long time for the system to re-run all of its monitors.</string>
+    <string name="fragment_reset_diagnostic_information_button_text">Reset Diagnostic Information</string>
+  <!-- ResetDiagnosticInformation.java -->
+
+<!-- Fragment GUI Strings -->
+
+<!-- Dialog Strings -->
+
+  <!-- dialog_bridge_status -->
+    <string name="dialog_bridge_status_title">Bridge Status</string>
+    <string name="dialog_bridge_status_dismiss_button_text">Dismiss</string>
+    <string name="dialog_bridge_status_hardware_label">Hardware:</string>
+    <string name="dialog_bridge_status_hardware_version_label">Version:</string>
+    <string name="dialog_bridge_status_link_status_label">Link Status:</string>
+    <string name="dialog_bridge_status_average_latency_label">Latency:</string>
+    <string name="dialog_bridge_status_system_voltage_label">System Voltage:</string>
+    <string name="dialog_bridge_status_refresh_button_text">Refresh</string>
+  <!-- dialog_bridge_status -->
+
+  <!-- dialog_parameter_selector -->
+    <string name="dialog_parameter_selector_title">Select Parameters</string>
+    <string name="dialog_parameter_selector_positive_button_text">Select</string>
+    <string name="dialog_parameter_selector_negative_button_text">Cancel</string>
+  <!-- dialog_parameter_selector -->
+
+<!-- Dialog Strings -->
+
+    <!-- Strings for PID/TID/OBDMID/INFOTYPE expansion dialogs -->
+
+        <!-- Expansion Dialog for PIDs $00,$20,$40,$60,$80,$A0,$C0,$E0 -->
+    <string name="pid_support_expansion_title">PID Support [%1$s - %2$s] Expanded View</string>
+    <string name="pid_support_expansion">%1$s</string>
+
+        <!-- Expansion Dialog for PID $01 -->
+    <string name="pid_monitor_status_expansion_title">Monitor Status Expanded View</string>
+    <string name="pid_monitor_status_expansion">MIL Status: %1$s\nDTC Count: %2$s\n%3$s</string>
+
+        <!-- Expansion Dialog for PID $02 -->
+    <string name="pid_fuel_system_status_expansion_title">Fuel System Expanded View</string>
+    <string name="pid_fuel_system_status_expansion">Fuel System 1: %1$s\nFuel System 2: %2$s</string>
+
+    <!-- Strings for PID/TID/OBDMID/INFOTYPE expansion dialogs -->
+    
+    <!-- Strings for PID/TID/OBDMID/INFOTYPE pop-up descriptions -->
+
+    <string name="pid_support_desc_title">Support PID Overview</string>
+    <string name="pid_support_desc">This PID requests support for the range of [%1$s - %2$s].
+    Each of the 32 fields indicate whether or not the particular PID is supported by this
+    vehicle.</string>
+
+    <string name="pid_monitor_status_desc_title">Monitor Status PID Overview</string>
+    <string name="pid_monitor_status_desc">This PID offers three distinct pieces of information.
+    First, the status of the MIL (ON or OFF).  Second, the number of stored DTCs (these can be
+    read with service $03).  Third, the status of both continuous and non-continuous monitors
+    is provided.  The monitor statuses are represented with two fields each: SUP (support status
+    [NO or YES]) and RDY (completion status [NO or YES]).\nYou can touch the PID to bring up a
+    dialog that contains all of the information.</string>
+
+    <string name="pid_dtc_that_caused_freeze_frame_desc_title">DTCFRZF PID Overview</string>
+    <string name="pid_dtc_that_caused_freeze_frame_desc">This PID requests the DTC that caused
+    frame data to be stored by one or more on-board modules.</string>
+
+    <string name="pid_fuel_system_status_desc_title">FUELSYS PID Overview</string>
+    <string name="pid_fuel_system_status_desc">This PID requests the loop status of the on-board
+    fuel system(s).  Note that different systems do not necessarily refer to different fuel
+    injector banks, but rather systems that change loop status independently.</string>
+
+    <string name="pid_calculated_engine_load_desc_title">LOAD_PCT PID Overview</string>
+    <string name="pid_calculated_engine_load_desc">This PID requests the calculated engine load
+    of the vehicle.</string>
+
+    <string name="pid_engine_coolant_temp_desc_title">ECT PID Overview</string>
+    <string name="pid_engine_coolant_temp_desc">This PID requests the temperature of the engine
+    coolant.  Note that diesel applications are permitted to substitute engine oil temperature
+    for this value.</string>
+
+    <string name="pid_fuel_trim_desc_title">Bank %1$d &amp; %2$d %3$s PID Overview</string>
+    <string name="pid_fuel_trim_desc">This PID requests the %1$s fuel trim of injector banks
+    %2$d and (if equipped) %3$d.  Note that if the vehicle does not utilize injector bank %4$d
+    then the reported value shall be N/A.</string>
+
+    <string name="pid_narrow_range_fuel_rail_pressure_ref_atmosphere_desc_title">FPR PID Overview</string>
+    <string name="pid_narrow_range_fuel_rail_pressure_ref_atmosphere_desc">This PID requests the fuel rail
+    pressure relative to atmospheric pressure.  This PID utilizes the narrow-range unit/scaling
+    function and is generally used with spark ignition vehicles, whereas the wide-range version
+    is generally used with compression ignition vehicles.</string>
+
+    <string name="pid_manifold_absolute_pressure_desc_title">MAP PID Overview</string>
+    <string name="pid_manifold_absolute_pressure_desc">This PID requests the absolute pressure of
+    the intake manifold as derived from a MAP sensor.</string>
+
+    <string name="pid_engine_speed_desc_title">RPM PID Overview</string>
+    <string name="pid_engine_speed_desc">This PID requests the speed at which the engine is
+    rotating.</string>
+    <!-- Strings for PID/TID/OBDMID/INFOTYPE pop-up descriptions -->
+
+
+    <!-- Default Hardware Configuration -->
+    <string name="usb_device_name">OBDII</string>
+    <string name="wifi_device_ssid">OBDII</string>
+    <string name="bluetooth_device_name">OBDII</string>
+    <string name="title_activity_bluetooth_configuration">BluetoothConfiguration</string>
+    <string name="title_activity_generic_scanner">GenericScanner</string>
+    <string name="title_activity_protocol_search">ProtocolSearch</string>
+    <string name="select_display_unit">Select Display Unit</string>
+    <string name="touch_to_expand_monitor_status">touch to expand monitor status…</string>
+    <string name="mil_status_label">MIL Status:</string>
+    <string name="number_of_dtcs_label"># DTCs:</string>
+    <string name="short_term_fuel_trim_bank_label">STFT Bank %1$d:</string>
+    <string name="long_term_fuel_trim_bank_label">LTFT Bank %1$d:</string>
+    <string name="oxygen_sensor_location_label">O2SLOC:</string>
+    <string name="wide_range_oxygen_sensor_lambda_label">EQ_RATxy:</string>
+    <string name="wide_range_oxygen_sensor_voltage_label">O2Sxy:</string>
+
+    <!-- Menus -->
+    <string name="live_datastream_settings_menu_item_title">Settings</string>
+    <string name="menu_live_datastream_viewed_pids_title">Select PIDs</string>
+    <string name="menu_live_datastream_logging_title">Logging</string>
+    <string name="menu_live_datastream_bridge_info_title">Bridge Status</string>
+    <string name="diagnostic_trouble_code_p0000_desc">No Codes</string>
+    <string name="fuel_system_status_enum_open_loop_desc">Open Loop</string>
+    <string name="fuel_system_status_enum_closed_loop_desc">Closed Loop</string>
+    <string name="fuel_system_status_enum_open_loop_drive_desc">Open Loop (driving conditions)</string>
+    <string name="fuel_system_status_enum_open_loop_fault_desc">Open Loop (system fault)</string>
+    <string name="fuel_system_status_enum_closed_loop_fault_desc">Closed Loop (oxygen sensor fault)</string>
+    <string name="auxiliary_input_status_off_desc">Off</string>
+    <string name="auxiliary_input_status_on_desc">On</string>
+    <string name="service_01_desc">Live Datastream</string>
+    <string name="service_02_desc">Freeze-Frame Data</string>
+    <string name="service_03_desc">Read Codes</string>
+    <string name="service_04_desc">Reset Diagnostic Info</string>
+    <string name="service_05_desc">Oxygen Sensor Test Results</string>
+    <string name="service_06_desc">Other Test Results</string>
+    <string name="service_07_desc">Read Pending Codes</string>
+    <string name="service_08_desc">Remote Control</string>
+    <string name="service_09_desc">Vehicle Information</string>
+    <string name="secondary_air_status_ups_desc">upstream of the first catalytic converter</string>
+    <string name="secondary_air_status_dns_desc">downstream of the first catalytic converter inlet</string>
+    <string name="secondary_air_status_off_desc">atmosphere / off</string>
+
+
+    <!-- Menus -->
+
+</resources>
