@@ -8,7 +8,6 @@ package com.lukeleber.scandroid;
 import android.content.Context;
 
 import com.lukeleber.scandroid.interpreter.Interpreter;
-import com.lukeleber.scandroid.sae.j1979.Profile;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,16 +35,56 @@ public class Globals
 
     }
 
+    /// A mapping of all contexts that are operating an interpreter
     private final static Map<Context, Interpreter> interpreters
             = Collections.synchronizedMap(new HashMap<Context, Interpreter>());
 
+
+    /**
+     * Retrieves the {@link com.lukeleber.scandroid.interpreter.Interpreter} for the provided
+     * {@link android.content.Context}
+     *
+     * @param key the calling {@link android.content.Context}
+     *
+     * @return the {@link com.lukeleber.scandroid.interpreter.Interpreter} for the provided
+     * {@link android.content.Context} or null if there is no
+     * {@link com.lukeleber.scandroid.interpreter.Interpreter} bound to the provided
+     * {@link android.content.Context}
+     *
+     * @throws java.lang.NullPointerException if the provided {@link android.content.Context} is
+     * null
+     *
+     */
     public static Interpreter getInterpreter(Context key)
     {
+        if(key == null)
+        {
+            throw new NullPointerException();
+        }
         return interpreters.get(key);
     }
 
+    /**
+     * Sets the {@link com.lukeleber.scandroid.interpreter.Interpreter} for the provided
+     * {@link android.content.Context}
+     *
+     * @param key the calling {@link android.content.Context}
+     *
+     * @param interpreter the {@link com.lukeleber.scandroid.interpreter.Interpreter} to set
+     *
+     * @return the previously set {@link com.lukeleber.scandroid.interpreter.Interpreter} or null
+     * if no {@link com.lukeleber.scandroid.interpreter.Interpreter} was previously set
+     *
+     * @throws java.lang.NullPointerException if the provided {@link android.content.Context} is
+     * null
+     *
+     */
     public static Interpreter setInterpreter(Context key, Interpreter interpreter)
     {
+        if(key == null)
+        {
+            throw new NullPointerException();
+        }
         return interpreters.put(key, interpreter);
     }
 }
