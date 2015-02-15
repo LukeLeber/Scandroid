@@ -1,3 +1,6 @@
+
+apply plugin: 'android'
+
 buildscript {
     repositories {
         mavenCentral()
@@ -14,8 +17,6 @@ allprojects {
         mavenCentral()
     }
 }
-
-apply plugin: 'android'
 
 
 android {
@@ -62,10 +63,15 @@ robolectric {
 dependencies {
     repositories {
         mavenCentral()
+        flatDir {
+            dirs 'lib'
+        }
+
     }
     compile 'com.android.support:support-annotations:21.0.3'
     compile 'com.jakewharton:butterknife:5.1.1'
     compile 'com.android.support:support-v13:21.0.3'
+    compile(name: 'support-release', ext: 'aar')
     // Espresso
     androidTestCompile files('lib/espresso-1.1.jar')
     androidTestCompile files('lib/testrunner-1.1.jar')

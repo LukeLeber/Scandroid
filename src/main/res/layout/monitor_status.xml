@@ -29,7 +29,6 @@
         android:text="@string/not_available"
         android:layout_alignTop="@+id/protocol_search_listview_item_protocol_textview"
         android:layout_toRightOf="@+id/space_between_mil_status"/>
-
     <TextView
         android:id="@+id/fuel_trim_value_1"
         android:layout_width="wrap_content"
