@@ -42,7 +42,7 @@ public class DefaultPIDTest
                 new HashMap<Unit, PID.Unmarshaller<Object>>()
                 {
                     {
-                        super.put(Unit.INTERNAL_PLACEHOLDER,
+                        super.put(Unit.PACKETED,
                             new TestUnmarshaller());
                     }
                 }

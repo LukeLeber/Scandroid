@@ -68,7 +68,7 @@ public class AppendixB
         new HashMap<Unit, PID.Unmarshaller<DiagnosticTroubleCode>>()
         {
             {
-                super.put(Unit.INTERNAL_PLACEHOLDER,
+                super.put(Unit.DIAGNOSTIC_TROUBLE_CODE,
                     new PID.Unmarshaller<DiagnosticTroubleCode>()
                     {
                         @Override
@@ -91,7 +91,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<SerializablePair<FuelSystemStatus, FuelSystemStatus>>>()
             {
                 {
-                    super.put(Unit.INTERNAL_PLACEHOLDER,
+                    super.put(Unit.PACKETED,
                     new PID.Unmarshaller<SerializablePair<FuelSystemStatus, FuelSystemStatus>>()
                     {
 
@@ -496,7 +496,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SecondaryAirStatus>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER,
+                            super.put(Unit.ENUMERATED,
                                       new PID.Unmarshaller<SecondaryAirStatus>()
                                       {
                                           @Override
@@ -519,7 +519,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<OxygenSensor[]>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER,
+                            super.put(Unit.PACKETED,
                                       new PID.Unmarshaller<OxygenSensor[]>()
                                       {
                                           @Override
@@ -553,7 +553,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
+                    super.put(Unit.PACKETED, CONVENTIONAL_O2S);
                 }
             }
     );
@@ -567,7 +567,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
+                    super.put(Unit.PACKETED, CONVENTIONAL_O2S);
                 }
             }
     );
@@ -581,7 +581,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
+                    super.put(Unit.PACKETED, CONVENTIONAL_O2S);
                 }
             }
     );
@@ -594,7 +594,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
+                    super.put(Unit.PACKETED, CONVENTIONAL_O2S);
                 }
             }
     );
@@ -608,7 +608,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
+                    super.put(Unit.PACKETED, CONVENTIONAL_O2S);
                 }
             }
     );
@@ -622,7 +622,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
+                    super.put(Unit.PACKETED, CONVENTIONAL_O2S);
                 }
             }
     );
@@ -636,7 +636,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
+                    super.put(Unit.PACKETED, CONVENTIONAL_O2S);
                 }
             }
     );
@@ -650,7 +650,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
+                    super.put(Unit.PACKETED, CONVENTIONAL_O2S);
                 }
             }
     );
@@ -664,7 +664,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
+                    super.put(Unit.PACKETED, CONVENTIONAL_O2S);
                 }
             }
     );
@@ -678,7 +678,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
+                    super.put(Unit.PACKETED, CONVENTIONAL_O2S);
                 }
             }
     );
@@ -692,7 +692,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
+                    super.put(Unit.PACKETED, CONVENTIONAL_O2S);
                 }
             }
     );
@@ -706,7 +706,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
+                    super.put(Unit.PACKETED, CONVENTIONAL_O2S);
                 }
             }
     );
@@ -720,7 +720,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
+                    super.put(Unit.PACKETED, CONVENTIONAL_O2S);
                 }
             }
     );
@@ -734,7 +734,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
+                    super.put(Unit.PACKETED, CONVENTIONAL_O2S);
                 }
             }
     );
@@ -748,7 +748,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
+                    super.put(Unit.PACKETED, CONVENTIONAL_O2S);
                 }
             }
     );
@@ -762,7 +762,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
             {
                 {
-                    super.put(Unit.CONVENTIONAL_O2S, CONVENTIONAL_O2S);
+                    super.put(Unit.PACKETED, CONVENTIONAL_O2S);
                 }
             }
     );
@@ -775,7 +775,7 @@ public class AppendixB
             new HashMap<Unit, PID.Unmarshaller<OBDSupport>>()
             {
                 {
-                    super.put(Unit.INTERNAL_PLACEHOLDER, new PID.Unmarshaller<OBDSupport>()
+                    super.put(Unit.ENUMERATED, new PID.Unmarshaller<OBDSupport>()
                     {
                         @Override
                         public OBDSupport invoke(@NonNull byte... bytes)
@@ -797,7 +797,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<OxygenSensor[]>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER,
+                            super.put(Unit.PACKETED,
                                       new PID.Unmarshaller<OxygenSensor[]>()
                                       {
                                           @Override
@@ -968,7 +968,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
                     }
             );
@@ -983,7 +983,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
                     }
             );
@@ -998,7 +998,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
                     }
             );
@@ -1012,7 +1012,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
                     }
             );
@@ -1027,7 +1027,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
                     }
             );
@@ -1042,7 +1042,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
                     }
             );
@@ -1057,7 +1057,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
                     }
             );
@@ -1072,7 +1072,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
                     }
             );
@@ -1087,7 +1087,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
                     }
             );
@@ -1102,7 +1102,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
                     }
             );
@@ -1117,7 +1117,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
                     }
             );
@@ -1132,7 +1132,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
                     }
             );
@@ -1147,7 +1147,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
                     }
             );
@@ -1162,7 +1162,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
                     }
             );
@@ -1177,7 +1177,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
                     }
             );
@@ -1192,7 +1192,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER);
                         }
                     }
             );
@@ -1408,7 +1408,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
                     }
             );
@@ -1421,7 +1421,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
                     }
             );
@@ -1434,7 +1434,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
                     }
             );
@@ -1447,7 +1447,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
                     }
             );
@@ -1460,7 +1460,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
                     }
             );
@@ -1473,7 +1473,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
                     }
             );
@@ -1486,7 +1486,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
                     }
             );
@@ -1499,7 +1499,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
                     }
             );
@@ -1513,7 +1513,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
                     }
             );
@@ -1526,7 +1526,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
                     }
             );
@@ -1539,7 +1539,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
                     }
             );
@@ -1552,7 +1552,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
                     }
             );
@@ -1565,7 +1565,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
                     }
             );
@@ -1578,7 +1578,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
                     }
             );
@@ -1591,7 +1591,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
                     }
             );
@@ -1604,7 +1604,7 @@ public class AppendixB
                     new HashMap<Unit, PID.Unmarshaller<SerializablePair<Float, Float>>>()
                     {
                         {
-                            super.put(Unit.INTERNAL_PLACEHOLDER, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
+                            super.put(Unit.PACKETED, WIDE_RANGE_O2S_UNMARSHALLER_ALT);
                         }
                     }
             );
