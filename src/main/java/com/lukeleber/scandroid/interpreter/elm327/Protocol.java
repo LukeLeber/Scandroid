@@ -5,13 +5,16 @@
 
 package com.lukeleber.scandroid.interpreter.elm327;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * All protocol modes supported by the ELM327
  * <p/>
  * TODO: Docs (low level, I know...but necessary to access manufacturer defined functionality)
  */
 @SuppressWarnings("unused")
-public enum Protocol
+public enum Protocol implements Parcelable
 {
     /**
      * Automatically select the correct protocol
@@ -31,8 +34,38 @@ public enum Protocol
     USER_1_CAN_11_BIT_125_KBAUD(11, 125000),
     USER_2_CAN_11_BIT_125_KBAUD(12, 50000);
 
+    public final static Parcelable.Creator<Protocol> CREATOR =
+            new Parcelable.Creator<Protocol>()
+            {
+
+                @Override
+                public Protocol createFromParcel(Parcel in)
+                {
+                    return Protocol.values()[in.readByte() & 0xFF];
+                }
+
+                @Override
+                public Protocol[] newArray(int length)
+                {
+                    return new Protocol[length];
+                }
+            };
+
     private final int id;
     private final int baudrate;
+
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out,
+                              int flags)
+    {
+        out.writeByte((byte)ordinal());
+    }
 
     private Protocol(int id, int baudrate)
     {
