@@ -130,7 +130,8 @@ public final class SAEJ1979AppendixWrapper
         }
 
         @Override
-        public final <U extends ViewHolderBase> void updateViewHolder(@NonNull U viewHolder,
+        public final void updateViewHolder(@NonNull
+                                                                              ViewHolderBase viewHolder,
                                                                       @NonNull PIDSupport value)
         {
             ViewHolder vh = (ViewHolder)viewHolder;
@@ -318,7 +319,8 @@ public final class SAEJ1979AppendixWrapper
         }
 
         @Override
-        public final <U extends ViewHolderBase> void updateViewHolder(@NonNull U viewHolder,
+        public final void updateViewHolder(@NonNull
+                                                                              ViewHolderBase viewHolder,
                                                                       @NonNull MonitorStatus value)
         {
             ViewHolder vh = (ViewHolder) viewHolder;
@@ -386,7 +388,8 @@ public final class SAEJ1979AppendixWrapper
         }
 
         @Override
-        public final <U extends ViewHolderBase> void updateViewHolder(@NonNull U viewHolder,
+        public final void updateViewHolder(@NonNull
+                                                                              ViewHolderBase viewHolder,
                                                                       @NonNull DiagnosticTroubleCode value)
         {
             ViewHolder vh = (ViewHolder)viewHolder;
@@ -479,7 +482,8 @@ public final class SAEJ1979AppendixWrapper
         }
 
         @Override
-        public final <U extends ViewHolderBase> void updateViewHolder(@NonNull U viewHolder,
+        public final void updateViewHolder(@NonNull
+                                                                              ViewHolderBase viewHolder,
                                                                       @NonNull SerializablePair<FuelSystemStatus, FuelSystemStatus> value)
         {
             ViewHolder vh = (ViewHolder)viewHolder;
@@ -638,7 +642,8 @@ public final class SAEJ1979AppendixWrapper
         }
 
         @Override
-        public final <U extends ViewHolderBase> void updateViewHolder(@NonNull U viewHolder,
+        public final void updateViewHolder(@NonNull
+                                                                              ViewHolderBase viewHolder,
                                                                       @NonNull SerializablePair<Float, Float> value)
         {
             FuelTrimViewHolder vh = (FuelTrimViewHolder) viewHolder;
@@ -683,7 +688,8 @@ public final class SAEJ1979AppendixWrapper
         }
 
         @Override
-        public final <U extends ViewHolderBase> void updateViewHolder(@NonNull U viewHolder,
+        public final void updateViewHolder(@NonNull
+                                                                              ViewHolderBase viewHolder,
                                                                       @NonNull SerializablePair<Float, Float> value)
         {
             FuelTrimViewHolder vh = (FuelTrimViewHolder) viewHolder;
@@ -729,7 +735,8 @@ public final class SAEJ1979AppendixWrapper
         }
 
         @Override
-        public final <U extends ViewHolderBase> void updateViewHolder(@NonNull U viewHolder,
+        public final void updateViewHolder(@NonNull
+                                                                              ViewHolderBase viewHolder,
                                                                       @NonNull SerializablePair<Float, Float> value)
         {
             FuelTrimViewHolder vh = (FuelTrimViewHolder) viewHolder;
@@ -774,7 +781,8 @@ public final class SAEJ1979AppendixWrapper
         }
 
         @Override
-        public final <U extends ViewHolderBase> void updateViewHolder(@NonNull U viewHolder,
+        public final void updateViewHolder(@NonNull
+                                                                              ViewHolderBase viewHolder,
                                                                       @NonNull SerializablePair<Float, Float> value)
         {
             FuelTrimViewHolder vh = (FuelTrimViewHolder) viewHolder;
@@ -994,7 +1002,8 @@ public final class SAEJ1979AppendixWrapper
         }
 
         @Override
-        public final <U extends ViewHolderBase> void updateViewHolder(@NonNull U viewHolder,
+        public final void updateViewHolder(@NonNull
+                                                                              ViewHolderBase viewHolder,
                                                                       @NonNull OxygenSensor[] value)
         {
             OxygenSensorLocationViewHolder vh = (OxygenSensorLocationViewHolder) viewHolder;
@@ -1201,7 +1210,8 @@ public final class SAEJ1979AppendixWrapper
         }
 
         @Override
-        public final <U extends ViewHolderBase> void updateViewHolder(@NonNull U viewHolder,
+        public final void updateViewHolder(@NonNull
+                                                                              ViewHolderBase viewHolder,
                                                                       @NonNull OxygenSensor[] value)
         {
             OxygenSensorLocationViewHolder vh = (OxygenSensorLocationViewHolder) viewHolder;
@@ -1318,7 +1328,8 @@ public final class SAEJ1979AppendixWrapper
         }
 
         @Override
-        public final <U extends ViewHolderBase> void updateViewHolder(@NonNull U viewHolder, @NonNull SerializablePair<Float, Float> value)
+        public final void updateViewHolder(@NonNull
+                                                                              ViewHolderBase viewHolder, @NonNull SerializablePair<Float, Float> value)
         {
             ViewHolder vh = (ViewHolder)viewHolder;
             vh.lambdaValue.setText(String.valueOf(value.first));
@@ -1603,7 +1614,8 @@ public final class SAEJ1979AppendixWrapper
         }
 
         @Override
-        public final <U extends ViewHolderBase> void updateViewHolder(@NonNull U viewHolder, @NonNull SerializablePair<Float, Float> value)
+        public final void updateViewHolder(@NonNull
+                                                                              ViewHolderBase viewHolder, @NonNull SerializablePair<Float, Float> value)
         {
             ViewHolder vh = (ViewHolder)viewHolder;
             vh.lambdaValue.setText(String.valueOf(value.first));

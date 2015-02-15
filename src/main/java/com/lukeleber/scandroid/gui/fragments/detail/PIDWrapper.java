@@ -96,7 +96,7 @@ public class PIDWrapper<T extends Serializable> extends ServiceFacetWrapper<T>
 
     @SuppressWarnings("unchecked")
     @Override
-    public final PID<T> unwrap()
+    public final @NonNull PID<T> unwrap()
     {
         return (PID<T>)super.unwrap();
     }
@@ -124,7 +124,7 @@ public class PIDWrapper<T extends Serializable> extends ServiceFacetWrapper<T>
     }
 
     @Override
-    public <U extends ViewHolderBase> void updateViewHolder(@NonNull U viewHolder, @NonNull T value)
+    public void updateViewHolder(@NonNull ViewHolderBase viewHolder, @NonNull T value)
     {
         ((DefaultViewHolder)viewHolder).value.setText(value.toString() + " " +  displayUnit.toString());
     }
