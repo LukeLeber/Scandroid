@@ -8,7 +8,6 @@ package com.lukeleber.scandroid.sae.j1979.detail;
 import android.support.annotation.NonNull;
 
 import com.lukeleber.scandroid.Constants;
-import com.lukeleber.scandroid.Globals;
 import com.lukeleber.scandroid.sae.j1979.AuxiliaryInputStatus;
 import com.lukeleber.scandroid.sae.j1979.DefaultPID;
 import com.lukeleber.scandroid.sae.j1979.DriveCycleMonitorStatus;
@@ -75,8 +74,7 @@ public class AppendixB
                         @Override
                         public DiagnosticTroubleCode invoke(@NonNull byte... bytes)
                         {
-                            return new DiagnosticTroubleCode((bytes[0] << 8) | bytes[1],
-                                    Globals.getString(Globals.I18N_STRING.NOT_AVAILABLE));
+                            return new DiagnosticTroubleCode((bytes[0] << 8) | bytes[1], "");
                         }
                     }
                 );

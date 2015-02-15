@@ -15,10 +15,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.lukeleber.scandroid.BuildConfig;
-import com.lukeleber.scandroid.Globals;
 import com.lukeleber.scandroid.R;
 import com.lukeleber.scandroid.gui.fragments.util.ViewHolderBase;
 import com.lukeleber.scandroid.sae.j1979.AuxiliaryInputStatus;
+import com.lukeleber.scandroid.sae.j1979.FuelSystemStatus;
 import com.lukeleber.scandroid.sae.j1979.MonitorStatus;
 import com.lukeleber.scandroid.sae.j1979.OBDSupport;
 import com.lukeleber.scandroid.sae.j1979.OxygenSensor;
@@ -26,7 +26,6 @@ import com.lukeleber.scandroid.sae.j1979.PID;
 import com.lukeleber.scandroid.sae.j1979.PIDSupport;
 import com.lukeleber.scandroid.sae.j1979.Profile;
 import com.lukeleber.scandroid.sae.j1979.SecondaryAirStatus;
-import com.lukeleber.scandroid.sae.j1979.FuelSystemStatus;
 import com.lukeleber.scandroid.sae.j1979.detail.AppendixA;
 import com.lukeleber.scandroid.sae.j1979.detail.AppendixB;
 import com.lukeleber.scandroid.sae.j2012.DiagnosticTroubleCode;
@@ -145,8 +144,8 @@ public final class SAEJ1979AppendixWrapper
                     String sup = String.format("$%02x: %s",
                             i,
                             (bits & (1 << i)) != 0 ?
-                                    Globals.getString(Globals.I18N_STRING.SUPPORTED_CAPS) :
-                                    Globals.getString(Globals.I18N_STRING.UNSUPPORTED_CAPS));
+                                    vh.context.getString(R.string.supported_caps) :
+                                    vh.context.getString(R.string.unsupported_caps));
 
                     sb.append(sup).append(System.lineSeparator());
                     pids.add(sup);
@@ -263,15 +262,17 @@ public final class SAEJ1979AppendixWrapper
 
         final class ViewHolder extends ViewHolderBase
         {
+            final Context context;
             final TextView milStatus;
             final TextView dtcCount;
             String monitorStatusText;
 
             ViewHolder(@NonNull final View view)
             {
+                this.context = view.getContext();
                 milStatus = ButterKnife.findById(view, R.id.monitor_status_mil_status);
                 dtcCount = ButterKnife.findById(view, R.id.monitor_status_dtc_count);
-                monitorStatusText = Globals.getString(Globals.I18N_STRING.TOUCH_TO_EXPAND);
+                monitorStatusText = context.getString(R.string.touch_to_expand);
 
                 view.setOnClickListener(new View.OnClickListener()
                 {
@@ -322,8 +323,8 @@ public final class SAEJ1979AppendixWrapper
         {
             ViewHolder vh = (ViewHolder) viewHolder;
             vh.milStatus.setText(value.isMalfunctionLampOn() ?
-                    Globals.getString(Globals.I18N_STRING.ON_CAPS) :
-                    Globals.getString(Globals.I18N_STRING.OFF_CAPS));
+                    vh.context.getString(R.string.on_caps) :
+                    vh.context.getString(R.string.off_caps));
             vh.dtcCount.setText(String.valueOf(value.getDiagnosticTroubleCodeCount()));
             vh.monitorStatusText = value.getSupportReadinessString();
         }
@@ -346,11 +347,13 @@ public final class SAEJ1979AppendixWrapper
         }
         final class ViewHolder extends ViewHolderBase
         {
+            final Context context;
             final TextView dtcEncoding;
             final TextView dtcDescription;
 
             ViewHolder(@NonNull final View view)
             {
+                this.context = view.getContext();
                 view.setOnLongClickListener(new View.OnLongClickListener()
                 {
                     @Override
@@ -389,8 +392,7 @@ public final class SAEJ1979AppendixWrapper
             ViewHolder vh = (ViewHolder)viewHolder;
             if(value.getBits() == 0)
             {
-                vh.dtcEncoding.setText(Globals.getString(
-                        Globals.I18N_STRING.NOT_AVAILABLE));
+                vh.dtcEncoding.setText(vh.context.getString(R.string.not_available));
                 vh.dtcDescription.setText("");
             }
             else
@@ -413,7 +415,6 @@ public final class SAEJ1979AppendixWrapper
 
         final class ViewHolder extends ViewHolderBase
         {
-
             final TextView fSys1;
             final TextView fSys2;
 
@@ -429,7 +430,7 @@ public final class SAEJ1979AppendixWrapper
                     @Override
                     public void onClick(View v)
                     {
-                        String NA = Globals.getString(Globals.I18N_STRING.NOT_AVAILABLE);
+                        String NA = view.getContext().getString(R.string.not_available);
                         new AlertDialog.Builder(v.getContext())
                                 .setMessage(
                                         String.format(

@@ -16,66 +16,25 @@ import java.util.Map;
 
 /**
  * Seems like a hack.  I really hate the android way of doing things...
- * <p/>
+ *
  * Seriously, who designed the application lifecycle API anyway?
  */
 public class Globals
 {
 
-    public enum I18N_STRING
-    {
-        YES_CAPS,
-        NO_CAPS,
-        ON_CAPS,
-        OFF_CAPS,
-        NOT_AVAILABLE,
-        TOUCH_TO_EXPAND,
-        SUPPORTED_CAPS,
-        UNSUPPORTED_CAPS
-    }
-
-    private final static String[] STRING_CACHE = new String[I18N_STRING.values().length];
-    private static boolean stringCacheInitialized = false;
-
-    public static void initStringCache(Context context)
-    {
-        if(!stringCacheInitialized)
-        {
-            stringCacheInitialized = true;
-            STRING_CACHE[I18N_STRING.YES_CAPS.ordinal()] = context.getString(R.string.yes_caps);
-            STRING_CACHE[I18N_STRING.NO_CAPS.ordinal()] = context.getString(R.string.no_caps);
-            STRING_CACHE[I18N_STRING.ON_CAPS.ordinal()] = context.getString(R.string.on_caps);
-            STRING_CACHE[I18N_STRING.OFF_CAPS.ordinal()] = context.getString(R.string.off_caps);
-            STRING_CACHE[I18N_STRING.NOT_AVAILABLE.ordinal()] = context.getString(R.string.not_available);
-            STRING_CACHE[I18N_STRING.TOUCH_TO_EXPAND.ordinal()] = context.getString(R.string.touch_to_expand);
-            STRING_CACHE[I18N_STRING.SUPPORTED_CAPS.ordinal()] = context.getString(R.string.supported_caps);
-            STRING_CACHE[I18N_STRING.UNSUPPORTED_CAPS.ordinal()] = context.getString(R.string.unsupported_caps);
-        }
-    }
-
-    public static String getString(I18N_STRING which)
-    {
-        return STRING_CACHE[which.ordinal()];
-    }
-
-    /// <-- Interpreters based on context (outlive the application lifecycle)
     private final static Map<Context, Interpreter> interpreters
             = Collections.synchronizedMap(new HashMap<Context, Interpreter>());
 
-    @SuppressWarnings("unchecked")
     public static Interpreter getInterpreter(Context key)
     {
-        return (Interpreter) interpreters.get(key);
+        return interpreters.get(key);
     }
 
-    @SuppressWarnings("unchecked")
     public static Interpreter setInterpreter(Context key, Interpreter interpreter)
     {
-        return (Interpreter) interpreters.put(key, interpreter);
+        return interpreters.put(key, interpreter);
     }
-    /// Interpreters based on context (outlive the application lifecycle) -->
 
-    /// <-- Profiles based on context (outlive the application lifecycle)
     private final static Map<Context, Profile> profiles
             = Collections.synchronizedMap(new HashMap<Context, Profile>());
 
@@ -88,5 +47,5 @@ public class Globals
     {
         return profiles.put(key, profile);
     }
-    /// Profiles based on context (outlive the application lifecycle) -->
+
 }

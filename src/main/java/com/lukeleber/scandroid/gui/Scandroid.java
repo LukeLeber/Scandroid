@@ -8,7 +8,6 @@ package com.lukeleber.scandroid.gui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -16,14 +15,6 @@ import android.widget.Toast;
 import com.lukeleber.app.EnhancedActivity;
 import com.lukeleber.scandroid.Globals;
 import com.lukeleber.scandroid.R;
-import com.lukeleber.scandroid.gui.dialogs.ParameterSelector;
-import com.lukeleber.scandroid.sae.j1979.PID;
-import com.lukeleber.scandroid.sae.j1979.ServiceFacet;
-import com.lukeleber.scandroid.sae.j1979.detail.AppendixA;
-import com.lukeleber.scandroid.sae.j1979.detail.AppendixB;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,13 +25,11 @@ import butterknife.OnClick;
  * <p/>
  * TODO: Interface is incomplete
  */
+@SuppressWarnings("unused")
 public class Scandroid
         extends
         EnhancedActivity
-        implements ParameterSelector.ParameterSelectorHost
 {
-
-    private final static String TAG = Scandroid.class.getName();
 
     /*package*/ Handler handler = new Handler();
 
@@ -60,46 +49,12 @@ public class Scandroid
         }
     }
 
-    List<ServiceFacet> mockPIDs = new ArrayList<ServiceFacet>()
-    {
-        {
-            super.add(AppendixB.AUXILIARY_INPUT_STATUS);
-            super.add(AppendixB.MONITOR_STATUS);
-            super.add(AppendixB.ENGINE_COOLANT_TEMPERATURE);
-            super.add(AppendixB.ABSOLUTE_LOAD_VALUE);
-            super.add(AppendixB.ABSOLUTE_THROTTLE_POSITION);
-            super.add(AppendixB.CALCULATED_ENGINE_LOAD);
-        }
-
-    };
-
-    @Override
-    public @NonNull List<ServiceFacet> getSupportedParameters()
-    {
-        return mockPIDs;
-    }
-
-    @Override
-    public void onParameterSelection(@NonNull List<? extends ServiceFacet> selectedParameters)
-    {
-        System.out.println(selectedParameters);
-    }
-
-    @OnClick(R.id.vinDecoder)
-    void onVINDecoderClicked()
-    {
-
-        new ParameterSelector().show(super.getFragmentManager(), ParameterSelector.class.getSimpleName());
-//        new BridgeStatus().show(super.getFragmentManager(), BridgeStatus.class.getSimpleName());
-    }
-
     /**
      * {@inheritDoc}
      */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        Globals.initStringCache(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scandroid);
         ButterKnife.inject(this);
