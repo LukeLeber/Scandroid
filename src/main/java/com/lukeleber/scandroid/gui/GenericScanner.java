@@ -28,12 +28,9 @@ import com.lukeleber.scandroid.gui.fragments.LiveDatastream;
 import com.lukeleber.scandroid.gui.fragments.ResetDiagnosticInformation;
 import com.lukeleber.scandroid.gui.fragments.ServiceFragment;
 import com.lukeleber.scandroid.gui.fragments.UnsupportedService;
-import com.lukeleber.scandroid.interpreter.ConfigurationRequest;
 import com.lukeleber.scandroid.interpreter.FailureCode;
 import com.lukeleber.scandroid.interpreter.Handler;
 import com.lukeleber.scandroid.interpreter.Interpreter;
-import com.lukeleber.scandroid.interpreter.ResponseListener;
-import com.lukeleber.scandroid.interpreter.elm327.Constants;
 import com.lukeleber.scandroid.interpreter.elm327.ELM327;
 import com.lukeleber.scandroid.interpreter.elm327.OpCode;
 import com.lukeleber.scandroid.interpreter.elm327.Protocol;
@@ -68,6 +65,8 @@ public class GenericScanner
         DiagnosticTroubleCodeDisplay.class,
         ResetDiagnosticInformation.class
     };
+
+    private Profile profile;
 
     @NonNull
     @Override
@@ -223,9 +222,7 @@ public class GenericScanner
                                     @Override
                                     public void onResponse(Profile value)
                                     {
-                                        Globals.setProfile(
-                                                getApplicationContext(),
-                                                value);
+                                        GenericScanner.this.profile = value;
 
                                         /// Everything checks out
                                         /// Start the scan tool
@@ -271,7 +268,6 @@ public class GenericScanner
                         break;
                     case ProtocolSearch.SEARCH_ABORTED:
                     case ProtocolSearch.FATAL_ERROR:
-                        System.out.println("Search Aborted");
                         interpreter.stop();
                         Globals.setInterpreter(getApplicationContext(),  null);
                         finish();
@@ -321,6 +317,6 @@ public class GenericScanner
     @Override
     public Profile getProfile()
     {
-        return Globals.getProfile(getApplicationContext());
+        return profile;
     }
 }

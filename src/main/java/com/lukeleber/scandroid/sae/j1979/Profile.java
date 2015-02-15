@@ -5,6 +5,9 @@
 
 package com.lukeleber.scandroid.sae.j1979;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.lukeleber.scandroid.interpreter.FailureCode;
 import com.lukeleber.scandroid.interpreter.Handler;
 import com.lukeleber.scandroid.interpreter.Interpreter;
@@ -13,35 +16,43 @@ import com.lukeleber.scandroid.sae.j1979.detail.AppendixA;
 import com.lukeleber.scandroid.sae.j1979.detail.AppendixB;
 import com.lukeleber.scandroid.sae.j1979.util.CumulativePIDSupport;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
 /// TODO: Write Unit Tests
 public class Profile
+        implements
+        Serializable,
+        Parcelable
 {
-    public final static String BANK_1 = "bank_1";
-    public final static String BANK_2 = "bank_2";
-    public final static String BANK_3 = "bank_3";
-    public final static String BANK_4 = "bank_4";
 
     public final static String DUAL_BANK = "dual_bank";
+
     public final static String QUAD_BANK = "quad_bank";
+
+    private final static String[] EQUIPMENT_KEYS = new String[]
+    {
+        DUAL_BANK,
+        QUAD_BANK
+    };
 
     private final Protocol protocol;
 
-    private final Map<String, Boolean> equipmentCache = new HashMap<>();
+    private final Map<String, Boolean> equipmentCache;
 
-    private final Map<Service, CumulativePIDSupport> supportedPIDs;
+    private final Map<Service, PID<?>[]> pids;
 
-    private final Map<Service, PID<?>[]> pids = new TreeMap<>();
-
-    public Profile(Protocol protocol, Map<Service, CumulativePIDSupport> supportedPIDs)
+    public Profile(Protocol protocol,
+                   Map<Service, CumulativePIDSupport> supportedPIDs)
     {
         this.protocol = protocol;
-        for (Service service : Service.values())
+        this.equipmentCache = new HashMap<>();
+        this.pids = new TreeMap<>();
+        for(Service service : Service.values())
         {
-            if (supportedPIDs.get(service) != null)
+            if(supportedPIDs.get(service) != null)
             {
                 pids.put(service, new PID[255]);
             }
@@ -50,9 +61,14 @@ public class Profile
                 pids.put(service, null);
             }
         }
-        this.supportedPIDs = supportedPIDs;
-        populateService01();
-        populateService02();
+        if(supportedPIDs.get(Service.LIVE_DATASTREAM) != null)
+        {
+            populateService01(supportedPIDs.get(Service.LIVE_DATASTREAM));
+        }
+        if(supportedPIDs.get(Service.FREEZE_FRAME_DATA) != null)
+        {
+            populateService02(supportedPIDs.get(Service.FREEZE_FRAME_DATA));
+        }
         populateEquipment();
     }
 
@@ -64,67 +80,86 @@ public class Profile
     private void populateEquipment()
     {
         equipmentCache.put(DUAL_BANK, isSupported(Service.LIVE_DATASTREAM,
-                                                  AppendixB.DUAL_BANK_OXYGEN_SENSOR_LOCATIONS.getID()));
+                AppendixB.DUAL_BANK_OXYGEN_SENSOR_LOCATIONS.getID()));
         equipmentCache.put(QUAD_BANK, isSupported(Service.LIVE_DATASTREAM,
-                                                  AppendixB.QUAD_BANK_OXYGEN_SENSOR_LOCATIONS.getID()));
+                AppendixB.QUAD_BANK_OXYGEN_SENSOR_LOCATIONS.getID()));
     }
 
-    private void populateService01()
+    private void populateService01(CumulativePIDSupport support)
     {
         {
-            addIfSupported(Service.LIVE_DATASTREAM, AppendixA.J1979_CHECK_PID_SUPPORT_1_TO_20);
-            addIfSupported(Service.LIVE_DATASTREAM, AppendixA.J1979_CHECK_PID_SUPPORT_21_TO_40);
-            addIfSupported(Service.LIVE_DATASTREAM, AppendixA.J1979_CHECK_PID_SUPPORT_41_TO_60);
-            addIfSupported(Service.LIVE_DATASTREAM, AppendixA.J1979_CHECK_PID_SUPPORT_61_TO_80);
-            addIfSupported(Service.LIVE_DATASTREAM, AppendixA.J1979_CHECK_PID_SUPPORT_81_TO_A0);
-            addIfSupported(Service.LIVE_DATASTREAM, AppendixA.J1979_CHECK_PID_SUPPORT_A1_TO_C0);
-            addIfSupported(Service.LIVE_DATASTREAM, AppendixA.J1979_CHECK_PID_SUPPORT_C1_TO_E0);
-            addIfSupported(Service.LIVE_DATASTREAM, AppendixA.J1979_CHECK_PID_SUPPORT_E1_TO_FF);
+            addIfSupported(Service.LIVE_DATASTREAM, AppendixA.J1979_CHECK_PID_SUPPORT_1_TO_20,
+                    support);
+            addIfSupported(Service.LIVE_DATASTREAM, AppendixA.J1979_CHECK_PID_SUPPORT_21_TO_40,
+                    support);
+            addIfSupported(Service.LIVE_DATASTREAM, AppendixA.J1979_CHECK_PID_SUPPORT_41_TO_60,
+                    support);
+            addIfSupported(Service.LIVE_DATASTREAM, AppendixA.J1979_CHECK_PID_SUPPORT_61_TO_80,
+                    support);
+            addIfSupported(Service.LIVE_DATASTREAM, AppendixA.J1979_CHECK_PID_SUPPORT_81_TO_A0,
+                    support);
+            addIfSupported(Service.LIVE_DATASTREAM, AppendixA.J1979_CHECK_PID_SUPPORT_A1_TO_C0,
+                    support);
+            addIfSupported(Service.LIVE_DATASTREAM, AppendixA.J1979_CHECK_PID_SUPPORT_C1_TO_E0,
+                    support);
+            addIfSupported(Service.LIVE_DATASTREAM, AppendixA.J1979_CHECK_PID_SUPPORT_E1_TO_FF,
+                    support);
 
             /// Appendix B
-            for (PID<?> pid : SAE_J1979.SAE_J1979_STATIC_PIDS)
+            for(PID<?> pid : SAE_J1979.SAE_J1979_STATIC_PIDS)
             {
-                addIfSupported(Service.LIVE_DATASTREAM, pid);
+                addIfSupported(Service.LIVE_DATASTREAM, pid, support);
             }
 
         }
     }
 
-    private void populateService02()
+    private void populateService02(CumulativePIDSupport support)
     {
-        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_1_TO_20);
-        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_21_TO_40);
-        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_41_TO_60);
-        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_61_TO_80);
-        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_81_TO_A0);
-        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_A1_TO_C0);
-        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_C1_TO_E0);
-        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_E1_TO_FF);
-        for (PID<?> pid : SAE_J1979.SAE_J1979_STATIC_PIDS)
+        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_1_TO_20,
+                support);
+        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_21_TO_40,
+                support);
+        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_41_TO_60,
+                support);
+        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_61_TO_80,
+                support);
+        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_81_TO_A0,
+                support);
+        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_A1_TO_C0,
+                support);
+        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_C1_TO_E0,
+                support);
+        addIfSupported(Service.FREEZE_FRAME_DATA, AppendixA.J1979_CHECK_PID_SUPPORT_E1_TO_FF,
+                support);
+        for(PID<?> pid : SAE_J1979.SAE_J1979_STATIC_PIDS)
         {
-            addIfSupported(Service.FREEZE_FRAME_DATA, pid);
+            addIfSupported(Service.FREEZE_FRAME_DATA, pid, support);
         }
     }
 
-    private void addIfSupported(Service service, PID<?> pid)
+    private void addIfSupported(Service service,
+                                PID<?> pid,
+                                CumulativePIDSupport support)
     {
-        if (this.isSupported(service, pid.getID()))
+        if(support.isSupported(pid.getID()))
         {
             pids.get(service)[pid.getID()] = pid;
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public static void createProfile(final Interpreter interpreter, final Protocol protocol,
+    public static void createProfile(final Interpreter interpreter,
+                                     final Protocol protocol,
                                      final Handler<Profile> listener)
     {
         final Map<Service, CumulativePIDSupport> serviceMap = new TreeMap<>();
-        final int[] services = new int[] { 0, 1, 4, 5, 7, 8 };
+        final int[] services = new int[] {0, 1, 4, 5, 7, 8};
         /// TODO: Check support for service $03, $04, and $07
         /// TODO: But for now, just assume support (I guess...)
         CumulativePIDSupport.getSupportedPIDs(Service.values()[0], interpreter,
                 new Handler<CumulativePIDSupport>()
                 {
+
                     int currentService = 0;
 
                     @Override
@@ -133,11 +168,12 @@ public class Profile
                         serviceMap.put(
                                 Service.values()[services[currentService++]],
                                 value);
-                        if (currentService < services.length)
+                        if(currentService < services.length)
                         {
                             CumulativePIDSupport.getSupportedPIDs(
                                     Service.values()[services[currentService]],
-                                    interpreter, this);
+                                    interpreter,
+                                    this);
                         }
                         else
                         {
@@ -149,16 +185,19 @@ public class Profile
                     @Override
                     public void onFailure(FailureCode code)
                     {
-                        if (code == FailureCode.REQUEST_NOT_SUPPORTED)
+                        if(code ==
+                           FailureCode.REQUEST_NOT_SUPPORTED)
                         {
                             serviceMap.put(
                                     Service.values()[services[currentService++]],
                                     null);
-                            if (currentService < services.length)
+                            if(currentService <
+                               services.length)
                             {
                                 CumulativePIDSupport.getSupportedPIDs(
                                         Service.values()[services[currentService]],
-                                        interpreter, this);
+                                        interpreter,
+                                        this);
                             }
                             else
                             {
@@ -175,11 +214,11 @@ public class Profile
 
     }
 
-    public PID<?> getID(Service service, int id)
+    public PID<?> getID(Service service,
+                        int id)
     {
-        assert pids.containsKey(service) : "Invalid Service?  This should not happen!";
         PID<?>[] pids = this.pids.get(service);
-        if (pids != null)
+        if(pids != null)
         {
             return pids[id];
         }
@@ -188,40 +227,100 @@ public class Profile
 
     public boolean isServiceSupported(Service service)
     {
-        assert supportedPIDs.containsKey(service) : "Invalid Service?  This should not happen!";
         /// FIXME: Read ELM327 Docs
-        if (service == Service.RETRIEVE_DTC || service == Service.CLEAR_DTC || service == Service.RETRIEVE_PENDING_DTC)
+        if(service == Service.RETRIEVE_DTC || service == Service.CLEAR_DTC ||
+           service == Service.RETRIEVE_PENDING_DTC)
         {
             return true;
         }
-        return supportedPIDs.get(service) != null;
+        return pids.get(service) != null;
     }
 
-    public boolean isSupported(Service service, int id)
+    public boolean isSupported(Service service,
+                               int id)
     {
-        assert supportedPIDs.containsKey(service) : "Invalid Service?  This should not happen!";
         /// FIXME: Read ELM327 Docs
-        if (service == Service.RETRIEVE_DTC || service == Service.CLEAR_DTC || service == Service.RETRIEVE_PENDING_DTC)
+        if(service == Service.RETRIEVE_DTC || service == Service.CLEAR_DTC ||
+           service == Service.RETRIEVE_PENDING_DTC)
         {
             return true;
         }
-        CumulativePIDSupport support = supportedPIDs.get(service);
-        if (support != null)
-        {
-            return support.isSupported(id);
-        }
-        return false;
+        return isServiceSupported(service) && pids.get(service)[id] != null;
     }
 
     public boolean isEquipped(String key)
     {
         Boolean rv = equipmentCache.get(key);
-        if (rv != null)
-        {
-            return rv.booleanValue();
-        }
-        return false;
+        return rv != null && rv;
     }
 
 
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out,
+                              int flags)
+    {
+        out.writeParcelable(protocol, protocol.describeContents());
+        boolean[] cache = new boolean[EQUIPMENT_KEYS.length];
+        {
+            int i = 0;
+            for(String key : EQUIPMENT_KEYS)
+            {
+                Boolean val = equipmentCache.get(key);
+                cache[i++] = val != null && val;
+            }
+        }
+        out.writeBooleanArray(cache);
+        out.writeByte((byte)pids.size());
+        for(Map.Entry<Service, PID<?>[]> entry : pids.entrySet())
+        {
+            out.writeParcelable(entry.getKey(), 0);
+            out.writeParcelableArray(entry.getValue(), 0);
+        }
+    }
+
+    private Profile(Protocol protocol, boolean[] cache, Map<Service, PID<?>[]> pids)
+    {
+        this.protocol = protocol;
+        this.equipmentCache = new HashMap<>();
+        {
+            int i = 0;
+            for(String key : EQUIPMENT_KEYS)
+            {
+                equipmentCache.put(key, cache[i++]);
+            }
+        }
+        this.pids = pids;
+    }
+
+    public final static Parcelable.Creator<Profile> CREATOR =
+            new Parcelable.Creator<Profile>()
+            {
+
+                @Override
+                public Profile createFromParcel(Parcel in)
+                {
+                    Protocol protocol = in.readParcelable(null);
+                    boolean[] cache = new boolean[EQUIPMENT_KEYS.length];
+                    in.readBooleanArray(cache);
+                    Map<Service, PID<?>[]> pids = new TreeMap<>();
+                    int i = in.readByte() & 0xFF;
+                    while(i-- > 0)
+                    {
+                        pids.put((Service)in.readParcelable(null), (PID<?>[])in.readParcelableArray(null));
+                    }
+                    return new Profile(protocol, cache, pids);
+                }
+
+                @Override
+                public Profile[] newArray(int length)
+                {
+                    return new Profile[length];
+                }
+            };
 }

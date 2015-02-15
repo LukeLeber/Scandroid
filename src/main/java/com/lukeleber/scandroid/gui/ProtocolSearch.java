@@ -22,7 +22,6 @@ import com.lukeleber.scandroid.BuildConfig;
 import com.lukeleber.scandroid.Globals;
 import com.lukeleber.scandroid.R;
 import com.lukeleber.scandroid.gui.fragments.util.ViewHolderBase;
-import com.lukeleber.scandroid.interpreter.ConfigurationRequest;
 import com.lukeleber.scandroid.interpreter.FailureCode;
 import com.lukeleber.scandroid.interpreter.Handler;
 import com.lukeleber.scandroid.interpreter.Interpreter;
@@ -33,10 +32,11 @@ import com.lukeleber.scandroid.interpreter.elm327.ELM327;
 import com.lukeleber.scandroid.interpreter.elm327.OpCode;
 import com.lukeleber.scandroid.interpreter.elm327.Protocol;
 import com.lukeleber.scandroid.sae.j1979.PIDSupport;
-import com.lukeleber.scandroid.sae.j1979.detail.AppendixA;
 import com.lukeleber.scandroid.sae.j1979.Service;
+import com.lukeleber.scandroid.sae.j1979.detail.AppendixA;
 import com.lukeleber.widget.GenericBaseAdapter;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import butterknife.ButterKnife;
@@ -412,7 +412,7 @@ public class ProtocolSearch
     {
         views[currentProtocol + 1].img.setImageResource(R.drawable.checkbox_positive);
         Intent intent = new Intent();
-        intent.putExtra(PROTOCOL_RESULT_KEY, AVAILABLE_PROTOCOLS[currentProtocol]);
+        intent.putExtra(PROTOCOL_RESULT_KEY, (Serializable) AVAILABLE_PROTOCOLS[currentProtocol]);
         super.setResult(PROTOCOL_FOUND, intent);
         super.finish();
     }

@@ -15,12 +15,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Seems like a hack.  I really hate the android way of doing things...
+ * <p>This class provides a means by which to persist
+ * {@link com.lukeleber.scandroid.interpreter.Interpreter} and
+ * {@link com.lukeleber.scandroid.sae.j1979.Profile} instances beyond the bounds of the normal
+ * {@link android.app.Activity} lifecycle.  Interpreters maintain state that cannot be persisted
+ * through the {@link java.io.Serializable} or {@link android.os.Parcelable} interfaces, and
+ * as such (at this time, as far as I know) cannot be passed between activities.</p>
+ * <p>Artifacts are persisted by in-memory static storage for the life of the process.  Multiple
+ * artifacts may be stored on a per-context basis.  This class is internally thread-safe.
  *
- * Seriously, who designed the application lifecycle API anyway?
  */
 public class Globals
 {
+
+    /**
+     * Uninstantiable
+     */
+    private Globals()
+    {
+
+    }
 
     private final static Map<Context, Interpreter> interpreters
             = Collections.synchronizedMap(new HashMap<Context, Interpreter>());
@@ -34,18 +48,4 @@ public class Globals
     {
         return interpreters.put(key, interpreter);
     }
-
-    private final static Map<Context, Profile> profiles
-            = Collections.synchronizedMap(new HashMap<Context, Profile>());
-
-    public static Profile getProfile(Context key)
-    {
-        return profiles.get(key);
-    }
-
-    public static Profile setProfile(Context key, Profile profile)
-    {
-        return profiles.put(key, profile);
-    }
-
 }

@@ -36,8 +36,7 @@ public class Scandroid
     @OnClick(R.id.scanToolGeneric)
     void onScanToolGenericClicked()
     {
-        if (Globals.getInterpreter(getApplicationContext()) == null ||
-                Globals.getProfile(getApplicationContext()) == null)
+        if (Globals.getInterpreter(getApplicationContext()) == null)
         {
             Toast.makeText(Scandroid.this, "opening connection to vehicle...", Toast.LENGTH_SHORT)
                  .show();
