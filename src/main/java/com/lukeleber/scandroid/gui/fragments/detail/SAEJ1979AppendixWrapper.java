@@ -881,19 +881,7 @@ public final class SAEJ1979AppendixWrapper
         {
             super(AppendixB.ENGINE_SPEED);
         }
-    }
-
-    /// GUI Wrapper for PID $0D
-    private final static class VehicleSpeedWrapper
-            extends PIDWrapper<Integer>
-    {
-        VehicleSpeedWrapper()
-        {
-            super(AppendixB.VEHICLE_SPEED);
-        }
-
-        @Override
-        public final ViewHolderBase createViewHolder(@NonNull final View view)
+        @Override public final ViewHolderBase createViewHolder(@NonNull final View view)
         {
             view.setOnLongClickListener(new View.OnLongClickListener()
             {
@@ -909,6 +897,23 @@ public final class SAEJ1979AppendixWrapper
                     return true;
                 }
             });
+            return super.createViewHolder(view);
+        }
+    }
+
+    /// GUI Wrapper for PID $0D
+    private final static class VehicleSpeedWrapper
+            extends PIDWrapper<Integer>
+    {
+        VehicleSpeedWrapper()
+        {
+            super(AppendixB.VEHICLE_SPEED);
+        }
+
+        @Override
+        public final ViewHolderBase createViewHolder(@NonNull final View view)
+        {
+
             super.addUnitSelector(view);
             return super.createViewHolder(view);
         }
