@@ -100,7 +100,9 @@ public class AppendixB
                                 @NonNull byte... bytes)
                         {
                             return new SerializablePair<>(FuelSystemStatus.forByte(bytes[0]),
-                                                          FuelSystemStatus.forByte(bytes[1]));
+                                                          bytes[1] != 0 ?
+                                                              FuelSystemStatus.forByte(bytes[1])
+                                                                  : null);
                         }
                     });
                 }
