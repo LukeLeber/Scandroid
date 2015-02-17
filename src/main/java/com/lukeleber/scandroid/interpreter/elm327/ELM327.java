@@ -326,7 +326,7 @@ public class ELM327
                     resp = resp.replace(""+(char)13, "");
                     if(resp.equals("?"))
                     {
-                        request.getHandler().onFailure(FailureCode.CONFIGURATION_COMMAND_NOT_RECOGNIZED);
+                        handler.onFailure(FailureCode.CONFIGURATION_COMMAND_NOT_RECOGNIZED);
                     }
                     else
                     {
