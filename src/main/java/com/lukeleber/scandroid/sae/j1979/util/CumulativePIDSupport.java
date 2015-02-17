@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A <code>CumulitivePIDSupport</code> is a form of {@link com.lukeleber.scandroid.sae.j1979.PIDSupport}
+ * A <code>CumulativePIDSupport</code> is a form of {@link com.lukeleber.scandroid.sae.j1979.PIDSupport}
  * that covers the entire support range; that is, from ID 0 to ID 255.  This utility class is a
  * convenience function for obtaining all supported PIDs/TIDs/OBDMIDs from the vehicle in a single
  * statement.
