@@ -1082,7 +1082,7 @@ public enum OpCode
      * allow for the measurement of input voltages up to about 28V, with an uncalibrated accuracy of
      * typically about 2%
      */
-    ELM327_VOLTAGE_READING_READ_INPUT_VOLTAGE("RV"),
+    ELM327_VOLTAGE_READING_READ_INPUT_VOLTAGE("ATRV"),
 
     /**
      * S0 and S1 [ printing of Spaces off or on ] These commands control whether or not space
@@ -1384,7 +1384,7 @@ public enum OpCode
      * @1 [ display the device description ] This command displays the device description string.
      * The default text is ‘OBDII to RS232 Interpreter’.
      */
-    ELM327_DISPLAY_DEVICE_DESCRIPTION("@1"),
+    ELM327_DISPLAY_DEVICE_DESCRIPTION("AT@1"),
 
     /**
      * @2 [ display the device identifier ] A device identifier string that was recorded with the @3
@@ -1394,7 +1394,7 @@ public enum OpCode
      * codes, production dates, serial numbers, or other such codes. See the ‘Programming Serial
      * Numbers’ section for more information.
      */
-    ELM327_DISPLAY_DEVICE_IDENTIFIER("@2"),
+    ELM327_DISPLAY_DEVICE_IDENTIFIER("AT@2"),
 
     /**
      * @3 cccccccccccc [ store the device identifier ] This command is used to set the device
@@ -1404,7 +1404,7 @@ public enum OpCode
      * write device identifiers, you may be interested in the ELM328 IC, as it allows multiple
      * writes using the @3 command (but it can not send OBD messages).
      */
-    ELM327_STORE_DEVICE_IDENTIFIER("@3");
+    ELM327_STORE_DEVICE_IDENTIFIER("AT@3");
 
     public static final String ELM327_NO_DATA = "NO DATA";
 
