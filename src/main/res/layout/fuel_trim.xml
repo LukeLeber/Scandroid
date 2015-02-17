@@ -17,7 +17,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"/>
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -26,7 +27,8 @@
         android:id="@+id/fuel_trim_value_1"
         android:layout_toRightOf="@+id/fuel_trim_label_1"
         android:layout_alignTop="@+id/fuel_trim_label_1"
-        android:layout_alignBottom="@+id/fuel_trim_label_1"/>
+        android:layout_alignBottom="@+id/fuel_trim_label_1"
+        android:paddingTop="@dimen/activity_vertical_margin"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -35,7 +37,8 @@
         android:layout_below="@+id/fuel_trim_label_1"
         android:layout_alignParentStart="true"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"/>
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -43,5 +46,6 @@
         android:text="@string/not_available"
         android:id="@+id/fuel_trim_value_2"
         android:layout_below="@+id/fuel_trim_value_1"
-        android:layout_toRightOf="@+id/fuel_trim_label_2"/>
+        android:layout_toRightOf="@+id/fuel_trim_label_2"
+        android:paddingBottom="@dimen/activity_vertical_margin"/>
 </RelativeLayout>
