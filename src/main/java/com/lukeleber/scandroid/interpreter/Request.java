@@ -18,6 +18,9 @@ import com.lukeleber.scandroid.sae.j1979.PID;
 @SuppressWarnings("unused")
 public abstract class Request<T>
 {
+    /// The unix timestamp marking the creation of this request
+    private final long timestamp;
+
     /// The {@link killgpl.scandroid.interpreter.Handler} for this request
     private final Handler<T> handler;
 
@@ -32,6 +35,7 @@ public abstract class Request<T>
     public Request(Handler<T> handler)
     {
         this.handler = handler;
+        this.timestamp = System.currentTimeMillis();
     }
 
     /**
@@ -45,6 +49,11 @@ public abstract class Request<T>
     public final Handler<T> getHandler()
     {
         return handler;
+    }
+
+    public final long getTimestamp()
+    {
+        return timestamp;
     }
 
     public abstract PID.Unmarshaller<T> getUnmarshaller();

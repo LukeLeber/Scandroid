@@ -22,8 +22,6 @@ import java.util.concurrent.LinkedBlockingQueue;
  * A reasonable skeletal implementation of much of the {@link Interpreter}
  * interface.
  *
- * @param <T>
- *         the type of data that is to be sent over this Interpreter
  * @param <U>
  *         the type of data that is to be received over this Interpreter
  *
@@ -39,6 +37,7 @@ public abstract class AbstractInterpreter<U>
 
     /// @internal tag for debug logging
     private final static String TAG = AbstractInterpreter.class.getName();
+
     private final CommunicationInterface com;
 
     /// The queue that internally synchronizes the use of this class with a UI thread
@@ -49,6 +48,18 @@ public abstract class AbstractInterpreter<U>
     private final List<ConnectionListener> connectionListeners = new ArrayList<>();
 
     private final List<ShutdownListener> shutdownListeners = new ArrayList<>();
+
+    private long requestAccumulator;
+
+    private long latencyAccumulator;
+
+    private Interpreter.LinkStatus linkStatus = LinkStatus.DISCONNECTED;
+
+    @Override
+    public Interpreter.LinkStatus getLinkStatus()
+    {
+        return linkStatus;
+    }
 
     @Override
     public final void addErrorListener(ErrorListener listener)
@@ -89,16 +100,38 @@ public abstract class AbstractInterpreter<U>
         try
         {
             com.connect();
+            linkStatus = LinkStatus.CONNECTED;
             for(ConnectionListener listener : connectionListeners)
             {
-                listener.onConnected();
+                try
+                {
+                    listener.onConnected();
+                }
+                catch(Exception e)
+                {
+                    if(BuildConfig.DEBUG)
+                    {
+                        Log.w(TAG, e);
+                    }
+                }
             }
         }
         catch (IOException ioe)
         {
+            linkStatus = LinkStatus.ERROR;
             for(ErrorListener listener : errorListeners)
             {
-                listener.onError(ioe);
+                try
+                {
+                    listener.onError(ioe);
+                }
+                catch(Exception e)
+                {
+                    if(BuildConfig.DEBUG)
+                    {
+                        Log.w(TAG, e);
+                    }
+                }
             }
             cleanup();
             return null;
@@ -127,6 +160,7 @@ public abstract class AbstractInterpreter<U>
                         listener.onError(ioe);
                     }
                 }
+                latencyAccumulator += (System.currentTimeMillis() - request.first.getTimestamp());
             }
             catch (InterruptedException ie)
             {
@@ -142,6 +176,7 @@ public abstract class AbstractInterpreter<U>
             Thread.currentThread()
                   .interrupt();
         }
+        linkStatus = LinkStatus.DISCONNECTED;
         return null;
     }
 
@@ -189,6 +224,7 @@ public abstract class AbstractInterpreter<U>
                 Log.e(TAG, "Offer declined (something very bad has happened...)");
             }
         }
+        ++requestAccumulator;
     }
 
     /**
@@ -253,6 +289,12 @@ public abstract class AbstractInterpreter<U>
         {
             listener.onShutdown();
         }
+    }
+
+    @Override
+    public final long getAverageLatency()
+    {
+        return latencyAccumulator / requestAccumulator;
     }
 
     /**

@@ -5,7 +5,12 @@
 
 package com.lukeleber.scandroid.interpreter;
 
+import android.content.Context;
+import android.support.annotation.StringRes;
+
+import com.lukeleber.scandroid.R;
 import com.lukeleber.scandroid.io.CommunicationInterface;
+import com.lukeleber.scandroid.util.Internationalized;
 
 import java.io.Closeable;
 
@@ -15,13 +20,33 @@ import java.io.Closeable;
  * hardware, thus acting as a bridge between the android device and the vehicle that is being
  * accessed.
  *
- * @param <T>
- *         the type of data that is to be sent over this Interpreter
  */
 public interface Interpreter
         extends
         Closeable
 {
+    public enum LinkStatus implements Internationalized
+    {
+        DISCONNECTED(R.string.disconnected),
+        CONNECTED(R.string.connected),
+        ERROR(R.string.error);
+
+        private final @StringRes int id;
+
+        LinkStatus(@StringRes
+                   int id)
+        {
+            this.id = id;
+        }
+
+        @Override
+        public final String toI18NString(Context context)
+        {
+            return context.getString(id);
+        }
+
+    }
+
     /**
      * An optional function object that can be provided to the {@link Interpreter#start(com.lukeleber.scandroid.interpreter.Interpreter.ErrorListener)}
      * to provide custom handling for any exceptions arising during the asynchronous execution of
@@ -114,4 +139,8 @@ public interface Interpreter
      * signalled to stop, otherwise false
      */
     boolean stop();
+
+    long getAverageLatency();
+
+    LinkStatus getLinkStatus();
 }
