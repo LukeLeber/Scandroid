@@ -13,145 +13,72 @@ import com.lukeleber.scandroid.util.Internationalized;
 
 import java.io.Serializable;
 
-/// TODO: re-read SAE 1979 regarding the differences between this and MonitorStatus
 /// TODO: Write Unit Tests
+
+/**
+ * <p>This class models the packeted PID result data type defined by SAE J1979 Appendix B:
+ * Table B28.  For each continuous and non-continuous monitor, two pieces of information are
+ * provided.</p>
+ * <ol>
+ *     <li>Enable Status for the current driving cycle: Consisting of a single bit, this
+ *     field indicates whether or not a monitor is disabled such that there is no longer any
+ *     possibility for the vehicle to meet the enabling criteria for this driving cycle.
+ *     Examples include:
+ *     <ul>
+ *         <li>Engine off soak not long enough (e.g., cold start temperature conditions not
+ *         satisfied)</li>
+ *         <li>Maximum time limit or number of attempts/aborts exceeded</li>
+ *         <li>Ambient air temperature too low or too high</li>
+ *         <li>Barometric pressure too low</li>
+ *     </ul>
+ *     The enable status shall not be set to false due to operator controlled conditions such as
+ *     engine speed, load, throttle position, etc...
+ *     </li>
+ *     <li>Completion status for the current driving cycle: Consisting of a single bit, this
+ *     field indicates whether or not the monitor test has been completed during the current
+ *     driving cycle.  Initially, the completion status of all monitors is set to "not complete"
+ *     when a new driving cycle begins.</li>
+ * </ol>
+ */
 public class DriveCycleMonitorStatus
         implements
         Parcelable,
         Serializable,
         Internationalized
 {
-    /// Required by the {@link android.os.Parcelable} interface
-    public final static Parcelable.Creator<DriveCycleMonitorStatus> CREATOR
-            = new Parcelable.Creator<DriveCycleMonitorStatus>()
-    {
-
-        /**
-         * {@inheritDoc}
-         *
-         */
-        @Override
-        public DriveCycleMonitorStatus createFromParcel(Parcel source)
-        {
-            return new DriveCycleMonitorStatus(source.readInt());
-        }
-
-        /**
-         * {@inheritDoc}
-         *
-         */
-        @Override
-        public DriveCycleMonitorStatus[] newArray(int size)
-        {
-            return new DriveCycleMonitorStatus[size];
-        }
-    };
-
-
-    private final int bits;
-
-
-    @Override
-    public int describeContents()
-    {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags)
-    {
-        dest.writeInt(bits);
-    }
-
-    @Override
-    public String toI18NString(Context context)
-    {
-        return "Drive cycle monitor status";
-    }
-
-    public DriveCycleMonitorStatus(int bits)
-    {
-        this.bits = bits;
-    }
-
-    public String getSupportReadinessString()
-    {
-        StringBuilder rv = new StringBuilder();
-        for (int i = 0; i < ContinuousMonitorCompletionStatus.values().length; ++i)
-        {
-            rv.append(ContinuousMonitorEnableStatus.values()[i].name().replace("_SUP", "")).append(": ");
-            if (isContinuousMonitorEnabled(ContinuousMonitorEnableStatus.values()[i]))
-            {
-                rv.append("[SUP").append(isContinuousMonitorComplete(ContinuousMonitorCompletionStatus.values()[i]) ? ", RDY]\n" : ", NOT_RDY]\n");
-            }
-            else
-            {
-                rv.append("[NOT_SUP]\n");
-            }
-        }
-        for (int i = 0; i < NonContinuousMonitorCompletionStatus.values().length; ++i)
-        {
-            rv.append(NonContinuousMonitorEnableStatus.values()[i].name().replace("_SUP", "")).append(": ");
-            if (isNonContinuousMonitorEnabled(NonContinuousMonitorEnableStatus.values()[i]))
-            {
-                rv.append("[SUP").append(isNonContinuousMonitorComplete(NonContinuousMonitorCompletionStatus.values()[i]) ? ", RDY]\n" : ", NOT_RDY]\n");
-            }
-            else
-            {
-                rv.append("[NOT_SUP]\n");
-            }
-        }
-        return rv.substring(0, rv.length() - 1);
-    }
-
-    public boolean isContinuousMonitorEnabled(ContinuousMonitorEnableStatus monitor)
-    {
-        return (bits & monitor.getMask()) != 0;
-    }
-
-    public boolean isContinuousMonitorComplete(ContinuousMonitorCompletionStatus monitor)
-    {
-        return (bits & monitor.getMask()) != 0;
-    }
-
-    public boolean isNonContinuousMonitorEnabled(NonContinuousMonitorEnableStatus monitor)
-    {
-        return (bits & monitor.getMask()) != 0;
-    }
-
-    public boolean isNonContinuousMonitorComplete(NonContinuousMonitorCompletionStatus monitor)
-    {
-        return (bits & monitor.getMask()) != 0;
-    }
-
 
     /**
-     * An enumeration of all currently defined continuous monitor support tests.
+     * An enumeration of all currently defined continuous monitor enable status tests.
      * <p/>
-     * Continuous monitors may be either supported or unsupported based on the vehicle's OEM
-     * equipment.  For example, diesel vehicles may not support {@link
-     * com.lukeleber.scandroid.sae.j1979.MonitorStatus.ContinuousMonitorSupport#FUEL_SUP}. <br> For
-     * more detailed documentation on whether or not a monitor is required to be supported, refer to
-     * each individual monitor enumerated member.
+     * Enable status can either be enabled or disabled.  Disabled status (reported as 'NO')
+     * indicates either that the monitor is disabled for the remainder of the driving cycle or
+     * that the monitor is not supported (see the packeted data type of
+     * {@link com.lukeleber.scandroid.sae.j1979.MonitorStatus PID $01 - MonitorStatus}).  Enabled
+     * status (reported as 'YES') indicates that the monitor is still enabled for the driving
+     * cycle -- that is, the vehicle still has a chance to meet the enabling criteria to run
+     * the monitor.
+     *
      */
     public static enum ContinuousMonitorEnableStatus
     {
         /**
-         * Misfire monitoring shall be supported on both, spark ignition, and compression vehicles
-         * if the vehicle utilises a misfire monitor.
+         * The enable status constant for misfire monitoring.
+         *
+         * @see com.lukeleber.scandroid.sae.j1979.MonitorStatus.ContinuousMonitorSupport#MIS_SUP
          */
         MIS_ENA(0x10000),
 
         /**
-         * Fuel system monitoring shall be supported on vehicles that utilise oxygen sensors for
-         * closed loop fuel feedback control,k and utilise a fuel system monitor, typically spark
-         * ignition engines.
+         * The enable status constant for fuel system monitoring.
+         *
+         * @see com.lukeleber.scandroid.sae.j1979.MonitorStatus.ContinuousMonitorSupport#FUEL_SUP
          */
         FUEL_ENA(0x20000),
 
         /**
-         * Comprehensive component monitoring shall be supported on spark ignition and compression
-         * ignition vehicles if the vehicle utilises comprehensive component monitoring.
+         * The enable status constant for comprehensive component monitoring.
+         *
+         * @see com.lukeleber.scandroid.sae.j1979.MonitorStatus.ContinuousMonitorSupport#CCM_SUP
          */
         CCM_ENA(0x40000);
 
@@ -159,7 +86,7 @@ public class DriveCycleMonitorStatus
         private final int mask;
 
         /**
-         * Constructs a {@link com.lukeleber.scandroid.sae.j1979.MonitorStatus.ContinuousMonitorSupport}
+         * Constructs a {@link com.lukeleber.scandroid.sae.j1979.DriveCycleMonitorStatus.ContinuousMonitorEnableStatus}
          * with the provided mask
          *
          * @param mask
@@ -207,7 +134,7 @@ public class DriveCycleMonitorStatus
         private final int mask;
 
         /**
-         * Constructs a {@link com.lukeleber.scandroid.sae.j1979.MonitorStatus.ContinuousMonitorReadiness}
+         * Constructs a {@link com.lukeleber.scandroid.sae.j1979.DriveCycleMonitorStatus.ContinuousMonitorCompletionStatus}
          * with the provided mask
          *
          * @param mask
@@ -283,7 +210,7 @@ public class DriveCycleMonitorStatus
         private final int mask;
 
         /**
-         * Constructs a {@link com.lukeleber.scandroid.sae.j1979.MonitorStatus.NonContinuousMonitorSupport}
+         * Constructs a {@link com.lukeleber.scandroid.sae.j1979.DriveCycleMonitorStatus.NonContinuousMonitorEnableStatus}
          *
          * @param mask
          *         the SAE J1979 defined bit mask
@@ -350,7 +277,7 @@ public class DriveCycleMonitorStatus
         private final int mask;
 
         /**
-         * Constructs a {@link com.lukeleber.scandroid.sae.j1979.MonitorStatus.NonContinuousMonitorReadiness}
+         * Constructs a {@link com.lukeleber.scandroid.sae.j1979.DriveCycleMonitorStatus.NonContinuousMonitorCompletionStatus}
          *
          * @param mask
          *         the SAE J1979 defined bit mask
@@ -369,5 +296,108 @@ public class DriveCycleMonitorStatus
         {
             return mask;
         }
+    }
+
+    /// Required by the {@link android.os.Parcelable} interface
+    public final static Parcelable.Creator<DriveCycleMonitorStatus> CREATOR
+            = new Parcelable.Creator<DriveCycleMonitorStatus>()
+    {
+
+        /**
+         * {@inheritDoc}
+         *
+         */
+        @Override
+        public DriveCycleMonitorStatus createFromParcel(Parcel in)
+        {
+            return new DriveCycleMonitorStatus(in.readInt());
+        }
+
+        /**
+         * {@inheritDoc}
+         *
+         */
+        @Override
+        public DriveCycleMonitorStatus[] newArray(int size)
+        {
+            return new DriveCycleMonitorStatus[size];
+        }
+    };
+
+
+    private final int bits;
+
+
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags)
+    {
+        out.writeInt(bits);
+    }
+
+    @Override
+    public String toI18NString(Context context)
+    {
+        return "Drive cycle monitor status";
+    }
+
+    public DriveCycleMonitorStatus(int bits)
+    {
+        this.bits = bits;
+    }
+
+    public String getEnableCompletionString()
+    {
+        StringBuilder rv = new StringBuilder();
+        for (int i = 0; i < ContinuousMonitorCompletionStatus.values().length; ++i)
+        {
+            rv.append(ContinuousMonitorEnableStatus.values()[i].name().replace("_ENA", "")).append(": ");
+            if (isContinuousMonitorEnabled(ContinuousMonitorEnableStatus.values()[i]))
+            {
+                rv.append("[ENA").append(isContinuousMonitorComplete(ContinuousMonitorCompletionStatus.values()[i]) ? ", CMPL]\n" : ", NOT_CMPL]\n");
+            }
+            else
+            {
+                rv.append("[NOT_ENA]\n");
+            }
+        }
+        for (int i = 0; i < NonContinuousMonitorCompletionStatus.values().length; ++i)
+        {
+            rv.append(NonContinuousMonitorEnableStatus.values()[i].name().replace("_ENA", "")).append(": ");
+            if (isNonContinuousMonitorEnabled(NonContinuousMonitorEnableStatus.values()[i]))
+            {
+                rv.append("[ENA").append(isNonContinuousMonitorComplete(NonContinuousMonitorCompletionStatus.values()[i]) ? ", CMPL]\n" : ", NOT_CMPL]\n");
+            }
+            else
+            {
+                rv.append("[NOT_ENA]\n");
+            }
+        }
+        return rv.substring(0, rv.length() - 1);
+    }
+
+    public boolean isContinuousMonitorEnabled(ContinuousMonitorEnableStatus monitor)
+    {
+        return (bits & monitor.getMask()) != 0;
+    }
+
+    public boolean isContinuousMonitorComplete(ContinuousMonitorCompletionStatus monitor)
+    {
+        return (bits & monitor.getMask()) != 0;
+    }
+
+    public boolean isNonContinuousMonitorEnabled(NonContinuousMonitorEnableStatus monitor)
+    {
+        return (bits & monitor.getMask()) != 0;
+    }
+
+    public boolean isNonContinuousMonitorComplete(NonContinuousMonitorCompletionStatus monitor)
+    {
+        return (bits & monitor.getMask()) != 0;
     }
 }
