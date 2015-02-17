@@ -44,7 +44,10 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * A scan tool implementation that supports the bare minimum required by SAE-J1979.
+ * A scan tool implementation that supports the bare minimum required by SAE-J1979 utilizing the
+ * well known and thoroughly tested ELM327 Interpreter.  This is more or less a live test of the
+ * Scandroid API in and of itself.  This class can also be used as a template for future
+ * interpreter implementations...including non-OBDII facilities.
  *
  */
 public class GenericScanner
@@ -134,11 +137,12 @@ public class GenericScanner
                         @Override
                         public void run()
                         {
+                            Globals.setInterpreter(context.getApplicationContext(), null);
+                            interpreter.close();
                              Toast.makeText(context, "I/O Error - Verify that the interpreter " +
                                      "is securely plugged into the diagnostic connector and " +
                                      "that the android device is within range.",
                                      Toast.LENGTH_LONG).show();
-                            interpreter.stop();
                         }
                     });
                 }
