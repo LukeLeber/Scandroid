@@ -23,7 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * An {@link killgpl.scandroid.io.CommunicationInterface} that is implemented via Bluetooth.
+ * An {@link com.lukeleber.scandroid.io.CommunicationInterface} that is implemented via Bluetooth.
  * <p/>
  * The interpreter hardware used to test this interface is the ELM327 IC paired with a bluetooth
  * adapter and the standard OBDII connector.  This hardware can be a (semi) easy DIY build or can be
@@ -71,7 +71,7 @@ public class BluetoothInterface
 
     /**
      * <p>Attempts to retrieve a "default" BluetoothInterface.  More formally, this method searches
-     * for a paired device with the name {@link killgpl.myapplication.R.string#bluetooth_device_name}
+     * for a paired device with the name {@link com.lukeleber.scandroid.R.string#bluetooth_device_name}
      * and uses the first {@link android.os.ParcelUuid} available on said device (if such a device
      * exists in the first place).  Traditionally, the resource string is set to "OBDII", which by
      * the way is the default name for the ELM327 bluetooth device.</p> <p/> <p><b>It is the
@@ -82,7 +82,7 @@ public class BluetoothInterface
      *
      * @return the "default" BluetoothInterface
      *
-     * @throws java.io.IOException
+     * @throws com.lukeleber.scandroid.io.ScandroidIOException
      *         if bluetooth is not enabled on this device, no remote device was found that matched
      *         the selection criteria, or if any other type of I/O error occurs
      */
