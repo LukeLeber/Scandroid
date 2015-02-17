@@ -209,6 +209,10 @@
     <string name="secondary_air_status_ups_desc">upstream of the first catalytic converter</string>
     <string name="secondary_air_status_dns_desc">downstream of the first catalytic converter inlet</string>
     <string name="secondary_air_status_off_desc">atmosphere / off</string>
+    <string name="disconnected">DISCONNECTED</string>
+    <string name="connected">CONNECTED</string>
+    <string name="error">ERROR</string>
+    <string name="waiting_for_response">waiting for response...</string>
 
 
     <!-- Menus -->
