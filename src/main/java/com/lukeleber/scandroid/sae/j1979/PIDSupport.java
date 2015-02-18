@@ -10,7 +10,6 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
-/// TODO: Write Unit Tests
 /**
  * This implementation was created from the information provided through Table A1 of Appendix A of
  * the SAE-J1979 document.
@@ -18,7 +17,7 @@ import java.io.Serializable;
  * SAE-J1979 supports querying the PIDs supported by a vehicle in ranges of 32 boolean fields where
  * the last field in the range represents whether or not additional support ranges exist for a
  * provided vehicle.  This class encapsulates this support with an easy to use interface that allows
- * querying individual PIDs as well as providing a more advanced way to reap low level efficiency
+ * querying individual PIDs as well as providing a more advanced way to reap lower level efficiency
  * should it be needed.
  *
  * @see android.os.Parcelable
@@ -29,7 +28,7 @@ public final class PIDSupport
                    Parcelable
 {
 
-    /// An "indirect initialization idiom" for allowing final persistent fields.
+    /// Required by the {@link android.os.Parcelable} interface
     public final static Creator<PIDSupport> CREATOR
             = new Creator<PIDSupport>()
     {
@@ -37,44 +36,23 @@ public final class PIDSupport
          * {@inheritDoc}
          */
         @Override
-        public final PIDSupport createFromParcel(Parcel x)
+        public final PIDSupport createFromParcel(Parcel in)
         {
-            return new PIDSupport(x);
+            return new PIDSupport(in.readInt());
         }
 
         /**
          * {@inheritDoc}
          */
         @Override
-        public final PIDSupport[] newArray(int size)
+        public final PIDSupport[] newArray(int length)
         {
-            return new PIDSupport[size];
+            return new PIDSupport[length];
         }
     };
+
     /// The 32-bits that make up this range of PID support
     private final int bits;
-
-    /**
-     * Constructs a <code>PIDSupport</code> from the provided {@link android.os.Parcel}
-     *
-     * @param in
-     *         the {@link android.os.Parcel} to read
-     */
-    private PIDSupport(Parcel in)
-    {
-        this.bits = in.readInt();
-    }
-
-    /**
-     * Constructs a <code>PIDSupport</code> from the provided 32-bit integer
-     *
-     * @param bits
-     *         the 32-bit integer that represents a bit-stream.
-     */
-    public PIDSupport(int bits)
-    {
-        this.bits = bits;
-    }
 
     /**
      * {@inheritDoc}
@@ -89,9 +67,20 @@ public final class PIDSupport
      * {@inheritDoc}
      */
     @Override
-    public void writeToParcel(Parcel dest, int flags)
+    public void writeToParcel(Parcel out, int flags)
     {
-        dest.writeInt(bits);
+        out.writeInt(bits);
+    }
+
+    /**
+     * Constructs a <code>PIDSupport</code> from the provided 32-bit integer
+     *
+     * @param bits
+     *         the 32-bit integer that represents a bit-stream.
+     */
+    public PIDSupport(int bits)
+    {
+        this.bits = bits;
     }
 
     /**
