@@ -6,7 +6,9 @@
 package com.lukeleber.scandroid.sae.j1979.detail;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.lukeleber.scandroid.BuildConfig;
 import com.lukeleber.scandroid.Constants;
 import com.lukeleber.scandroid.sae.j1979.AuxiliaryInputStatus;
 import com.lukeleber.scandroid.sae.j1979.DefaultPID;
@@ -33,6 +35,8 @@ import java.util.HashMap;
  */
 public class AppendixB
 {
+
+    private final static String TAG = AppendixB.class.getName();
 
     /// PID $01 Definition: Monitor Status Since DTCs Cleared
     public final static PID<MonitorStatus> MONITOR_STATUS
@@ -99,10 +103,24 @@ public class AppendixB
                         public SerializablePair<FuelSystemStatus, FuelSystemStatus> invoke(
                                 @NonNull byte... bytes)
                         {
-                            return new SerializablePair<>(FuelSystemStatus.forByte(bytes[0]),
-                                                          bytes[1] != 0 ?
-                                                              FuelSystemStatus.forByte(bytes[1])
-                                                                  : null);
+                            try
+                            {
+                                return new SerializablePair<>(
+                                        bytes[0] != 0 ?
+                                                FuelSystemStatus.forByte(bytes[0])
+                                                : null,
+                                        bytes[1] != 0 ?
+                                                FuelSystemStatus.forByte(bytes[1])
+                                                : null);
+                            }
+                            catch(IllegalArgumentException iae)
+                            {
+                                if(BuildConfig.DEBUG)
+                                {
+                                    Log.w(TAG, iae);
+                                }
+                                return new SerializablePair<>((FuelSystemStatus)null, (FuelSystemStatus)null);
+                            }
                         }
                     });
                 }
