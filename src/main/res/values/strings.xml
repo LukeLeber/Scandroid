@@ -164,6 +164,75 @@
     <string name="pid_engine_speed_desc_title">RPM PID Overview</string>
     <string name="pid_engine_speed_desc">This PID requests the speed at which the engine is
     rotating.</string>
+
+    <string name="pid_vehicle_speed_desc_title">VSS PID Overview</string>
+    <string name="pid_vehicle_speed_desc">This PID requests the road speed of the vehicle.</string>
+
+    <string name="pid_timing_advance_desc_title">SPARKADV PID Overview</string>
+    <string name="pid_timing_advance_desc">This PID requests the electronic timing advance
+    for cylinder #1.  This value does not include any mechanical timing advancement or
+    retardation.</string>
+
+    <string name="pid_intake_air_temperature_desc_title">IAT PID Overview</string>
+    <string name="pid_intake_air_temperature_desc">This PID requests the temperature of the air
+    within the intake manifold.  The value may be either obtained directly from an IAT sensor, or
+    it can be interpolated by the control strategy based on other sensor inputs.</string>
+
+    <string name="pid_mass_airflow_desc_title">MAF PID Overview</string>
+    <string name="pid_mass_airflow_desc">This PID requests the mass of air entering the engine.
+    </string>
+
+    <string name="pid_absolute_throttle_position_desc_title">TP PID Overview</string>
+    <string name="pid_absolute_throttle_position_desc" formatted = "false">This PID requests the
+    absolute position of the throttle plate, which is a normalised value scaled from 0 - 100%.
+    Usually closed throttle will range from ~10 - ~20% and wide open throttle will range from
+    ~80 - ~95%</string>
+
+    <string name="pid_secondary_air_status_desc_title">AIR_STAT PID Overview</string>
+    <string name="pid_secondary_air_status_desc">This PID requests the status of the secondary
+    air injection system.</string>
+
+    <string name="pid_oxygen_sensor_location_desc_title">O2SLOC PID Overview</string>
+    <string name="pid_oxygen_sensor_location_desc">This PID requests the locations of all oxygen
+    sensors equipped on a %1$s exhaust system.</string>
+
+    <string name="pid_conventional_oxygen_sensor_x_x_desc_title">O2S%1$d%2$d PID Overview</string>
+    <string name="pid_conventional_oxygen_sensor_x_x_desc">This PID requests the output voltage
+    and related short term fuel trim of O2S%1$d%2$d.</string>
+
+    <string name="pid_obd_support_desc_title">OBDSUP PID Overview</string>
+    <string name="pid_obd_support_desc">This PID requests the OBD requirements to which the
+    vehicle was designed.</string>
+
+    <string name="pid_auxiliary_input_status_desc_title">PTO_STAT PID Overview</string>
+    <string name="pid_auxiliary_input_status_desc">This PID requests the status of the equipped
+    power take off (PTO) unit.</string>
+
+    <string name="pid_time_since_engine_start_desc_title">RUNTM PID Overview</string>
+    <string name="pid_time_since_engine_start_desc">This PID requests the time that has elapsed
+    since the engine started.  Note that the maximum value for this PID is 65535 seconds.</string>
+
+    <string name="pid_distance_travelled_while_mil_is_activated_desc_title">MIL_DIST PID Overview</string>
+    <string name="pid_distance_travelled_while_mil_is_activated_desc">
+        This PID requests the distance travelled since the MIL has activated.  Note that this
+        distance is reset when:\n 1) The MIL state changes from deactivated to activated\n 2)
+        On-board diagnostic information is reset by a service 04 request\n 3) Forty (40) warm up
+        cycles finish without MIL activation
+    </string>
+
+    <string name="pid_fuel_rail_pressure_ref_manifold_vac_desc_title">FRP PID Overview</string>
+    <string name="pid_fuel_rail_pressure_ref_manifold_vac_desc">This PID requests the fuel rail
+    pressure relative to intake manifold vacuum.</string>
+
+    <string name="pid_wide_range_fuel_rail_pressure_ref_atmosphere_desc_title">FRP PID Overview</string>
+    <string name="pid_wide_range_fuel_rail_pressure_ref_atmosphere_desc">This PID requests the
+    fuel rail pressure relative to atmospheric pressure.  This PID is likely to be utilized by
+    direct injection gasoline vehicles or by compression ignition vehicles.</string>
+
+    <string name="pid_wide_range_oxygen_sensor_x_x_desc_title">O2S%1$d%2$d PID Overview</string>
+    <string name="pid_wide_range_oxygen_sensor_x_x_desc">This PID requests the equivalence
+        ratio and output voltage of O2S%1$d%2$d.</string>
+
     <!-- Strings for PID/TID/OBDMID/INFOTYPE pop-up descriptions -->
 
 
@@ -178,6 +247,7 @@
     <string name="touch_to_expand_monitor_status">touch to expand monitor status…</string>
     <string name="mil_status_label">MIL Status:</string>
     <string name="number_of_dtcs_label"># DTCs:</string>
+
     <string name="short_term_fuel_trim_bank_label">STFT Bank %1$d:</string>
     <string name="long_term_fuel_trim_bank_label">LTFT Bank %1$d:</string>
     <string name="oxygen_sensor_location_label">O2SLOC:</string>
@@ -213,6 +283,11 @@
     <string name="connected">CONNECTED</string>
     <string name="error">ERROR</string>
     <string name="waiting_for_response">waiting for response...</string>
+    <string name="dual_bank">dual bank</string>
+    <string name="quad_bank">quad bank</string>
+    <string name="fragment_freeze_frame_records_frame_0_caption">Freeze frame records for frame #0</string>
+    <string name="fragment_freeze_frame_records_no_records">This vehicle has no freeze frame records.</string>
+    <string name="fragment_freeze_frame_records_error">Error retrieving freeze frame data for frame #0</string>
 
 
     <!-- Menus -->

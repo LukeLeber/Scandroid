@@ -4,10 +4,17 @@
 <!-- -->
 <!-- Copyright (c) Luke Leber <LukeLeber@gmail.com> -->
 
+<!-- Simple layout for a DTC - should look something like this:
+          ____________________________________
+         |                                    |
+         | P0303  Cylinder 3 Misfire Detected |
+         |____________________________________|
+-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
+    <!-- This text view should contain the DTC encoding (IE. "P0303") -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,13 +22,14 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"/>
 
+    <!-- This text view should contain the DTC description (IE. "Cylinder 3 Misfire Detected") -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/diagnostic_trouble_code_description"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/space_between_encoding_and_description"
-        android:text="XXX"/>
+        android:text="@string/waiting_for_response"/>
 
     <Space
         android:layout_width="@dimen/activity_horizontal_margin"

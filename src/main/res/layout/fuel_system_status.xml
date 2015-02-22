@@ -23,7 +23,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/not_available"
+        android:text="@string/waiting_for_response"
         android:id="@+id/fuel_system_1_status"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/fuel_system_1_label"
@@ -42,7 +42,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/not_available"
+        android:text="@string/waiting_for_response"
         android:id="@+id/fuel_system_2_status"
         android:layout_below="@+id/fuel_system_1_label"
         android:layout_toRightOf="@+id/fuel_system_2_label"
