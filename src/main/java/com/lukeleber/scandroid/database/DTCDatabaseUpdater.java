@@ -28,7 +28,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -46,9 +49,6 @@ public class DTCDatabaseUpdater
 
     /// Are we currently initializing?
     private volatile boolean initializing = false;
-
-    /// The ID of the current download request
-    private long id;
 
     private void onDownloadFailed()
     {
@@ -98,74 +98,36 @@ public class DTCDatabaseUpdater
             throw new AssertionError("initializing != false");
         }
         initializing = true;
-//        if(!getDatabasePath(LOCAL_DTC_DATABASE).exists())
-        {
-            final DownloadManager dm = (DownloadManager) super.getSystemService(DOWNLOAD_SERVICE);
-            super.addBroadcastReceiver(
-                    new BroadcastListener()
-                    {
-                        @Override
-                        public void onReceive(final Context context, final Intent intent)
-                        {
-                            System.out.println("onReceive");
-                            if (intent.getAction() == DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-                            {
-                                Cursor c = dm.query(new DownloadManager.Query().setFilterById(id));
-                                if (c.moveToFirst())
-                                {
-                                    switch (c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS)))
-                                    {
-                                        case DownloadManager.STATUS_SUCCESSFUL:
-                                            onDownloadFinished(c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)));
-                                            break;
-                                        case DownloadManager.STATUS_FAILED:
-                                            onDownloadFailed();
-                                            break;
-                                    }
-                                }
-                                c.close();
-                            }
-                            initializing = false;
-                        }
-                    }, new IntentFilter(
-                            DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-                                      );
-            this.id = dm.enqueue(
-                    new DownloadManager.Request(
-                            Uri.parse(REMOTE_FILE))
-                            .setDestinationInExternalPublicDir(
-                                    Environment.getExternalStorageDirectory() +
-                                            "/Android/data/" +
-                                            getPackageName() +
-                                            "/files/",
-                                    LOCAL_DTC_DATABASE
-                                                              )
-                                );
-        }
-    }
+        new Thread(new Runnable(){
 
-    public final Collection<DiagnosticTroubleCode> getDTCs(int... indices)
-    {
-        String query = "SELECT `encoding`, `description` FROM `codes` WHERE ";
-        for(int index : indices)
-        {
-            query += "`code_index` = '" + index + "' OR ";
-        }
-        query = query.substring(0, query.length() - 4) + ";";
-        List<DiagnosticTroubleCode> rv = new ArrayList<>(indices.length);
-        try(ScopedSQLiteDatabase db = new ScopedSQLiteDatabase(SQLiteDatabase.openDatabase(LOCAL_DTC_DATABASE, null, SQLiteDatabase.OPEN_READONLY)))
-        {
-            Cursor c = db.unwrap().rawQuery(query, null);
-            c.moveToFirst();
-            while(!c.isLast())
+            @Override
+            public void run()
             {
-                rv.add(new DiagnosticTroubleCode(c.getString(c.getColumnIndex("encoding")), c.getString(c.getColumnIndex("description"))));
+                URL url = null;
+                try
+                {
+                    url = new URL(REMOTE_FILE);
+                }
+                catch(MalformedURLException e)
+                {
+                    e.printStackTrace();
+                }
+                try
+                {
+                    if(url != null)
+                    {
+                        HttpURLConnection c = (HttpURLConnection) url.openConnection();
+                    com.lukeleber.io.StreamCopy.copyInputStream(c.getInputStream(),
+                            new FileOutputStream(getDatabasePath(LOCAL_DTC_DATABASE)));
+                    }
+                }
+                catch(Exception ee)
+                {
+                    ee.printStackTrace();
+                }
+                System.out.println("C!");
+
             }
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        return rv;
+        }).start();
     }
 }

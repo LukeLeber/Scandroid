@@ -77,4 +77,27 @@ public class DTCDatabase
         }
         return rv;
     }
+
+    public DiagnosticTroubleCode getCodeByIndex(int index)
+    {
+        if(!cache.containsKey(index))
+        {
+            try(ScopedSQLiteDatabase db = new ScopedSQLiteDatabase(SQLiteDatabase.openDatabase("path", null, 0)))
+            {
+                Cursor c = db.unwrap().rawQuery("", null);
+                c.moveToFirst();
+                if(!c.isAfterLast())
+                {
+                    return cache.put(index, new DiagnosticTroubleCode(index, c.getString(c.getColumnIndex(
+                            COLUMN_DTC_NAMING))));
+
+                }
+            }
+            catch(Exception e)
+            {
+                // todo
+            }
+        }
+        return cache.get(index);
+    }
 }

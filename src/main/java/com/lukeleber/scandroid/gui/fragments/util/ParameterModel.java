@@ -14,7 +14,7 @@ import com.lukeleber.scandroid.util.Unit;
 import java.io.Serializable;
 
 /**
- * @Internal A class that acts to bind a PID to an unspecified point in time.  Generally used in
+ * A class that acts to bind a PID to an unspecified point in time.  Generally used in
  * view adapters, this model yields the following information: <ul> <li>All information provided
  * through the PID interface</li> <li>The last known value of the PID as reported by the
  * vehicle</li> <li>The unit of the last known value</li> <li>The time (unix timestamp) that this
