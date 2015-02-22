@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.lukeleber.scandroid.R;
+import com.lukeleber.scandroid.database.DTCDatabase;
 import com.lukeleber.scandroid.interpreter.FailureCode;
 import com.lukeleber.scandroid.interpreter.Handler;
 import com.lukeleber.scandroid.interpreter.ResponseListener;
@@ -48,20 +49,39 @@ public class DiagnosticTroubleCodeDisplay
 
     void onCodesRead(String[] responses)
     {
+        DTCDatabase coreDatabase = new DTCDatabase();
+        boolean hasManufacturerDefinedCodes = false;
         model.clear();
         for(String response : responses)
         {
             int i = 2;
-            String dtc = response.substring(i, i + 4);;
+            String dtc = response.substring(i, i + 4);
             do
             {
-                model.add(new DiagnosticTroubleCode(Integer.parseInt(dtc, 16), "Cylinder 3 Misfire Detected"));
+                int bits = Integer.parseInt(dtc, 16);
+                if(DiagnosticTroubleCode.isCoreDTC(bits))
+                {
+                    model.add(coreDatabase.getCodeByIndex(bits));
+                }
+                else if(DiagnosticTroubleCode.isNonUniformDTC(bits))
+                {
+                    model.add(new DiagnosticTroubleCode(bits, "Manufacturer Defined"));
+                    hasManufacturerDefinedCodes = true;
+                }
+                else
+                {
+                    /// Must be a reserved DTC...that's a bad manufacturer!
+                }
                 i += 4;
                 dtc = response.substring(i, i + 4);
             }
             while(i < 14 && !"0000".equals(dtc));
         }
         codeView.invalidateViews();
+        if(hasManufacturerDefinedCodes)
+        {
+            // todo
+        }
     }
 
     void onCodesReadCAN(String[] responses)
