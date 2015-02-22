@@ -197,30 +197,30 @@ public class LiveDatastream
             {
                 final Unit unit = model.getPID().getDisplayUnit();
                 host.getInterpreter().sendRequest(
-                    new ServiceRequest(Service.LIVE_DATASTREAM, model.getPID().unwrap(),
-                        new Handler<Serializable>()
-                        {
-                            @Override
-                            public void onResponse(Serializable value)
-                            {
-                                model.update(value, unit);
-                                if(--remaining == 0)
+                        new ServiceRequest(Service.LIVE_DATASTREAM, model.getPID().unwrap(),
+                                new Handler<Serializable>()
                                 {
-                                    scheduleRefresh();
-                                }
-                            }
+                                    @Override
+                                    public void onResponse(Serializable value)
+                                    {
+                                        model.update(value, unit);
+                                        if(--remaining == 0)
+                                        {
+                                            scheduleRefresh();
+                                        }
+                                    }
 
-                            @Override
-                            public void onFailure(FailureCode code)
-                            {
-                                if(--remaining == 0)
-                                {
-                                    scheduleRefresh();
-                                }
-                            }
-                        },
-                        unit
-                    )
+                                    @Override
+                                    public void onFailure(FailureCode code)
+                                    {
+                                        if(--remaining == 0)
+                                        {
+                                            scheduleRefresh();
+                                        }
+                                    }
+                                },
+                                unit
+                        )
                 );
             }
         }
@@ -257,7 +257,7 @@ public class LiveDatastream
                  ++i)
             {
                 /// Skip PIDs found in Appendix A
-                if((i % 20) == 0) continue;
+                if((i % 0x20) == 0) continue;
                 if (profile.isSupported(Service.LIVE_DATASTREAM, i))
                 {
                     PID<?> pid = profile.getID(Service.LIVE_DATASTREAM, i);
@@ -359,21 +359,23 @@ public class LiveDatastream
         return true;
     }
 
-    @Override
-    public @NonNull List<PID<?>> getSupportedParameters()
-    {
-        return supportedPIDs;
-    }
-
     @SuppressWarnings("unchecked")
     @Override
-    public void onParameterSelection(@NonNull List<? extends ServiceFacet> selectedParameters)
+    public @NonNull <T extends ServiceFacet> List<T> getSupportedParameters()
+    {
+        return (List<T>)supportedPIDs;
+    }
+
+    @Override
+    public <T extends ServiceFacet> void onParameterSelection(@NonNull List<T> selectedParameters)
     {
         Profile profile = host.getProfile();
         refresher.stop();
         this.viewedParameters.clear();
-        for(PID<?> pid : (List<PID<?>>)selectedParameters)
+
+        for(ServiceFacet facet : selectedParameters)
         {
+            PID<?> pid = (PID<?>)facet;
             viewedParameters.add(new ParameterModel<>(SAEJ1979AppendixWrapper.getWrapper(pid, profile)));
         }
         this.refresher = new Refresher();

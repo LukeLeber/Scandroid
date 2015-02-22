@@ -79,7 +79,7 @@ public class GenericScanner
     }
 
     @Override
-    public void onParameterSelection(@NonNull List<? extends ServiceFacet> selectedParameters)
+    public <T extends ServiceFacet> void onParameterSelection(@NonNull List<T> selectedParameters)
     {
         ((LiveDatastream)getServiceFragment(Service.LIVE_DATASTREAM)).onParameterSelection(selectedParameters);
     }

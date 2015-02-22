@@ -27,7 +27,7 @@ import java.util.List;
  * to filter all types of PIDs/TIDs/OBDMIDs/INFOTYPEs.</p>
  *
  */
-public class ParameterSelector
+public class ParameterSelector<T extends ServiceFacet>
         extends DialogFragment
 {
     /**
@@ -43,7 +43,7 @@ public class ParameterSelector
          * @return the list of parameters that should be presented to the user as view options
          *
          */
-        @NonNull List<? extends ServiceFacet> getSupportedParameters();
+        @NonNull <T extends ServiceFacet> List<T> getSupportedParameters();
 
         /**
          * Invoked when the user presses the positive dialog button, this callback contains the
@@ -52,7 +52,7 @@ public class ParameterSelector
          * @param selectedParameters the result of the user's parameter filtering
          *
          */
-        void onParameterSelection(@NonNull List<? extends ServiceFacet> selectedParameters);
+        <T extends ServiceFacet> void onParameterSelection(@NonNull List<T> selectedParameters);
     }
 
     /// @internal debugging tag
@@ -64,7 +64,7 @@ public class ParameterSelector
 
     /// The list of parameters that the user has selected thus far.  This member is non-null only
     /// between a pair of onAttach / onDetach calls
-    private List<ServiceFacet> selectedParameters;
+    private List<T> selectedParameters;
 
     /**
      * {@inheritDoc}
@@ -121,11 +121,11 @@ public class ParameterSelector
     @Override
     public Dialog onCreateDialog(Bundle sis)
     {
-        final List<? extends ServiceFacet> supportedParameters = listener.getSupportedParameters();
+        final List<T> supportedParameters = listener.getSupportedParameters();
         String[] choices = new String[supportedParameters.size()];
         {
             int i = 0;
-            for (ServiceFacet pid : supportedParameters)
+            for (T pid : supportedParameters)
             {
                 choices[i++] = pid.getDisplayName();
             }
