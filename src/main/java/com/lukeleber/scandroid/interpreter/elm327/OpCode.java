@@ -1381,15 +1381,15 @@ public enum OpCode
     ELM327_RESET_ALL("ATZ"),
 
     /**
-     * @1 [ display the device description ] This command displays the device description string.
+     * <code>@1</code> [ display the device description ] This command displays the device description string.
      * The default text is ‘OBDII to RS232 Interpreter’.
      */
     ELM327_DISPLAY_DEVICE_DESCRIPTION("AT@1"),
 
     /**
-     * @2 [ display the device identifier ] A device identifier string that was recorded with the @3
+     * <code>@2</code> [ display the device identifier ] A device identifier string that was recorded with the <code>@3</code>
      * command is displayed with the @2 command. All 12 characters and a terminating carriage return
-     * will be sent in response, if they have been defined. If no identifier has been set, the @2
+     * will be sent in response, if they have been defined. If no identifier has been set, the <code>@2</code>
      * command returns an error response (‘?’). The identifier may be useful for storing product
      * codes, production dates, serial numbers, or other such codes. See the ‘Programming Serial
      * Numbers’ section for more information.
@@ -1397,9 +1397,9 @@ public enum OpCode
     ELM327_DISPLAY_DEVICE_IDENTIFIER("AT@2"),
 
     /**
-     * @3 cccccccccccc [ store the device identifier ] This command is used to set the device
+     * <code>@3</code> cccccccccccc [ store the device identifier ] This command is used to set the device
      * identifier code. Exactly 12 characters must be sent, and once written to memory, they can not
-     * be changed (ie you may only use the @3 command one time). The characters sent must be
+     * be changed (ie you may only use the <code>@3</code> command one time). The characters sent must be
      * printable (ascii character values 0x21 to 0x5F inclusive). If you are developing software to
      * write device identifiers, you may be interested in the ELM328 IC, as it allows multiple
      * writes using the @3 command (but it can not send OBD messages).

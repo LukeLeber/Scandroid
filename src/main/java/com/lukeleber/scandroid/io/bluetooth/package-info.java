@@ -4,7 +4,7 @@
 // Copyright (c) Luke Leber <LukeLeber@gmail.com>
 
 /**
- * All components used to implement the {@link killgpl.scandroid.io.CommunicationInterface} via
+ * All components used to implement the {@link com.lukeleber.scandroid.io.CommunicationInterface} via
  * bluetooth are found within this package.
  */
 package com.lukeleber.scandroid.io.bluetooth;

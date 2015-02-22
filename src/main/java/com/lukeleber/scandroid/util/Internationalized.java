@@ -9,8 +9,8 @@ import android.content.Context;
 
 /**
  * The {@link com.lukeleber.scandroid.util.Internationalized} interface provides an alternative
- * to the {@link #toString()} method that allows for an internationalized string to be returned
- * based upon the {@link android.content.Context} that the method is invoked with.
+ * to the {@link Object#toString()} method that allows for an internationalized string to be
+ * returned based upon the {@link android.content.Context} that the method is invoked with.
  *
  */
 public interface Internationalized

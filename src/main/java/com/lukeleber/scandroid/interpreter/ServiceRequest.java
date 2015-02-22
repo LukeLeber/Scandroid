@@ -22,8 +22,6 @@ import com.lukeleber.scandroid.util.Unit;
  *
  * @param <T>
  *         the type of data that represents the configuration option
- * @param <U>
- *         the type of data that is received in response to this request
  */
 public class ServiceRequest<T>
         extends Request<T>

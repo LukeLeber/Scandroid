@@ -12,8 +12,6 @@ import com.lukeleber.scandroid.sae.j1979.PID;
  *
  * @param <T>
  *         the type of data that represents the serializable content of this request
- * @param <U>
- *         the type of data that represents the response to this request
  */
 @SuppressWarnings("unused")
 public abstract class Request<T>

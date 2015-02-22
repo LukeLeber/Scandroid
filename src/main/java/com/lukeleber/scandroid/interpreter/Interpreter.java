@@ -48,9 +48,9 @@ public interface Interpreter
     }
 
     /**
-     * An optional function object that can be provided to the {@link Interpreter#start(com.lukeleber.scandroid.interpreter.Interpreter.ErrorListener)}
-     * to provide custom handling for any exceptions arising during the asynchronous execution of
-     * the interpreter
+     * An optional function object that can be provided to a
+     * {@link com.lukeleber.scandroid.interpreter.Interpreter} to provide custom handling for any
+     * exceptions arising during the asynchronous execution of the interpreter
      */
     public interface ErrorListener
     {

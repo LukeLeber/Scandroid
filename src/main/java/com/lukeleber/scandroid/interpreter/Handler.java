@@ -47,8 +47,7 @@ public interface Handler<T>
 
     /**
      * Invoked when the sending of the associated {@link com.lukeleber.scandroid.interpreter.Request}
-     * has failed for any reason.  For more information and control concerning failures, see {@link
-     * Interpreter#start(com.lukeleber.scandroid.interpreter.Interpreter.ErrorListener)}.
+     * has failed for any reason.
      */
     void onFailure(FailureCode code);
 }

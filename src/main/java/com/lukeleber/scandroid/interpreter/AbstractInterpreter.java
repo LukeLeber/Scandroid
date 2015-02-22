@@ -315,7 +315,7 @@ public abstract class AbstractInterpreter<U>
      * Performs the actual reading operation from the remote hardware.  The implementation details
      * of this method will be dependent on the type of remote system being interacted with.
      *
-     * @return an object of type {@link U} that was read
+     * @return an object that was read
      *
      * @throws java.io.IOException
      *         if any I/O error occurs during the read
