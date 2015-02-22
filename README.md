@@ -1,4 +1,6 @@
 # Scandroid
+
+[![Join the chat at https://gitter.im/LukeLeber/Scandroid](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/LukeLeber/Scandroid?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 The free scan tool for Android.
 
 Scandroid allows you to communicate with your 1996 and newer vehicle with any bluetooth enabled android powered device.  Based upon SAE-J1979, the following diagnostic test modes are currently supported:
