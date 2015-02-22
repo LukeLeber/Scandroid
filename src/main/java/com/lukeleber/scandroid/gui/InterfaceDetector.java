@@ -1,5 +1,5 @@
-// This file is protected under the KILLGPL.
-// For more information, visit http://www.lukeleber.github.io/KILLGPL.html
+// This file is protected under the com.lukeleber.
+// For more information, visit http://www.lukeleber.github.io/com.lukeleber.html
 //
 // Copyright (c) Luke Leber <LukeLeber@gmail.com>
 
@@ -42,7 +42,6 @@ import java.util.concurrent.Callable;
 /**
  * A package-private helper base class to detect which I/O interfaces are available for use.
  *
- * @internal Maintainer - please extend this class when introducing a new type of I/O interface.
  */
 /*package*/ abstract class Detector
         implements Callable<Boolean>
@@ -62,10 +61,10 @@ import java.util.concurrent.Callable;
     }
 
     /**
-     * Retrieves the {@link killgpl.scandroid.gui.SelectInterface.InterfaceSelectionMode} that this
+     * Retrieves the {@link com.lukeleber.scandroid.gui.SelectInterface.InterfaceSelectionMode} that this
      * {@link Detector} detects
      *
-     * @return the {@link killgpl.scandroid.gui.SelectInterface.InterfaceSelectionMode} that this
+     * @return the {@link com.lukeleber.scandroid.gui.SelectInterface.InterfaceSelectionMode} that this
      * {@link Detector} detects
      */
     /*package*/
@@ -76,7 +75,7 @@ import java.util.concurrent.Callable;
         extends Detector
 {
     /**
-     * Constructs a {@link killgpl.scandroid.gui.USBDetector}
+     * Constructs a {@link com.lukeleber.scandroid.gui.USBDetector}
      *
      * @param context
      *         the calling context
@@ -121,7 +120,7 @@ import java.util.concurrent.Callable;
         extends Detector
 {
     /**
-     * Constructs a {@link killgpl.scandroid.gui.WifiDetector}
+     * Constructs a {@link com.lukeleber.scandroid.gui.WifiDetector}
      *
      * @param context
      *         the calling context
@@ -165,7 +164,7 @@ import java.util.concurrent.Callable;
         extends Detector
 {
     /**
-     * Constructs a {@link killgpl.scandroid.gui.BluetoothDetector}
+     * Constructs a {@link com.lukeleber.scandroid.gui.BluetoothDetector}
      *
      * @param context
      *         the calling context
@@ -208,14 +207,9 @@ import java.util.concurrent.Callable;
     }
 }
 
-/// <-- @internal Maintainer - please add new derived Detector types below this line
-
-
-/// @internal Maintainer - please add new derived Detector types above this line -->
-
 /**
  * An asynchronous task that runs the detection routine for all registered types of I/O interfaces
- * and forwards the result to a {@link killgpl.scandroid.gui.InterfaceDetectorListener}.
+ * and forwards the result to a {@link com.lukeleber.scandroid.gui.InterfaceDetectorListener}.
  */
 /*package*/ class InterfaceDetector
         extends
@@ -227,17 +221,17 @@ import java.util.concurrent.Callable;
     /// The calling {@link android.content.Context}
     private final Context context;
 
-    /// The {@link killgpl.activity_scandroid.gui.InterfaceDetectorListener} to forward results to
+    /// The {@link com.lukeleber.activity_scandroid.gui.InterfaceDetectorListener} to forward results to
     private final InterfaceDetectorListener listener;
 
     /**
-     * Constructs an {@link killgpl.scandroid.gui.InterfaceDetector} with the provided calling
-     * {@link android.content.Context} and {@link killgpl.scandroid.gui.InterfaceDetectorListener}.
+     * Constructs an {@link com.lukeleber.scandroid.gui.InterfaceDetector} with the provided calling
+     * {@link android.content.Context} and {@link com.lukeleber.scandroid.gui.InterfaceDetectorListener}.
      *
      * @param context
      *         the calling {@link android.content.Context}
      * @param listener
-     *         the {@link killgpl.scandroid.gui.InterfaceDetectorListener} to forward results to
+     *         the {@link com.lukeleber.scandroid.gui.InterfaceDetectorListener} to forward results to
      */
     /*package*/ InterfaceDetector(Context context, InterfaceDetectorListener listener)
     {
@@ -256,11 +250,7 @@ import java.util.concurrent.Callable;
                         new USBDetector(context),       // Since 1.0
                         new WifiDetector(context),      // Since 1.0
                         new BluetoothDetector(context)  // Since 1.0
-/// <--
-///     @internal Maintainer, please add new detector objects below this line
 
-///     @internal Maintainer, please add new detector objects above this line
-/// -->
                 };
         List<SelectInterface.InterfaceSelectionMode> interfaces = new ArrayList<>();
         for (Detector detector : detectors)
