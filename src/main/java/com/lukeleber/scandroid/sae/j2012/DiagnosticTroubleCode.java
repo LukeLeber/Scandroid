@@ -408,6 +408,28 @@ public final class DiagnosticTroubleCode
         return val == 0x0000 || (val == 0x2000 && isPowertrainDTC());
     }
 
+
+    public static boolean isCoreDTC(int bits)
+    {
+        int val = bits & JURISDICTION_MASK;
+        return val == 0x0000 || (val == 0x2000 && isPowertrainDTC(bits));
+    }
+
+    public static boolean isPowertrainDTC(int bits)
+    {
+        return (bits & SYSTEM_MASK) == POWERTRAIN_DTC;
+    }
+
+    public static boolean isNonUniformDTC(int bits)
+    {
+        return !isCoreDTC(bits) && !isReservedDTC(bits);
+    }
+
+    public static boolean isReservedDTC(int bits)
+    {
+        return !isPowertrainDTC(bits) && (bits & JURISDICTION_MASK) == RESERVED_DTC;
+    }
+
     /**
      * Is this DTC a non-uniform DTC?
      *
