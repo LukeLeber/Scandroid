@@ -36,13 +36,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * This internal detail class provides GUI friendly wrappers for the PIDs/TIDs/OBDMIDs/INFOTYPEs
  * found in all SAE J1979 Appendices.
- *
+ * <p/>
  * <strong>Here be dragons.</strong>
- *
  */
 public final class SAEJ1979AppendixWrapper
 {
@@ -50,10 +50,16 @@ public final class SAEJ1979AppendixWrapper
     /// @internal debugging tag
     private final static String TAG = SAEJ1979AppendixWrapper.class.getName();
 
-    /// The base class for PIDs $00, $20, $40, $60, $80, $A0, $C0, and $E0
-    private abstract static class SupportWrapper
+    /**
+     * The base class for PIDs $00, $20, $40, $60, $80, $A0, $C0, and $E0.
+     * <p/>
+     * This class wraps the {@link com.lukeleber.scandroid.sae.j1979.PIDSupport} structure for all
+     * support ranges.
+     */
+    abstract static class SupportWrapper
             extends PIDWrapper<PIDSupport>
     {
+
         /// The start of the range
         private final int min;
 
@@ -63,19 +69,25 @@ public final class SAEJ1979AppendixWrapper
         /// The content of the expansion dialog
         private String expansionMessageText;
 
-        private final class ViewHolder extends ViewHolderBase
+        final class ViewHolder
+                extends ViewHolderBase
         {
 
             final Context context;
 
-            final TextView rangeMin;
-            final TextView rangeMax;
-            final ListView supportList;
+            @InjectView(R.id.supported_pids_range_min)
+            TextView rangeMin;
+
+            @InjectView(R.id.supported_pids_range_max)
+            TextView rangeMax;
+
+            @InjectView(R.id.supported_pids_support_list)
+            ListView supportList;
 
             ViewHolder(View view)
             {
                 this.context = view.getContext();
-
+//                ButterKnife.inject(this, view);
                 this.rangeMin = ButterKnife.findById(view, R.id.supported_pids_range_min);
                 this.rangeMax = ButterKnife.findById(view, R.id.supported_pids_range_max);
                 this.supportList = ButterKnife.findById(view, R.id.supported_pids_support_list);
@@ -98,6 +110,7 @@ public final class SAEJ1979AppendixWrapper
             final Context context = view.getContext();
             view.setOnClickListener(new View.OnClickListener()
             {
+
                 @Override
                 public void onClick(View view)
                 {
@@ -115,12 +128,17 @@ public final class SAEJ1979AppendixWrapper
             });
             view.setOnLongClickListener(new View.OnLongClickListener()
             {
+
                 @Override
                 public boolean onLongClick(View view)
                 {
                     new AlertDialog.Builder(context)
-                            .setMessage(String.format(context.getString(R.string.pid_support_desc), min, max))
-                            .setTitle(String.format(context.getString(R.string.pid_support_desc_title), min, max))
+                            .setMessage(String.format(context.getString(R.string.pid_support_desc),
+                                    min,
+                                    max))
+                            .setTitle(String.format(context.getString(R.string.pid_support_desc_title),
+                                    min,
+                                    max))
                             .create()
                             .show();
                     return true;
@@ -131,10 +149,10 @@ public final class SAEJ1979AppendixWrapper
 
         @Override
         public final void updateViewHolder(@NonNull
-                                                                              ViewHolderBase viewHolder,
-                                                                      @NonNull PIDSupport value)
+                                           ViewHolderBase viewHolder,
+                                           @NonNull PIDSupport value)
         {
-            ViewHolder vh = (ViewHolder)viewHolder;
+            ViewHolder vh = (ViewHolder) viewHolder;
             if(expansionMessageText == null)
             {
                 int bits = value.getBits();
@@ -148,7 +166,8 @@ public final class SAEJ1979AppendixWrapper
                                     vh.context.getString(R.string.supported_caps) :
                                     vh.context.getString(R.string.unsupported_caps));
 
-                    sb.append(sup).append(System.lineSeparator());
+                    sb.append(sup)
+                      .append(System.lineSeparator());
                     pids.add(sup);
                 }
                 expansionMessageText = sb.toString();
@@ -165,12 +184,14 @@ public final class SAEJ1979AppendixWrapper
             else if(BuildConfig.DEBUG)
             {
                 Log.w(TAG, "Something is updating a PID found in Appendix A, " +
-                        "this shouldn't happen.  A convenience stack trace follows...",
+                           "this shouldn't happen.  A convenience stack trace follows...",
                         new Throwable());
             }
         }
 
-        public SupportWrapper(PID<PIDSupport> facet, int min, int max)
+        public SupportWrapper(PID<PIDSupport> facet,
+                              int min,
+                              int max)
         {
             super(facet);
             this.min = min;
@@ -179,8 +200,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for $00
-    private final static class PidSupport_1_20 extends SupportWrapper
+    private final static class PidSupport_1_20
+            extends SupportWrapper
     {
+
         PidSupport_1_20()
         {
             super(AppendixA.J1979_CHECK_PID_SUPPORT_1_TO_20, 1, 20);
@@ -188,8 +211,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for $20
-    private final static class PidSupport_21_40 extends SupportWrapper
+    private final static class PidSupport_21_40
+            extends SupportWrapper
     {
+
         PidSupport_21_40()
         {
             super(AppendixA.J1979_CHECK_PID_SUPPORT_21_TO_40, 21, 40);
@@ -197,8 +222,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     ///GUI Wrapper for $40
-    private final static class PidSupport_41_60 extends SupportWrapper
+    private final static class PidSupport_41_60
+            extends SupportWrapper
     {
+
         PidSupport_41_60()
         {
             super(AppendixA.J1979_CHECK_PID_SUPPORT_41_TO_60, 41, 60);
@@ -206,8 +233,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for $60
-    private final static class PidSupport_61_80 extends SupportWrapper
+    private final static class PidSupport_61_80
+            extends SupportWrapper
     {
+
         PidSupport_61_80()
         {
             super(AppendixA.J1979_CHECK_PID_SUPPORT_61_TO_80, 0x61, 0x80);
@@ -215,8 +244,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for $80
-    private final static class PidSupport_81_A0 extends SupportWrapper
+    private final static class PidSupport_81_A0
+            extends SupportWrapper
     {
+
         PidSupport_81_A0()
         {
             super(AppendixA.J1979_CHECK_PID_SUPPORT_81_TO_A0, 0x81, 0xA0);
@@ -224,8 +255,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for $A0
-    private final static class PidSupport_A1_C0 extends SupportWrapper
+    private final static class PidSupport_A1_C0
+            extends SupportWrapper
     {
+
         PidSupport_A1_C0()
         {
             super(AppendixA.J1979_CHECK_PID_SUPPORT_A1_TO_C0, 0xA1, 0xC0);
@@ -233,8 +266,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for $C0
-    private final static class PidSupport_C1_E0 extends SupportWrapper
+    private final static class PidSupport_C1_E0
+            extends SupportWrapper
     {
+
         PidSupport_C1_E0()
         {
             super(AppendixA.J1979_CHECK_PID_SUPPORT_C1_TO_E0, 0xC1, 0xE0);
@@ -242,8 +277,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for $E0
-    private final static class PidSupport_E1_FF extends SupportWrapper
+    private final static class PidSupport_E1_FF
+            extends SupportWrapper
     {
+
         PidSupport_E1_FF()
         {
             super(AppendixA.J1979_CHECK_PID_SUPPORT_E1_TO_FF, 0xE1, 0xFF);
@@ -253,19 +290,37 @@ public final class SAEJ1979AppendixWrapper
     /// <-- SAE J1979 Appendix B
 
 
-    /// GUI wrapper class for PID $01
-    private final static class MonitorStatusWrapper extends PIDWrapper<MonitorStatus>
+    /**
+     * GUI wrapper class for PID $01 (Monitor Status)
+     * <p/>
+     * The GUI should provide an intuitive means by which to view the following data: MIL Status
+     * Number of DTCs Support / Readiness status of all continuous and non-continuous monitors
+     * <p/>
+     * The GUI should have a {@link android.view.View.OnClickListener} to bring up an expanded view
+     * that contains an I18N dialog that is more verbose than the compact view.
+     * <p/>
+     * The GUI should have a {@link android.view.View.OnLongClickListener} to bring up a description
+     * of the PID (as described by SAE J1979).
+     */
+    private final static class MonitorStatusWrapper
+            extends PIDWrapper<MonitorStatus>
     {
+
         MonitorStatusWrapper()
         {
             super(AppendixB.MONITOR_STATUS);
         }
 
-        final class ViewHolder extends ViewHolderBase
+        final class ViewHolder
+                extends ViewHolderBase
         {
+
             final Context context;
+
             final TextView milStatus;
+
             final TextView dtcCount;
+
             String monitorStatusText;
 
             ViewHolder(@NonNull final View view)
@@ -277,35 +332,41 @@ public final class SAEJ1979AppendixWrapper
 
                 view.setOnClickListener(new View.OnClickListener()
                 {
+
                     @Override
                     public void onClick(View v)
                     {
                         new AlertDialog.Builder(view.getContext())
                                 .setMessage(
                                         String.format(
-                                                view.getContext().getString(
-                                                        R.string.pid_monitor_status_expansion),
+                                                view.getContext()
+                                                    .getString(
+                                                            R.string.pid_monitor_status_expansion),
                                                 milStatus.getText(),
                                                 dtcCount.getText(),
                                                 monitorStatusText
-                                                     )
-                                           )
-                                .setTitle(view.getContext().getString(
-                                        R.string.pid_monitor_status_expansion_title))
+                                        )
+                                )
+                                .setTitle(view.getContext()
+                                              .getString(
+                                                      R.string.pid_monitor_status_expansion_title))
                                 .create()
                                 .show();
                     }
                 });
                 view.setOnLongClickListener(new View.OnLongClickListener()
                 {
+
                     @Override
                     public boolean onLongClick(View v)
                     {
                         new AlertDialog.Builder(view.getContext())
                                 .setMessage(R.string.pid_monitor_status_desc)
-                                .setTitle(view.getContext().getString(
-                                        R.string.pid_monitor_status_desc_title))
-                                .create().show();
+                                .setTitle(view.getContext()
+                                              .getString(
+                                                      R.string.pid_monitor_status_desc_title))
+                                .create()
+                                .show();
                         return true;
                     }
                 });
@@ -320,8 +381,8 @@ public final class SAEJ1979AppendixWrapper
 
         @Override
         public final void updateViewHolder(@NonNull
-                                                                              ViewHolderBase viewHolder,
-                                                                      @NonNull MonitorStatus value)
+                                           ViewHolderBase viewHolder,
+                                           @NonNull MonitorStatus value)
         {
             ViewHolder vh = (ViewHolder) viewHolder;
             vh.milStatus.setText(value.isMalfunctionLampOn() ?
@@ -338,7 +399,11 @@ public final class SAEJ1979AppendixWrapper
         }
     }
 
-    /// GUI Wrapper for PID $02
+    /**
+     * GUI Wrapper for PID $02 (DTC That Caused Freeze Frame)
+     * <p/>
+     * TODO: Should the description be available in the compact view, or a dialog expansion?
+     */
     private final static class FreezeFrameDTCWrapper
             extends PIDWrapper<DiagnosticTroubleCode>
     {
@@ -347,10 +412,15 @@ public final class SAEJ1979AppendixWrapper
         {
             super(AppendixB.FREEZE_FRAME_DTC);
         }
-        final class ViewHolder extends ViewHolderBase
+
+        final class ViewHolder
+                extends ViewHolderBase
         {
+
             final Context context;
+
             final TextView dtcEncoding;
+
             final TextView dtcDescription;
 
             ViewHolder(@NonNull final View view)
@@ -358,20 +428,25 @@ public final class SAEJ1979AppendixWrapper
                 this.context = view.getContext();
                 view.setOnLongClickListener(new View.OnLongClickListener()
                 {
+
                     @Override
                     public boolean onLongClick(View v)
                     {
                         new AlertDialog.Builder(view.getContext())
                                 .setMessage(R.string.pid_dtc_that_caused_freeze_frame_desc)
-                                .setTitle(v.getContext().getString(
-                                        R.string.pid_dtc_that_caused_freeze_frame_desc_title))
-                                .create().show();
+                                .setTitle(v.getContext()
+                                           .getString(
+                                                   R.string.pid_dtc_that_caused_freeze_frame_desc_title))
+                                .create()
+                                .show();
                         return true;
                     }
                 });
 
-                this.dtcEncoding = ButterKnife.findById(view, R.id.diagnostic_trouble_code_encoding);
-                this.dtcDescription = ButterKnife.findById(view, R.id.diagnostic_trouble_code_description);
+                this.dtcEncoding = ButterKnife.findById(view,
+                        R.id.diagnostic_trouble_code_encoding);
+                this.dtcDescription = ButterKnife.findById(view,
+                        R.id.diagnostic_trouble_code_description);
             }
         }
 
@@ -389,26 +464,22 @@ public final class SAEJ1979AppendixWrapper
 
         @Override
         public final void updateViewHolder(@NonNull
-                                                                              ViewHolderBase viewHolder,
-                                                                      @NonNull DiagnosticTroubleCode value)
+                                           ViewHolderBase viewHolder,
+                                           @NonNull DiagnosticTroubleCode value)
         {
-            ViewHolder vh = (ViewHolder)viewHolder;
-            if(value.getBits() == 0)
-            {
-                vh.dtcEncoding.setText(vh.context.getString(R.string.not_available));
-                vh.dtcDescription.setText("");
-            }
-            else
-            {
-                vh.dtcEncoding.setText(value.getCode());
-                vh.dtcDescription.setText(value.getNaming());
-            }
+            ViewHolder vh = (ViewHolder) viewHolder;
+            vh.dtcEncoding.setText(value.getCode());
+            vh.dtcDescription.setText(value.getNaming());
         }
     }
 
-    /// GUI Wrapper for PID $03
-    private final static class FuelSystemStatusWrapper extends PIDWrapper<SerializablePair<FuelSystemStatus, FuelSystemStatus>>
+    /**
+     * GUI Wrapper for PID $03 (Fuel System Status)
+     */
+    private final static class FuelSystemStatusWrapper
+            extends PIDWrapper<SerializablePair<FuelSystemStatus, FuelSystemStatus>>
     {
+
         FuelSystemStatusWrapper()
         {
             super(AppendixB.FUEL_SYSTEM_STATUS);
@@ -416,53 +487,68 @@ public final class SAEJ1979AppendixWrapper
 
         private boolean initialized;
 
-        final class ViewHolder extends ViewHolderBase
+        final class ViewHolder
+                extends ViewHolderBase
         {
-            final TextView fSys1;
-            final TextView fSys2;
 
-            final TextView fSys2Label;
+            final Context context;
+
+            final TextView fSys1;
+
+            final TextView fSys2;
 
             ViewHolder(@NonNull final View view)
             {
+                this.context = view.getContext();
                 this.fSys1 = ButterKnife.findById(view, R.id.fuel_system_1_status);
                 this.fSys2 = ButterKnife.findById(view, R.id.fuel_system_2_status);
-                this.fSys2Label = ButterKnife.findById(view, R.id.fuel_system_2_label);
                 view.setOnClickListener(new View.OnClickListener()
                 {
+
                     @Override
                     public void onClick(View v)
                     {
-                        String NA = view.getContext().getString(R.string.not_available);
-                        new AlertDialog.Builder(v.getContext())
-                                .setMessage(
-                                        String.format(
-                                                v.getContext().getString(
-                                                        R.string.pid_fuel_system_status_expansion),
-                                                NA.equals(fSys1.getText()) ? NA :
-                                                        FuelSystemStatus.valueOf(fSys1.getText().toString())
-                                                                        .toI18NString(view.getContext()),
-                                                NA.equals(fSys2.getText()) ? NA :
-                                                        FuelSystemStatus.valueOf(fSys2.getText().toString())
-                                                                        .toI18NString(view.getContext())
-                                                     ))
-                                .setTitle(v.getContext().getString(
-                                        R.string.pid_fuel_system_status_expansion_title))
-                                .create()
-                                .show();
+                        if(initialized)
+                        {
+                            String NA = view.getContext()
+                                            .getString(R.string.not_available);
+                            new AlertDialog.Builder(v.getContext())
+                                    .setMessage(
+                                            String.format(
+                                                    v.getContext()
+                                                     .getString(
+                                                             R.string.pid_fuel_system_status_expansion),
+                                                    NA.equals(fSys1.getText()) ? NA :
+                                                            FuelSystemStatus.valueOf(fSys1.getText()
+                                                                                          .toString())
+                                                                            .toI18NString(view.getContext()),
+                                                    NA.equals(fSys2.getText()) ? NA :
+                                                            FuelSystemStatus.valueOf(fSys2.getText()
+                                                                                          .toString())
+                                                                            .toI18NString(view.getContext())
+                                            ))
+                                    .setTitle(v.getContext()
+                                               .getString(
+                                                       R.string.pid_fuel_system_status_expansion_title))
+                                    .create()
+                                    .show();
+                        }
                     }
                 });
 
                 view.setOnLongClickListener(new View.OnLongClickListener()
                 {
+
                     @Override
                     public boolean onLongClick(View v)
                     {
                         new AlertDialog.Builder(v.getContext())
                                 .setMessage(R.string.pid_fuel_system_status_desc)
-                                .setTitle(v.getContext().getString(
-                                        R.string.pid_fuel_system_status_desc_title))
-                                .create().show();
+                                .setTitle(v.getContext()
+                                           .getString(
+                                                   R.string.pid_fuel_system_status_desc_title))
+                                .create()
+                                .show();
                         return true;
                     }
                 });
@@ -483,24 +569,28 @@ public final class SAEJ1979AppendixWrapper
 
         @Override
         public final void updateViewHolder(@NonNull
-                                                                              ViewHolderBase viewHolder,
-                                                                      @NonNull SerializablePair<FuelSystemStatus, FuelSystemStatus> value)
+                                           ViewHolderBase viewHolder,
+                                           @NonNull
+                                           SerializablePair<FuelSystemStatus, FuelSystemStatus> value)
         {
-            ViewHolder vh = (ViewHolder)viewHolder;
-            if(!initialized)
+            ViewHolder vh = (ViewHolder) viewHolder;
+            if(value.first != null)
             {
-                initialized = true;
-                if(value.second == null)
-                {
-                    vh.fSys2Label.setVisibility(View.GONE);
-                    vh.fSys2.setVisibility(View.GONE);
-                }
+                vh.fSys1.setText(value.first.toString());
             }
-            vh.fSys1.setText(value.first.toString());
+            else
+            {
+                vh.fSys1.setText(vh.context.getString(R.string.not_available));
+            }
             if(value.second != null)
             {
                 vh.fSys2.setText(value.second.toString());
             }
+            else
+            {
+                vh.fSys2.setText(vh.context.getString(R.string.not_available));
+            }
+            initialized = true;
         }
     }
 
@@ -508,6 +598,7 @@ public final class SAEJ1979AppendixWrapper
     private final static class CalculatedEngineLoadWrapper
             extends PIDWrapper<Float>
     {
+
         CalculatedEngineLoadWrapper()
         {
             super(AppendixB.CALCULATED_ENGINE_LOAD);
@@ -519,6 +610,7 @@ public final class SAEJ1979AppendixWrapper
             final Context context = view.getContext();
             view.setOnLongClickListener(new View.OnLongClickListener()
             {
+
                 @Override
                 public boolean onLongClick(View view)
                 {
@@ -535,8 +627,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $05
-    private final static class EngineCoolantTemperatureWrapper extends PIDWrapper<Integer>
+    private final static class EngineCoolantTemperatureWrapper
+            extends PIDWrapper<Integer>
     {
+
         public EngineCoolantTemperatureWrapper()
         {
             super(AppendixB.ENGINE_COOLANT_TEMPERATURE);
@@ -546,20 +640,21 @@ public final class SAEJ1979AppendixWrapper
         public ViewHolderBase createViewHolder(@NonNull final View view)
         {
             view.setOnLongClickListener(
-                new View.OnLongClickListener()
-                {
-                    @Override
-                    public boolean onLongClick(View view)
+                    new View.OnLongClickListener()
                     {
-                        final Context context = view.getContext();
-                        new AlertDialog.Builder(context)
-                                .setTitle(context.getString(R.string.pid_engine_coolant_temp_desc_title))
-                                .setMessage(context.getString(R.string.pid_engine_coolant_temp_desc))
-                                .create()
-                                .show();
-                        return true;
+
+                        @Override
+                        public boolean onLongClick(View view)
+                        {
+                            final Context context = view.getContext();
+                            new AlertDialog.Builder(context)
+                                    .setTitle(context.getString(R.string.pid_engine_coolant_temp_desc_title))
+                                    .setMessage(context.getString(R.string.pid_engine_coolant_temp_desc))
+                                    .create()
+                                    .show();
+                            return true;
+                        }
                     }
-                }
             );
             super.addUnitSelector(view);
             return super.createViewHolder(view);
@@ -567,28 +662,29 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// View holder implementation common to PIDs 6-9
-    private final static class FuelTrimViewHolder extends ViewHolderBase
+    private final static class FuelTrimViewHolder
+            extends ViewHolderBase
     {
 
         final Context context;
+
         final TextView fuelTrim1;
+
         final TextView fuelTrim2;
 
 
-        FuelTrimViewHolder(View view, final boolean shortTerm, final int label1, final int label2)
+        FuelTrimViewHolder(View view,
+                           final boolean shortTerm,
+                           final int label1,
+                           final int label2)
         {
             this.context = view.getContext();
-            view.setOnLongClickListener(new View.OnLongClickListener() {
-                /// Example:
-                ///  ____________________________________
-                /// |      Bank 1 & 3 STFT Overview      |
-                /// |____________________________________|
-                /// | This PID retrieves the short term  |
-                /// | fuel trim of fuel injector banks   |
-                /// | 1 and (if equipped) 3...           |
-                /// |____________________________________|
+            view.setOnLongClickListener(new View.OnLongClickListener()
+            {
+
                 @Override
-                public boolean onLongClick(View view) {
+                public boolean onLongClick(View view)
+                {
                     new AlertDialog.Builder(context)
                             .setTitle(String.format(
                                     context.getString(R.string.pid_fuel_trim_desc_title),
@@ -608,13 +704,13 @@ public final class SAEJ1979AppendixWrapper
                     return true;
                 }
             });
-            ((TextView)ButterKnife.findById(view, R.id.fuel_trim_label_1))
+            ((TextView) ButterKnife.findById(view, R.id.fuel_trim_label_1))
                     .setText(shortTerm ?
                             String.format(context.getString(
                                     R.string.short_term_fuel_trim_bank_label), label1) :
                             String.format(context.getString(
                                     R.string.long_term_fuel_trim_bank_label, label1), label1));
-            ((TextView)ButterKnife.findById(view, R.id.fuel_trim_label_2)).setText(shortTerm ?
+            ((TextView) ButterKnife.findById(view, R.id.fuel_trim_label_2)).setText(shortTerm ?
                     String.format(context.getString(
                             R.string.short_term_fuel_trim_bank_label), label2) :
                     String.format(context.getString(
@@ -643,8 +739,8 @@ public final class SAEJ1979AppendixWrapper
 
         @Override
         public final void updateViewHolder(@NonNull
-                                                                              ViewHolderBase viewHolder,
-                                                                      @NonNull SerializablePair<Float, Float> value)
+                                           ViewHolderBase viewHolder,
+                                           @NonNull SerializablePair<Float, Float> value)
         {
             FuelTrimViewHolder vh = (FuelTrimViewHolder) viewHolder;
             vh.fuelTrim1.setText(String.format("%1$3.1f", value.first));
@@ -676,6 +772,7 @@ public final class SAEJ1979AppendixWrapper
     private final static class LongTermFuelTrimBank_1_3_Wrapper
             extends PIDWrapper<SerializablePair<Float, Float>>
     {
+
         LongTermFuelTrimBank_1_3_Wrapper()
         {
             super(AppendixB.LONG_TERM_FUEL_TRIM_BANK_1_3);
@@ -689,8 +786,8 @@ public final class SAEJ1979AppendixWrapper
 
         @Override
         public final void updateViewHolder(@NonNull
-                                                                              ViewHolderBase viewHolder,
-                                                                      @NonNull SerializablePair<Float, Float> value)
+                                           ViewHolderBase viewHolder,
+                                           @NonNull SerializablePair<Float, Float> value)
         {
             FuelTrimViewHolder vh = (FuelTrimViewHolder) viewHolder;
             vh.fuelTrim1.setText(String.format("%1$3.1f", value.first));
@@ -736,8 +833,8 @@ public final class SAEJ1979AppendixWrapper
 
         @Override
         public final void updateViewHolder(@NonNull
-                                                                              ViewHolderBase viewHolder,
-                                                                      @NonNull SerializablePair<Float, Float> value)
+                                           ViewHolderBase viewHolder,
+                                           @NonNull SerializablePair<Float, Float> value)
         {
             FuelTrimViewHolder vh = (FuelTrimViewHolder) viewHolder;
             vh.fuelTrim1.setText(String.format("%1$3.1f", value.first));
@@ -769,6 +866,7 @@ public final class SAEJ1979AppendixWrapper
     private final static class LongTermFuelTrimBank_2_4_Wrapper
             extends PIDWrapper<SerializablePair<Float, Float>>
     {
+
         LongTermFuelTrimBank_2_4_Wrapper()
         {
             super(AppendixB.LONG_TERM_FUEL_TRIM_BANK_2_4);
@@ -782,8 +880,8 @@ public final class SAEJ1979AppendixWrapper
 
         @Override
         public final void updateViewHolder(@NonNull
-                                                                              ViewHolderBase viewHolder,
-                                                                      @NonNull SerializablePair<Float, Float> value)
+                                           ViewHolderBase viewHolder,
+                                           @NonNull SerializablePair<Float, Float> value)
         {
             FuelTrimViewHolder vh = (FuelTrimViewHolder) viewHolder;
             vh.fuelTrim1.setText(String.format("%1$3.1f", value.first));
@@ -813,8 +911,9 @@ public final class SAEJ1979AppendixWrapper
 
     /// GUI Wrapper for PID $0A
     private final static class NarrowRangeFuelRailPressureRefAtmosphereWrapper
-        extends PIDWrapper<Integer>
+            extends PIDWrapper<Integer>
     {
+
         NarrowRangeFuelRailPressureRefAtmosphereWrapper()
         {
             super(AppendixB.FUEL_RAIL_PRESSURE_NARROW_RANGE_ATMOSPHEREIC_REFERENCE);
@@ -825,6 +924,7 @@ public final class SAEJ1979AppendixWrapper
         {
             view.setOnLongClickListener(new View.OnLongClickListener()
             {
+
                 @Override
                 public boolean onLongClick(View view)
                 {
@@ -846,6 +946,7 @@ public final class SAEJ1979AppendixWrapper
     private final static class IntakeManifoldAbsolutePressureWrapper
             extends PIDWrapper<Integer>
     {
+
         IntakeManifoldAbsolutePressureWrapper()
         {
             super(AppendixB.INTAKE_MANIFOLD_ABSOLUTE_PRESSURE);
@@ -856,6 +957,7 @@ public final class SAEJ1979AppendixWrapper
         {
             view.setOnLongClickListener(new View.OnLongClickListener()
             {
+
                 @Override
                 public boolean onLongClick(View view)
                 {
@@ -877,14 +979,18 @@ public final class SAEJ1979AppendixWrapper
     private final static class EngineSpeedWrapper
             extends PIDWrapper<Float>
     {
+
         EngineSpeedWrapper()
         {
             super(AppendixB.ENGINE_SPEED);
         }
-        @Override public final ViewHolderBase createViewHolder(@NonNull final View view)
+
+        @Override
+        public final ViewHolderBase createViewHolder(@NonNull final View view)
         {
             view.setOnLongClickListener(new View.OnLongClickListener()
             {
+
                 @Override
                 public boolean onLongClick(View view)
                 {
@@ -905,6 +1011,7 @@ public final class SAEJ1979AppendixWrapper
     private final static class VehicleSpeedWrapper
             extends PIDWrapper<Integer>
     {
+
         VehicleSpeedWrapper()
         {
             super(AppendixB.VEHICLE_SPEED);
@@ -913,7 +1020,21 @@ public final class SAEJ1979AppendixWrapper
         @Override
         public final ViewHolderBase createViewHolder(@NonNull final View view)
         {
+            view.setOnLongClickListener(new View.OnLongClickListener()
+            {
 
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    final Context context = view.getContext();
+                    new AlertDialog.Builder(context)
+                            .setTitle(context.getString(R.string.pid_vehicle_speed_desc_title))
+                            .setMessage(context.getString(R.string.pid_vehicle_speed_desc))
+                            .create()
+                            .show();
+                    return true;
+                }
+            });
             super.addUnitSelector(view);
             return super.createViewHolder(view);
         }
@@ -923,9 +1044,31 @@ public final class SAEJ1979AppendixWrapper
     private final static class TimingAdvanceWrapper
             extends PIDWrapper<Float>
     {
+
         TimingAdvanceWrapper()
         {
             super(AppendixB.TIMING_ADVANCE);
+        }
+
+        @Override
+        public final ViewHolderBase createViewHolder(@NonNull final View view)
+        {
+            view.setOnLongClickListener(new View.OnLongClickListener()
+            {
+
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    final Context context = view.getContext();
+                    new AlertDialog.Builder(context)
+                            .setTitle(context.getString(R.string.pid_timing_advance_desc_title))
+                            .setMessage(context.getString(R.string.pid_timing_advance_desc))
+                            .create()
+                            .show();
+                    return true;
+                }
+            });
+            return super.createViewHolder(view);
         }
     }
 
@@ -933,6 +1076,7 @@ public final class SAEJ1979AppendixWrapper
     private final static class IntakeAirTemperatureWrapper
             extends PIDWrapper<Integer>
     {
+
         IntakeAirTemperatureWrapper()
         {
             super(AppendixB.INTAKE_AIR_TEMPERATURE);
@@ -941,6 +1085,21 @@ public final class SAEJ1979AppendixWrapper
         @Override
         public final ViewHolderBase createViewHolder(@NonNull final View view)
         {
+            view.setOnLongClickListener(new View.OnLongClickListener()
+            {
+
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    final Context context = view.getContext();
+                    new AlertDialog.Builder(context)
+                            .setTitle(context.getString(R.string.pid_intake_air_temperature_desc_title))
+                            .setMessage(context.getString(R.string.pid_intake_air_temperature_desc))
+                            .create()
+                            .show();
+                    return true;
+                }
+            });
             super.addUnitSelector(view);
             return super.createViewHolder(view);
         }
@@ -950,6 +1109,7 @@ public final class SAEJ1979AppendixWrapper
     private final static class MassAirflowRateWrapper
             extends PIDWrapper<Float>
     {
+
         MassAirflowRateWrapper()
         {
             super(AppendixB.MASS_AIRFLOW_RATE);
@@ -958,6 +1118,21 @@ public final class SAEJ1979AppendixWrapper
         @Override
         public final ViewHolderBase createViewHolder(@NonNull final View view)
         {
+            view.setOnLongClickListener(new View.OnLongClickListener()
+            {
+
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    final Context context = view.getContext();
+                    new AlertDialog.Builder(context)
+                            .setTitle(context.getString(R.string.pid_mass_airflow_desc_title))
+                            .setMessage(context.getString(R.string.pid_mass_airflow_desc))
+                            .create()
+                            .show();
+                    return true;
+                }
+            });
             super.addUnitSelector(view);
             return super.createViewHolder(view);
         }
@@ -967,34 +1142,101 @@ public final class SAEJ1979AppendixWrapper
     private final static class AbsoluteThrottlePositionWrapper
             extends PIDWrapper<Float>
     {
+
         AbsoluteThrottlePositionWrapper()
         {
             super(AppendixB.ABSOLUTE_THROTTLE_POSITION);
         }
+
+        @Override
+        public final ViewHolderBase createViewHolder(@NonNull final View view)
+        {
+            view.setOnLongClickListener(new View.OnLongClickListener()
+            {
+
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    final Context context = view.getContext();
+                    new AlertDialog.Builder(context)
+                            .setTitle(context.getString(R.string.pid_absolute_throttle_position_desc_title))
+                            .setMessage(context.getString(R.string.pid_absolute_throttle_position_desc))
+                            .create()
+                            .show();
+                    return true;
+                }
+            });
+            return super.createViewHolder(view);
+        }
     }
 
     /// GUI Wrapper for PID $12
-    private final static class SecondaryAirStatusWrapper extends PIDWrapper<SecondaryAirStatus>
+    private final static class SecondaryAirStatusWrapper
+            extends PIDWrapper<SecondaryAirStatus>
     {
+
         SecondaryAirStatusWrapper()
         {
             super(AppendixB.SECONDARY_AIR_STATUS);
         }
+
+        @Override
+        public final ViewHolderBase createViewHolder(@NonNull final View view)
+        {
+            view.setOnLongClickListener(new View.OnLongClickListener()
+            {
+
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    final Context context = view.getContext();
+                    new AlertDialog.Builder(context)
+                            .setTitle(context.getString(R.string.pid_secondary_air_status_desc_title))
+                            .setMessage(context.getString(R.string.pid_secondary_air_status_desc))
+                            .create()
+                            .show();
+                    return true;
+                }
+            });
+            return super.createViewHolder(view);
+        }
     }
 
-    private final static class OxygenSensorLocationViewHolder extends ViewHolderBase
+    private final static class OxygenSensorLocationViewHolder
+            extends ViewHolderBase
     {
+
         final TextView value;
 
-        OxygenSensorLocationViewHolder(View view)
+        OxygenSensorLocationViewHolder(View view,
+                                       final boolean dualBank)
         {
+            final Context context = view.getContext();
+            view.setOnLongClickListener(new View.OnLongClickListener()
+            {
+
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    new AlertDialog.Builder(context)
+                            .setTitle(context.getString(R.string.pid_oxygen_sensor_location_desc_title))
+                            .setMessage(String.format(context.getString(R.string.pid_oxygen_sensor_location_desc),
+                                    dualBank ? context.getString(R.string.dual_bank) :
+                                            context.getString(R.string.quad_bank)))
+                            .create()
+                            .show();
+                    return true;
+                }
+            });
             this.value = ButterKnife.findById(view, R.id.oxygen_sensor_location_value);
         }
     }
 
     /// GUI Wrapper for PID $13
-    private final static class OxygenSensorLocationDualBankWrapper extends PIDWrapper<OxygenSensor[]>
+    private final static class OxygenSensorLocationDualBankWrapper
+            extends PIDWrapper<OxygenSensor[]>
     {
+
         OxygenSensorLocationDualBankWrapper()
         {
             super(AppendixB.DUAL_BANK_OXYGEN_SENSOR_LOCATIONS);
@@ -1003,19 +1245,20 @@ public final class SAEJ1979AppendixWrapper
         @Override
         public final ViewHolderBase createViewHolder(@NonNull final View view)
         {
-            return new OxygenSensorLocationViewHolder(view);
+            return new OxygenSensorLocationViewHolder(view, true);
         }
 
         @Override
         public final void updateViewHolder(@NonNull
-                                                                              ViewHolderBase viewHolder,
-                                                                      @NonNull OxygenSensor[] value)
+                                           ViewHolderBase viewHolder,
+                                           @NonNull OxygenSensor[] value)
         {
             OxygenSensorLocationViewHolder vh = (OxygenSensorLocationViewHolder) viewHolder;
             StringBuilder sb = new StringBuilder("[");
             for(OxygenSensor sensor : value)
             {
-                sb.append(sensor.toString()).append(", ");
+                sb.append(sensor.toString())
+                  .append(", ");
             }
             vh.value.setText(sb.substring(0, sb.length() - 2) + "]");
         }
@@ -1028,110 +1271,193 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// Base class for PIDs $14 - $1B
-    private abstract static class ConventionalOxygenSensorPIDWrapper extends PIDWrapper<SerializablePair<Float, Float>>
+    abstract static class ConventionalOxygenSensorPIDWrapper
+            extends PIDWrapper<SerializablePair<Float, Float>>
     {
 
-        ConventionalOxygenSensorPIDWrapper(PID<SerializablePair<Float, Float>> pid)
+        private final int bank;
+
+        private final int sensor;
+
+        @Override
+        public int getLayoutID()
         {
-            super(pid);
+            return R.layout.conventional_oxygen_sensor;
         }
 
-        // TODO: Create dual layout...
+
+        ConventionalOxygenSensorPIDWrapper(PID<SerializablePair<Float, Float>> pid,
+                                           int bank,
+                                           int sensor)
+        {
+            super(pid);
+            this.bank = bank;
+            this.sensor = sensor;
+        }
+
+        class ViewHolder
+                extends ViewHolderBase
+        {
+
+            @InjectView(R.id.o2sxx_voltage)
+            TextView voltage;
+
+            @InjectView(R.id.o2sxx_short_term_fuel_trim)
+            TextView fuelTrim;
+
+            ViewHolder(View view)
+            {
+                ((TextView) ButterKnife.findById(view, R.id.o2sxx_label)).setText(String.format(
+                        "O2S%d%d:",
+                        bank,
+                        sensor));
+                this.voltage = ButterKnife.findById(view, R.id.o2sxx_voltage);
+                this.fuelTrim = ButterKnife.findById(view, R.id.o2sxx_short_term_fuel_trim);
+            }
+        }
 
         @Override
         public final ViewHolderBase createViewHolder(@NonNull final View view)
         {
-            return super.createViewHolder(view);
+            final Context context = view.getContext();
+            view.setOnLongClickListener(new View.OnLongClickListener()
+            {
+
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    new AlertDialog.Builder(context)
+                            .setTitle(String.format(context.getString(R.string.pid_conventional_oxygen_sensor_x_x_desc_title),
+                                    bank,
+                                    sensor))
+                            .setMessage(String.format(context.getString(R.string.pid_conventional_oxygen_sensor_x_x_desc),
+                                    bank,
+                                    sensor))
+                            .create()
+                            .show();
+                    return true;
+                }
+            });
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public final void updateViewHolder(@NonNull ViewHolderBase viewHolder,
+                                           @NonNull SerializablePair<Float, Float> value)
+        {
+            ViewHolder vh = (ViewHolder) viewHolder;
+            vh.voltage.setText(value.first + " V");
+            vh.fuelTrim.setText(value.second + " %");
         }
     }
 
     /// GUI Wrapper for PID $14 (dual bank)
-    private final static class DualBankO2S11ConventionalWrapper extends ConventionalOxygenSensorPIDWrapper
+    private final static class DualBankO2S11ConventionalWrapper
+            extends ConventionalOxygenSensorPIDWrapper
     {
+
         DualBankO2S11ConventionalWrapper()
         {
-            super(AppendixB.DUAL_BANK_O2S11_CONVENTIONAL);
+            super(AppendixB.DUAL_BANK_O2S11_CONVENTIONAL, 1, 1);
         }
     }
 
     /// GUI Wrapper for PID $14 (quad bank)
-    private final static class QuadBankO2S11ConventionalWrapper extends ConventionalOxygenSensorPIDWrapper
+    private final static class QuadBankO2S11ConventionalWrapper
+            extends ConventionalOxygenSensorPIDWrapper
     {
+
         QuadBankO2S11ConventionalWrapper()
         {
-            super(AppendixB.QUAD_BANK_O2S11_CONVENTIONAL);
+            super(AppendixB.QUAD_BANK_O2S11_CONVENTIONAL, 1, 1);
         }
     }
 
     /// GUI Wrapper for PID $15 (dual bank)
-    private final static class DualBankO2S12ConventionalWrapper extends ConventionalOxygenSensorPIDWrapper
+    private final static class DualBankO2S12ConventionalWrapper
+            extends ConventionalOxygenSensorPIDWrapper
     {
+
         DualBankO2S12ConventionalWrapper()
         {
-            super(AppendixB.DUAL_BANK_O2S12_CONVENTIONAL);
+            super(AppendixB.DUAL_BANK_O2S12_CONVENTIONAL, 1, 2);
         }
     }
 
     /// GUI Wrapper for PID $15 (quad bank)
-    private final static class QuadBankO2S12ConventionalWrapper extends ConventionalOxygenSensorPIDWrapper
+    private final static class QuadBankO2S12ConventionalWrapper
+            extends ConventionalOxygenSensorPIDWrapper
     {
+
         QuadBankO2S12ConventionalWrapper()
         {
-            super(AppendixB.QUAD_BANK_O2S12_CONVENTIONAL);
+            super(AppendixB.QUAD_BANK_O2S12_CONVENTIONAL, 1, 2);
         }
     }
 
     /// GUI Wrapper for PID $16 (dual bank)
-    private final static class DualBankO2S13ConventionalWrapper extends ConventionalOxygenSensorPIDWrapper
+    private final static class DualBankO2S13ConventionalWrapper
+            extends ConventionalOxygenSensorPIDWrapper
     {
+
         DualBankO2S13ConventionalWrapper()
         {
-            super(AppendixB.DUAL_BANK_O2S13_CONVENTIONAL);
+            super(AppendixB.DUAL_BANK_O2S13_CONVENTIONAL, 1, 3);
         }
     }
 
     /// GUI Wrapper for PID $16 (quad bank)
-    private final static class QuadBankO2S21ConventionalWrapper extends ConventionalOxygenSensorPIDWrapper
+    private final static class QuadBankO2S21ConventionalWrapper
+            extends ConventionalOxygenSensorPIDWrapper
     {
+
         QuadBankO2S21ConventionalWrapper()
         {
-            super(AppendixB.QUAD_BANK_O2S21_CONVENTIONAL);
+            super(AppendixB.QUAD_BANK_O2S21_CONVENTIONAL, 2, 1);
         }
     }
 
     /// GUI Wrapper for PID $17 (dual bank)
-    private final static class DualBankO2S14ConventionalWrapper extends ConventionalOxygenSensorPIDWrapper
+    private final static class DualBankO2S14ConventionalWrapper
+            extends ConventionalOxygenSensorPIDWrapper
     {
+
         DualBankO2S14ConventionalWrapper()
         {
-            super(AppendixB.DUAL_BANK_O2S14_CONVENTIONAL);
+            super(AppendixB.DUAL_BANK_O2S14_CONVENTIONAL, 1, 4);
         }
     }
 
     /// GUI Wrapper for PID $17 (quad bank)
-    private final static class QuadBankO2S22ConventionalWrapper extends ConventionalOxygenSensorPIDWrapper
+    private final static class QuadBankO2S22ConventionalWrapper
+            extends ConventionalOxygenSensorPIDWrapper
     {
+
         QuadBankO2S22ConventionalWrapper()
         {
-            super(AppendixB.QUAD_BANK_O2S22_CONVENTIONAL);
+            super(AppendixB.QUAD_BANK_O2S22_CONVENTIONAL, 2, 2);
         }
     }
 
     /// GUI Wrapper for PID $18 (dual bank)
-    private final static class DualBankO2S21ConventionalWrapper extends ConventionalOxygenSensorPIDWrapper
+    private final static class DualBankO2S21ConventionalWrapper
+            extends ConventionalOxygenSensorPIDWrapper
     {
+
         DualBankO2S21ConventionalWrapper()
         {
-            super(AppendixB.DUAL_BANK_O2S21_CONVENTIONAL);
+            super(AppendixB.DUAL_BANK_O2S21_CONVENTIONAL, 2, 1);
         }
     }
 
     /// GUI Wrapper for PID $18 (quad bank)
-    private final static class QuadBankO2S31ConventionalWrapper extends ConventionalOxygenSensorPIDWrapper
+    private final static class QuadBankO2S31ConventionalWrapper
+            extends ConventionalOxygenSensorPIDWrapper
     {
+
         QuadBankO2S31ConventionalWrapper()
         {
-            super(AppendixB.QUAD_BANK_O2S31_CONVENTIONAL);
+            super(AppendixB.QUAD_BANK_O2S31_CONVENTIONAL, 3, 1);
         }
     }
 
@@ -1139,9 +1465,10 @@ public final class SAEJ1979AppendixWrapper
     private final static class DualBankO2S22ConventionalWrapper
             extends ConventionalOxygenSensorPIDWrapper
     {
+
         DualBankO2S22ConventionalWrapper()
         {
-            super(AppendixB.DUAL_BANK_O2S22_CONVENTIONAL);
+            super(AppendixB.DUAL_BANK_O2S22_CONVENTIONAL, 2, 2);
         }
     }
 
@@ -1149,60 +1476,94 @@ public final class SAEJ1979AppendixWrapper
     private final static class QuadBankO2S32ConventionalWrapper
             extends ConventionalOxygenSensorPIDWrapper
     {
+
         QuadBankO2S32ConventionalWrapper()
         {
-            super(AppendixB.QUAD_BANK_O2S32_CONVENTIONAL);
+            super(AppendixB.QUAD_BANK_O2S32_CONVENTIONAL, 3, 2);
         }
     }
 
     /// GUI Wrapper for PID $1A (dual bank)
-    private final static class DualBankO2S23ConventionalWrapper extends ConventionalOxygenSensorPIDWrapper
+    private final static class DualBankO2S23ConventionalWrapper
+            extends ConventionalOxygenSensorPIDWrapper
     {
+
         DualBankO2S23ConventionalWrapper()
         {
-            super(AppendixB.DUAL_BANK_O2S23_CONVENTIONAL);
+            super(AppendixB.DUAL_BANK_O2S23_CONVENTIONAL, 2, 3);
         }
     }
 
     /// GUI Wrapper for PID $1A (quad bank)
-    private final static class QuadBankO2S41ConventionalWrapper extends ConventionalOxygenSensorPIDWrapper
+    private final static class QuadBankO2S41ConventionalWrapper
+            extends ConventionalOxygenSensorPIDWrapper
     {
+
         QuadBankO2S41ConventionalWrapper()
         {
-            super(AppendixB.QUAD_BANK_O2S41_CONVENTIONAL);
+            super(AppendixB.QUAD_BANK_O2S41_CONVENTIONAL, 4, 1);
         }
     }
 
     /// GUI Wrapper for PID $1B (dual bank)
-    private final static class DualBankO2S24ConventionalWrapper extends ConventionalOxygenSensorPIDWrapper
+    private final static class DualBankO2S24ConventionalWrapper
+            extends ConventionalOxygenSensorPIDWrapper
     {
+
         DualBankO2S24ConventionalWrapper()
         {
-            super(AppendixB.DUAL_BANK_O2S24_CONVENTIONAL);
+            super(AppendixB.DUAL_BANK_O2S24_CONVENTIONAL, 2, 4);
         }
     }
 
     /// GUI Wrapper for PID $1B (quad bank)
-    private final static class QuadBankO2S42ConventionalWrapper extends ConventionalOxygenSensorPIDWrapper
+    private final static class QuadBankO2S42ConventionalWrapper
+            extends ConventionalOxygenSensorPIDWrapper
     {
+
         QuadBankO2S42ConventionalWrapper()
         {
-            super(AppendixB.QUAD_BANK_O2S42_CONVENTIONAL);
+            super(AppendixB.QUAD_BANK_O2S42_CONVENTIONAL, 4, 2);
         }
     }
 
     /// GUI Wrapper for PID $1C
-    private final static class OBDSupportWrapper extends PIDWrapper<OBDSupport>
+    private final static class OBDSupportWrapper
+            extends PIDWrapper<OBDSupport>
     {
+
         OBDSupportWrapper()
         {
             super(AppendixB.OBD_SUPPORT);
         }
+
+        @Override
+        public final ViewHolderBase createViewHolder(@NonNull final View view)
+        {
+            view.setOnLongClickListener(new View.OnLongClickListener()
+            {
+
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    final Context context = view.getContext();
+                    new AlertDialog.Builder(context)
+                            .setTitle(context.getString(R.string.pid_obd_support_desc_title))
+                            .setMessage(context.getString(R.string.pid_obd_support_desc))
+                            .create()
+                            .show();
+                    return true;
+                }
+            });
+            return super.createViewHolder(view);
+        }
     }
 
     /// GUI Wrapper for PID $1D
-    private final static class OxygenSensorLocationQuadBankWrapper extends PIDWrapper<OxygenSensor[]>
+    private final static class OxygenSensorLocationQuadBankWrapper
+            extends PIDWrapper<OxygenSensor[]>
     {
+
         OxygenSensorLocationQuadBankWrapper()
         {
             super(AppendixB.QUAD_BANK_OXYGEN_SENSOR_LOCATIONS);
@@ -1211,19 +1572,20 @@ public final class SAEJ1979AppendixWrapper
         @Override
         public final ViewHolderBase createViewHolder(@NonNull final View view)
         {
-            return new OxygenSensorLocationViewHolder(view);
+            return new OxygenSensorLocationViewHolder(view, false);
         }
 
         @Override
         public final void updateViewHolder(@NonNull
-                                                                              ViewHolderBase viewHolder,
-                                                                      @NonNull OxygenSensor[] value)
+                                           ViewHolderBase viewHolder,
+                                           @NonNull OxygenSensor[] value)
         {
             OxygenSensorLocationViewHolder vh = (OxygenSensorLocationViewHolder) viewHolder;
             StringBuilder sb = new StringBuilder("[");
             for(OxygenSensor sensor : value)
             {
-                sb.append(sensor.toString()).append(", ");
+                sb.append(sensor.toString())
+                  .append(", ");
             }
             vh.value.setText(sb.substring(0, sb.length() - 2) + "]");
         }
@@ -1236,26 +1598,74 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $1E
-    private final static class AuxiliaryInputStatusWrapper extends PIDWrapper<AuxiliaryInputStatus>
+    private final static class AuxiliaryInputStatusWrapper
+            extends PIDWrapper<AuxiliaryInputStatus>
     {
+
         AuxiliaryInputStatusWrapper()
         {
             super(AppendixB.AUXILIARY_INPUT_STATUS);
         }
+
+        @Override
+        public final ViewHolderBase createViewHolder(@NonNull View view)
+        {
+            final Context context = view.getContext();
+            view.setOnLongClickListener(new View.OnLongClickListener()
+            {
+
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    new AlertDialog.Builder(context)
+                            .setTitle(context.getString(R.string.pid_auxiliary_input_status_desc_title))
+                            .setMessage(context.getString(R.string.pid_auxiliary_input_status_desc))
+                            .create()
+                            .show();
+                    return true;
+                }
+            });
+            return super.createViewHolder(view);
+        }
     }
 
     /// GUI Wrapper for PID $1F
-    private final static class TimeSinceEngineStartWrapper extends PIDWrapper<Integer>
+    private final static class TimeSinceEngineStartWrapper
+            extends PIDWrapper<Integer>
     {
+
         TimeSinceEngineStartWrapper()
         {
             super(AppendixB.TIME_SINCE_ENGINE_START);
         }
+
+        @Override
+        public final ViewHolderBase createViewHolder(@NonNull View view)
+        {
+            final Context context = view.getContext();
+            view.setOnLongClickListener(new View.OnLongClickListener()
+            {
+
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    new AlertDialog.Builder(context)
+                            .setTitle(context.getString(R.string.pid_time_since_engine_start_desc_title))
+                            .setMessage(context.getString(R.string.pid_time_since_engine_start_desc))
+                            .create()
+                            .show();
+                    return true;
+                }
+            });
+            return super.createViewHolder(view);
+        }
     }
 
     /// GUI Wrapper for PID $21
-    private final static class DistanceTravelledWithActiveMILWrapper extends PIDWrapper<Integer>
+    private final static class DistanceTravelledWithActiveMILWrapper
+            extends PIDWrapper<Integer>
     {
+
         DistanceTravelledWithActiveMILWrapper()
         {
             super(AppendixB.DISTANCE_TRAVELLED_WHILE_MIL_IS_ACTIVATED);
@@ -1264,14 +1674,31 @@ public final class SAEJ1979AppendixWrapper
         @Override
         public ViewHolderBase createViewHolder(@NonNull View view)
         {
+            final Context context = view.getContext();
+            view.setOnLongClickListener(new View.OnLongClickListener()
+            {
+
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    new AlertDialog.Builder(context)
+                            .setTitle(context.getString(R.string.pid_distance_travelled_while_mil_is_activated_desc_title))
+                            .setMessage(context.getString(R.string.pid_distance_travelled_while_mil_is_activated_desc))
+                            .create()
+                            .show();
+                    return true;
+                }
+            });
             super.addUnitSelector(view);
             return super.createViewHolder(view);
         }
     }
 
     /// GUI Wrapper for PID $22
-    private final static class FuelRailPressureRefManifoldVacWrapper extends PIDWrapper<Float>
+    private final static class FuelRailPressureRefManifoldVacWrapper
+            extends PIDWrapper<Float>
     {
+
         FuelRailPressureRefManifoldVacWrapper()
         {
             super(AppendixB.FUEL_RAIL_PRESSURE_RELATIVE_TO_MANIFOLD_VACUUM);
@@ -1280,14 +1707,31 @@ public final class SAEJ1979AppendixWrapper
         @Override
         public ViewHolderBase createViewHolder(@NonNull View view)
         {
+            final Context context = view.getContext();
+            view.setOnLongClickListener(new View.OnLongClickListener()
+            {
+
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    new AlertDialog.Builder(context)
+                            .setTitle(context.getString(R.string.pid_fuel_rail_pressure_ref_manifold_vac_desc_title))
+                            .setMessage(context.getString(R.string.pid_fuel_rail_pressure_ref_manifold_vac_desc))
+                            .create()
+                            .show();
+                    return true;
+                }
+            });
             super.addUnitSelector(view);
             return super.createViewHolder(view);
         }
     }
 
     /// GUI Wrapper for PID $23
-    private final static class WideRangeVoltageFuelRailPressureRefAtmosphere extends PIDWrapper<Integer>
+    private final static class WideRangeVoltageFuelRailPressureRefAtmosphere
+            extends PIDWrapper<Integer>
     {
+
         WideRangeVoltageFuelRailPressureRefAtmosphere()
         {
             super(AppendixB.FUEL_RAIL_PRESSURE_WIDE_RANGE);
@@ -1296,145 +1740,217 @@ public final class SAEJ1979AppendixWrapper
         @Override
         public ViewHolderBase createViewHolder(@NonNull View view)
         {
+            final Context context = view.getContext();
+            view.setOnLongClickListener(new View.OnLongClickListener()
+            {
+
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    new AlertDialog.Builder(context)
+                            .setTitle(context.getString(R.string.pid_wide_range_fuel_rail_pressure_ref_atmosphere_desc_title))
+                            .setMessage(context.getString(R.string.pid_wide_range_fuel_rail_pressure_ref_atmosphere_desc))
+                            .create()
+                            .show();
+                    return true;
+                }
+            });
             super.addUnitSelector(view);
             return super.createViewHolder(view);
         }
     }
 
     /// Base class for PIDs $24 - $2B
-    private abstract static class WideRangeVoltageOxygenSensorPIDWrapper extends PIDWrapper<SerializablePair<Float, Float>>
+    private abstract static class WideRangeVoltageOxygenSensorPIDWrapper
+            extends PIDWrapper<SerializablePair<Float, Float>>
     {
 
-        private final static class ViewHolder extends ViewHolderBase
+        private final static class ViewHolder
+                extends ViewHolderBase
         {
+
             final TextView lambdaValue;
+
             final TextView voltageValue;
 
             ViewHolder(View view)
             {
-                this.lambdaValue = ButterKnife.findById(view, R.id.wide_range_oxygen_sensor_lambda_value);
-                this.voltageValue = ButterKnife.findById(view, R.id.wide_range_oxygen_sensor_voltage_value);
+                this.lambdaValue = ButterKnife.findById(view,
+                        R.id.wide_range_oxygen_sensor_lambda_value);
+                this.voltageValue = ButterKnife.findById(view,
+                        R.id.wide_range_oxygen_sensor_voltage_value);
             }
         }
 
-        WideRangeVoltageOxygenSensorPIDWrapper(PID<SerializablePair<Float, Float>> pid)
+        @Override
+        public int getLayoutID()
+        {
+            return R.layout.wide_range_oxygen_sensor;
+        }
+
+
+        final int bank;
+
+        final int sensor;
+
+        WideRangeVoltageOxygenSensorPIDWrapper(PID<SerializablePair<Float, Float>> pid,
+                                               int bank,
+                                               int sensor)
         {
             super(pid);
+            this.bank = bank;
+            this.sensor = sensor;
         }
 
         @Override
         public final ViewHolderBase createViewHolder(@NonNull final View view)
         {
             ViewHolder rv = new ViewHolder(view);
-            ((TextView)ButterKnife.findById(view, R.id.wide_range_oxygen_sensor_label))
-                    .setText(super.unwrap().getDisplayName());
+            ((TextView) ButterKnife.findById(view, R.id.wide_range_oxygen_sensor_label))
+                    .setText(super.unwrap()
+                                  .getDisplayName());
+
+            final Context context = view.getContext();
+            view.setOnLongClickListener(new View.OnLongClickListener()
+            {
+
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    new AlertDialog.Builder(context)
+                            .setTitle(String.format(context.getString(R.string.pid_wide_range_oxygen_sensor_x_x_desc_title),
+                                    bank,
+                                    sensor))
+                            .setMessage(String.format(context.getString(R.string.pid_wide_range_oxygen_sensor_x_x_desc),
+                                    bank,
+                                    sensor))
+                            .create()
+                            .show();
+                    return true;
+                }
+            });
             super.addUnitSelector(view);
             return rv;
         }
 
         @Override
         public final void updateViewHolder(@NonNull
-                                                                              ViewHolderBase viewHolder, @NonNull SerializablePair<Float, Float> value)
+                                           ViewHolderBase viewHolder,
+                                           @NonNull SerializablePair<Float, Float> value)
         {
-            ViewHolder vh = (ViewHolder)viewHolder;
+            ViewHolder vh = (ViewHolder) viewHolder;
             vh.lambdaValue.setText(String.valueOf(value.first));
             vh.voltageValue.setText(String.valueOf(value.second));
-        }
-
-        @Override
-        public final int getLayoutID()
-        {
-            return R.layout.wide_range_oxygen_sensor;
         }
     }
 
     /// GUI Wrapper for PID $24 (dual bank)
-    private final static class DualBankO2S11WideRangeVoltageWrapper extends WideRangeVoltageOxygenSensorPIDWrapper
+    private final static class DualBankO2S11WideRangeVoltageWrapper
+            extends WideRangeVoltageOxygenSensorPIDWrapper
     {
+
         DualBankO2S11WideRangeVoltageWrapper()
         {
-            super(AppendixB.DUAL_BANK_O2S11_WIDE_RANGE);
+            super(AppendixB.DUAL_BANK_O2S11_WIDE_RANGE, 1, 1);
         }
     }
 
     /// GUI Wrapper for PID $24 (quad bank)
-    private final static class QuadBankO2S11WideRangeVoltageWrapper extends WideRangeVoltageOxygenSensorPIDWrapper
+    private final static class QuadBankO2S11WideRangeVoltageWrapper
+            extends WideRangeVoltageOxygenSensorPIDWrapper
     {
+
         QuadBankO2S11WideRangeVoltageWrapper()
         {
-            super(AppendixB.QUAD_BANK_O2S11_WIDE_RANGE);
+            super(AppendixB.QUAD_BANK_O2S11_WIDE_RANGE, 1, 1);
         }
     }
 
     /// GUI Wrapper for PID $25 (dual bank)
-    private final static class DualBankO2S12WideRangeVoltageWrapper extends WideRangeVoltageOxygenSensorPIDWrapper
+    private final static class DualBankO2S12WideRangeVoltageWrapper
+            extends WideRangeVoltageOxygenSensorPIDWrapper
     {
+
         DualBankO2S12WideRangeVoltageWrapper()
         {
-            super(AppendixB.DUAL_BANK_O2S12_WIDE_RANGE);
+            super(AppendixB.DUAL_BANK_O2S12_WIDE_RANGE, 1, 2);
         }
     }
 
     /// GUI Wrapper for PID $25 (quad bank)
-    private final static class QuadBankO2S12WideRangeVoltageWrapper extends WideRangeVoltageOxygenSensorPIDWrapper
+    private final static class QuadBankO2S12WideRangeVoltageWrapper
+            extends WideRangeVoltageOxygenSensorPIDWrapper
     {
+
         QuadBankO2S12WideRangeVoltageWrapper()
         {
-            super(AppendixB.QUAD_BANK_O2S12_WIDE_RANGE);
+            super(AppendixB.QUAD_BANK_O2S12_WIDE_RANGE, 1, 2);
         }
     }
 
     /// GUI Wrapper for PID $26 (dual bank)
-    private final static class DualBankO2S13WideRangeVoltageWrapper extends WideRangeVoltageOxygenSensorPIDWrapper
+    private final static class DualBankO2S13WideRangeVoltageWrapper
+            extends WideRangeVoltageOxygenSensorPIDWrapper
     {
+
         DualBankO2S13WideRangeVoltageWrapper()
         {
-            super(AppendixB.DUAL_BANK_O2S13_WIDE_RANGE);
+            super(AppendixB.DUAL_BANK_O2S13_WIDE_RANGE, 1, 3);
         }
     }
 
     /// GUI Wrapper for PID $26 (quad bank)
-    private final static class QuadBankO2S21WideRangeVoltageWrapper extends WideRangeVoltageOxygenSensorPIDWrapper
+    private final static class QuadBankO2S21WideRangeVoltageWrapper
+            extends WideRangeVoltageOxygenSensorPIDWrapper
     {
+
         QuadBankO2S21WideRangeVoltageWrapper()
         {
-            super(AppendixB.QUAD_BANK_O2S21_WIDE_RANGE);
+            super(AppendixB.QUAD_BANK_O2S21_WIDE_RANGE, 2, 1);
         }
     }
 
     /// GUI Wrapper for PID $27 (dual bank)
-    private final static class DualBankO2S14WideRangeVoltageWrapper extends WideRangeVoltageOxygenSensorPIDWrapper
+    private final static class DualBankO2S14WideRangeVoltageWrapper
+            extends WideRangeVoltageOxygenSensorPIDWrapper
     {
+
         DualBankO2S14WideRangeVoltageWrapper()
         {
-            super(AppendixB.DUAL_BANK_O2S14_WIDE_RANGE);
+            super(AppendixB.DUAL_BANK_O2S14_WIDE_RANGE, 1, 4);
         }
     }
 
     /// GUI Wrapper for PID $27 (quad bank)
-    private final static class QuadBankO2S22WideRangeVoltageWrapper extends WideRangeVoltageOxygenSensorPIDWrapper
+    private final static class QuadBankO2S22WideRangeVoltageWrapper
+            extends WideRangeVoltageOxygenSensorPIDWrapper
     {
+
         QuadBankO2S22WideRangeVoltageWrapper()
         {
-            super(AppendixB.QUAD_BANK_O2S22_WIDE_RANGE);
+            super(AppendixB.QUAD_BANK_O2S22_WIDE_RANGE, 2, 2);
         }
     }
 
     /// GUI Wrapper for PID $28 (dual bank)
-    private final static class DualBankO2S21WideRangeVoltageWrapper extends WideRangeVoltageOxygenSensorPIDWrapper
+    private final static class DualBankO2S21WideRangeVoltageWrapper
+            extends WideRangeVoltageOxygenSensorPIDWrapper
     {
+
         DualBankO2S21WideRangeVoltageWrapper()
         {
-            super(AppendixB.DUAL_BANK_O2S21_WIDE_RANGE);
+            super(AppendixB.DUAL_BANK_O2S21_WIDE_RANGE, 2, 1);
         }
     }
 
     /// GUI Wrapper for PID $28 (quad bank)
-    private final static class QuadBankO2S31WideRangeVoltageWrapper extends WideRangeVoltageOxygenSensorPIDWrapper
+    private final static class QuadBankO2S31WideRangeVoltageWrapper
+            extends WideRangeVoltageOxygenSensorPIDWrapper
     {
+
         QuadBankO2S31WideRangeVoltageWrapper()
         {
-            super(AppendixB.QUAD_BANK_O2S31_WIDE_RANGE);
+            super(AppendixB.QUAD_BANK_O2S31_WIDE_RANGE, 3, 1);
         }
     }
 
@@ -1442,9 +1958,10 @@ public final class SAEJ1979AppendixWrapper
     private final static class DualBankO2S22WideRangeVoltageWrapper
             extends WideRangeVoltageOxygenSensorPIDWrapper
     {
+
         DualBankO2S22WideRangeVoltageWrapper()
         {
-            super(AppendixB.DUAL_BANK_O2S22_WIDE_RANGE);
+            super(AppendixB.DUAL_BANK_O2S22_WIDE_RANGE, 2, 2);
         }
     }
 
@@ -1452,51 +1969,64 @@ public final class SAEJ1979AppendixWrapper
     private final static class QuadBankO2S32WideRangeVoltageWrapper
             extends WideRangeVoltageOxygenSensorPIDWrapper
     {
+
         QuadBankO2S32WideRangeVoltageWrapper()
         {
-            super(AppendixB.QUAD_BANK_O2S32_WIDE_RANGE);
+            super(AppendixB.QUAD_BANK_O2S32_WIDE_RANGE, 3, 2);
         }
     }
 
     /// GUI Wrapper for PID $2A (dual bank)
-    private final static class DualBankO2S23WideRangeVoltageWrapper extends WideRangeVoltageOxygenSensorPIDWrapper
+    private final static class DualBankO2S23WideRangeVoltageWrapper
+            extends WideRangeVoltageOxygenSensorPIDWrapper
     {
+
         DualBankO2S23WideRangeVoltageWrapper()
         {
-            super(AppendixB.DUAL_BANK_O2S23_WIDE_RANGE);
+            super(AppendixB.DUAL_BANK_O2S23_WIDE_RANGE, 2, 3);
         }
     }
 
     /// GUI Wrapper for PID $2A (quad bank)
-    private final static class QuadBankO2S41WideRangeVoltageWrapper extends WideRangeVoltageOxygenSensorPIDWrapper
+    private final static class QuadBankO2S41WideRangeVoltageWrapper
+            extends WideRangeVoltageOxygenSensorPIDWrapper
     {
+
         QuadBankO2S41WideRangeVoltageWrapper()
         {
-            super(AppendixB.QUAD_BANK_O2S41_WIDE_RANGE);
+            super(AppendixB.QUAD_BANK_O2S41_WIDE_RANGE, 4, 1);
         }
     }
 
     /// GUI Wrapper for PID $2B (dual bank)
-    private final static class DualBankO2S24WideRangeVoltageWrapper extends WideRangeVoltageOxygenSensorPIDWrapper
+    private final static class DualBankO2S24WideRangeVoltageWrapper
+            extends WideRangeVoltageOxygenSensorPIDWrapper
     {
+
         DualBankO2S24WideRangeVoltageWrapper()
         {
-            super(AppendixB.DUAL_BANK_O2S24_WIDE_RANGE);
+            super(AppendixB.DUAL_BANK_O2S24_WIDE_RANGE, 2, 4);
         }
     }
 
     /// GUI Wrapper for PID $2B (quad bank)
-    private final static class QuadBankO2S42WideRangeVoltageWrapper extends WideRangeVoltageOxygenSensorPIDWrapper
+    private final static class QuadBankO2S42WideRangeVoltageWrapper
+            extends WideRangeVoltageOxygenSensorPIDWrapper
     {
+
         QuadBankO2S42WideRangeVoltageWrapper()
         {
-            super(AppendixB.QUAD_BANK_O2S42_WIDE_RANGE);
+            super(AppendixB.QUAD_BANK_O2S42_WIDE_RANGE, 4, 2);
         }
     }
 
+    /// TODO: Left off here...so tired...
+
     /// GUI Wrapper for PID $2C
-    private final static class CommandedEGRWrapper extends PIDWrapper<Float>
+    private final static class CommandedEGRWrapper
+            extends PIDWrapper<Float>
     {
+
         CommandedEGRWrapper()
         {
             super(AppendixB.COMMANDED_EGR);
@@ -1504,8 +2034,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $2D
-    private final static class EGRErrorWrapper extends PIDWrapper<Float>
+    private final static class EGRErrorWrapper
+            extends PIDWrapper<Float>
     {
+
         EGRErrorWrapper()
         {
             super(AppendixB.EGR_ERROR);
@@ -1513,8 +2045,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $2E
-    private final static class CommandedEvaporativePurgeWrapper extends PIDWrapper<Float>
+    private final static class CommandedEvaporativePurgeWrapper
+            extends PIDWrapper<Float>
     {
+
         CommandedEvaporativePurgeWrapper()
         {
             super(AppendixB.COMMANDED_EVAPORATIVE_PURGE);
@@ -1522,8 +2056,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $2F
-    private final static class FuelLevelInputWrapper extends PIDWrapper<Float>
+    private final static class FuelLevelInputWrapper
+            extends PIDWrapper<Float>
     {
+
         FuelLevelInputWrapper()
         {
             super(AppendixB.FUEL_LEVEL_INPUT);
@@ -1531,8 +2067,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $30
-    private final static class WarmUpsSinceDTCResetWrapper extends PIDWrapper<Integer>
+    private final static class WarmUpsSinceDTCResetWrapper
+            extends PIDWrapper<Integer>
     {
+
         WarmUpsSinceDTCResetWrapper()
         {
             super(AppendixB.WARM_UPS_SINCE_DTC_RESET);
@@ -1540,8 +2078,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $31
-    private final static class DistanceTravelledSinceDTCResetWrapper extends PIDWrapper<Integer>
+    private final static class DistanceTravelledSinceDTCResetWrapper
+            extends PIDWrapper<Integer>
     {
+
         DistanceTravelledSinceDTCResetWrapper()
         {
             super(AppendixB.DISTANCE_TRAVELLED_SINCE_DTC_RESET);
@@ -1556,8 +2096,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $32
-    private final static class EvaporativeSystemVaporPressureWrapper extends PIDWrapper<Float>
+    private final static class EvaporativeSystemVaporPressureWrapper
+            extends PIDWrapper<Float>
     {
+
         EvaporativeSystemVaporPressureWrapper()
         {
             super(AppendixB.EVAP_SYSTEM_VAPOR_PRESSURE);
@@ -1572,8 +2114,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $33
-    private final static class BarometricPressureWrapper extends PIDWrapper<Float>
+    private final static class BarometricPressureWrapper
+            extends PIDWrapper<Float>
     {
+
         BarometricPressureWrapper()
         {
             super(AppendixB.BAROMETRIC_PRESSURE);
@@ -1588,18 +2132,24 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// Base class for PIDs $34 - $3B
-    private abstract static class WideRangeCurrentOxygenSensorPIDWrapper extends PIDWrapper<SerializablePair<Float, Float>>
+    private abstract static class WideRangeCurrentOxygenSensorPIDWrapper
+            extends PIDWrapper<SerializablePair<Float, Float>>
     {
 
-        private final static class ViewHolder extends ViewHolderBase
+        private final static class ViewHolder
+                extends ViewHolderBase
         {
+
             final TextView lambdaValue;
+
             final TextView currentValue;
 
             ViewHolder(View view)
             {
-                this.lambdaValue = ButterKnife.findById(view, R.id.wide_range_oxygen_sensor_lambda_value);
-                this.currentValue = ButterKnife.findById(view, R.id.wide_range_oxygen_sensor_voltage_value);
+                this.lambdaValue = ButterKnife.findById(view,
+                        R.id.wide_range_oxygen_sensor_lambda_value);
+                this.currentValue = ButterKnife.findById(view,
+                        R.id.wide_range_oxygen_sensor_voltage_value);
             }
         }
 
@@ -1612,17 +2162,19 @@ public final class SAEJ1979AppendixWrapper
         public final ViewHolderBase createViewHolder(@NonNull final View view)
         {
             ViewHolder rv = new ViewHolder(view);
-            ((TextView)ButterKnife.findById(view, R.id.wide_range_oxygen_sensor_label))
-                    .setText(super.unwrap().getDisplayName());
+            ((TextView) ButterKnife.findById(view, R.id.wide_range_oxygen_sensor_label))
+                    .setText(super.unwrap()
+                                  .getDisplayName());
             super.addUnitSelector(view);
             return rv;
         }
 
         @Override
         public final void updateViewHolder(@NonNull
-                                                                              ViewHolderBase viewHolder, @NonNull SerializablePair<Float, Float> value)
+                                           ViewHolderBase viewHolder,
+                                           @NonNull SerializablePair<Float, Float> value)
         {
-            ViewHolder vh = (ViewHolder)viewHolder;
+            ViewHolder vh = (ViewHolder) viewHolder;
             vh.lambdaValue.setText(String.valueOf(value.first));
             vh.currentValue.setText(String.valueOf(value.second));
         }
@@ -1635,8 +2187,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $34 (dual bank)
-    private final static class DualBankO2S11WideRangeCurrentWrapper extends WideRangeCurrentOxygenSensorPIDWrapper
+    private final static class DualBankO2S11WideRangeCurrentWrapper
+            extends WideRangeCurrentOxygenSensorPIDWrapper
     {
+
         DualBankO2S11WideRangeCurrentWrapper()
         {
             super(AppendixB.DUAL_BANK_O2S11_WIDE_RANGE_ALT);
@@ -1644,8 +2198,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $34 (quad bank)
-    private final static class QuadBankO2S11WideRangeCurrentWrapper extends WideRangeCurrentOxygenSensorPIDWrapper
+    private final static class QuadBankO2S11WideRangeCurrentWrapper
+            extends WideRangeCurrentOxygenSensorPIDWrapper
     {
+
         QuadBankO2S11WideRangeCurrentWrapper()
         {
             super(AppendixB.QUAD_BANK_O2S11_WIDE_RANGE_ALT);
@@ -1653,8 +2209,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $35 (dual bank)
-    private final static class DualBankO2S12WideRangeCurrentWrapper extends WideRangeCurrentOxygenSensorPIDWrapper
+    private final static class DualBankO2S12WideRangeCurrentWrapper
+            extends WideRangeCurrentOxygenSensorPIDWrapper
     {
+
         DualBankO2S12WideRangeCurrentWrapper()
         {
             super(AppendixB.DUAL_BANK_O2S12_WIDE_RANGE_ALT);
@@ -1662,8 +2220,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $35 (quad bank)
-    private final static class QuadBankO2S12WideRangeCurrentWrapper extends WideRangeCurrentOxygenSensorPIDWrapper
+    private final static class QuadBankO2S12WideRangeCurrentWrapper
+            extends WideRangeCurrentOxygenSensorPIDWrapper
     {
+
         QuadBankO2S12WideRangeCurrentWrapper()
         {
             super(AppendixB.QUAD_BANK_O2S12_WIDE_RANGE_ALT);
@@ -1671,8 +2231,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $36 (dual bank)
-    private final static class DualBankO2S13WideRangeCurrentWrapper extends WideRangeCurrentOxygenSensorPIDWrapper
+    private final static class DualBankO2S13WideRangeCurrentWrapper
+            extends WideRangeCurrentOxygenSensorPIDWrapper
     {
+
         DualBankO2S13WideRangeCurrentWrapper()
         {
             super(AppendixB.DUAL_BANK_O2S13_WIDE_RANGE_ALT);
@@ -1680,8 +2242,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $36 (quad bank)
-    private final static class QuadBankO2S21WideRangeCurrentWrapper extends WideRangeCurrentOxygenSensorPIDWrapper
+    private final static class QuadBankO2S21WideRangeCurrentWrapper
+            extends WideRangeCurrentOxygenSensorPIDWrapper
     {
+
         QuadBankO2S21WideRangeCurrentWrapper()
         {
             super(AppendixB.QUAD_BANK_O2S21_WIDE_RANGE_ALT);
@@ -1689,8 +2253,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $37 (dual bank)
-    private final static class DualBankO2S14WideRangeCurrentWrapper extends WideRangeCurrentOxygenSensorPIDWrapper
+    private final static class DualBankO2S14WideRangeCurrentWrapper
+            extends WideRangeCurrentOxygenSensorPIDWrapper
     {
+
         DualBankO2S14WideRangeCurrentWrapper()
         {
             super(AppendixB.DUAL_BANK_O2S14_WIDE_RANGE_ALT);
@@ -1698,8 +2264,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $37 (quad bank)
-    private final static class QuadBankO2S22WideRangeCurrentWrapper extends WideRangeCurrentOxygenSensorPIDWrapper
+    private final static class QuadBankO2S22WideRangeCurrentWrapper
+            extends WideRangeCurrentOxygenSensorPIDWrapper
     {
+
         QuadBankO2S22WideRangeCurrentWrapper()
         {
             super(AppendixB.QUAD_BANK_O2S22_WIDE_RANGE_ALT);
@@ -1707,8 +2275,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $38 (dual bank)
-    private final static class DualBankO2S21WideRangeCurrentWrapper extends WideRangeCurrentOxygenSensorPIDWrapper
+    private final static class DualBankO2S21WideRangeCurrentWrapper
+            extends WideRangeCurrentOxygenSensorPIDWrapper
     {
+
         DualBankO2S21WideRangeCurrentWrapper()
         {
             super(AppendixB.DUAL_BANK_O2S21_WIDE_RANGE_ALT);
@@ -1716,8 +2286,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $38 (quad bank)
-    private final static class QuadBankO2S31WideRangeCurrentWrapper extends WideRangeCurrentOxygenSensorPIDWrapper
+    private final static class QuadBankO2S31WideRangeCurrentWrapper
+            extends WideRangeCurrentOxygenSensorPIDWrapper
     {
+
         QuadBankO2S31WideRangeCurrentWrapper()
         {
             super(AppendixB.QUAD_BANK_O2S31_WIDE_RANGE_ALT);
@@ -1728,6 +2300,7 @@ public final class SAEJ1979AppendixWrapper
     private final static class DualBankO2S22WideRangeCurrentWrapper
             extends WideRangeCurrentOxygenSensorPIDWrapper
     {
+
         DualBankO2S22WideRangeCurrentWrapper()
         {
             super(AppendixB.DUAL_BANK_O2S22_WIDE_RANGE_ALT);
@@ -1738,6 +2311,7 @@ public final class SAEJ1979AppendixWrapper
     private final static class QuadBankO2S32WideRangeCurrentWrapper
             extends WideRangeCurrentOxygenSensorPIDWrapper
     {
+
         QuadBankO2S32WideRangeCurrentWrapper()
         {
             super(AppendixB.QUAD_BANK_O2S32_WIDE_RANGE_ALT);
@@ -1745,8 +2319,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $3A (dual bank)
-    private final static class DualBankO2S23WideRangeCurrentWrapper extends WideRangeCurrentOxygenSensorPIDWrapper
+    private final static class DualBankO2S23WideRangeCurrentWrapper
+            extends WideRangeCurrentOxygenSensorPIDWrapper
     {
+
         DualBankO2S23WideRangeCurrentWrapper()
         {
             super(AppendixB.DUAL_BANK_O2S23_WIDE_RANGE_ALT);
@@ -1754,8 +2330,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $3A (quad bank)
-    private final static class QuadBankO2S41WideRangeCurrentWrapper extends WideRangeCurrentOxygenSensorPIDWrapper
+    private final static class QuadBankO2S41WideRangeCurrentWrapper
+            extends WideRangeCurrentOxygenSensorPIDWrapper
     {
+
         QuadBankO2S41WideRangeCurrentWrapper()
         {
             super(AppendixB.QUAD_BANK_O2S41_WIDE_RANGE_ALT);
@@ -1763,8 +2341,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $3B (dual bank)
-    private final static class DualBankO2S24WideRangeCurrentWrapper extends WideRangeCurrentOxygenSensorPIDWrapper
+    private final static class DualBankO2S24WideRangeCurrentWrapper
+            extends WideRangeCurrentOxygenSensorPIDWrapper
     {
+
         DualBankO2S24WideRangeCurrentWrapper()
         {
             super(AppendixB.DUAL_BANK_O2S24_WIDE_RANGE_ALT);
@@ -1772,8 +2352,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $3B (quad bank)
-    private final static class QuadBankO2S42WideRangeCurrentWrapper extends WideRangeCurrentOxygenSensorPIDWrapper
+    private final static class QuadBankO2S42WideRangeCurrentWrapper
+            extends WideRangeCurrentOxygenSensorPIDWrapper
     {
+
         QuadBankO2S42WideRangeCurrentWrapper()
         {
             super(AppendixB.QUAD_BANK_O2S42_WIDE_RANGE_ALT);
@@ -1781,8 +2363,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $3C
-    private final static class CatalystTemperatureBank1Sensor1Wrapper extends PIDWrapper<Float>
+    private final static class CatalystTemperatureBank1Sensor1Wrapper
+            extends PIDWrapper<Float>
     {
+
         CatalystTemperatureBank1Sensor1Wrapper()
         {
             super(AppendixB.CATALYST_TEMPERATURE_BANK_1_SENSOR_1);
@@ -1797,8 +2381,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $3D
-    private final static class CatalystTemperatureBank1Sensor2Wrapper extends PIDWrapper<Float>
+    private final static class CatalystTemperatureBank1Sensor2Wrapper
+            extends PIDWrapper<Float>
     {
+
         CatalystTemperatureBank1Sensor2Wrapper()
         {
             super(AppendixB.CATALYST_TEMPERATURE_BANK_1_SENSOR_2);
@@ -1813,8 +2399,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $3E
-    private final static class CatalystTemperatureBank2Sensor1Wrapper extends PIDWrapper<Float>
+    private final static class CatalystTemperatureBank2Sensor1Wrapper
+            extends PIDWrapper<Float>
     {
+
         CatalystTemperatureBank2Sensor1Wrapper()
         {
             super(AppendixB.CATALYST_TEMPERATURE_BANK_2_SENSOR_1);
@@ -1829,8 +2417,10 @@ public final class SAEJ1979AppendixWrapper
     }
 
     /// GUI Wrapper for PID $3F
-    private final static class CatalystTemperatureBank2Sensor2Wrapper extends PIDWrapper<Float>
+    private final static class CatalystTemperatureBank2Sensor2Wrapper
+            extends PIDWrapper<Float>
     {
+
         CatalystTemperatureBank2Sensor2Wrapper()
         {
             super(AppendixB.CATALYST_TEMPERATURE_BANK_2_SENSOR_2);
@@ -1847,10 +2437,11 @@ public final class SAEJ1979AppendixWrapper
     /// GUI Wrapper for PID $41
 
 
-
-    private final static List<Class<? extends PIDWrapper<?>>> DUAL_BANK_CONVENTIONAL_OXYGEN_SENSOR_PID_WRAPPERS
+    private final static List<Class<? extends PIDWrapper<?>>>
+            DUAL_BANK_CONVENTIONAL_OXYGEN_SENSOR_PID_WRAPPERS
             = new ArrayList<Class<? extends PIDWrapper<?>>>()
     {
+
         {
             super.add(DualBankO2S11ConventionalWrapper.class);
             super.add(DualBankO2S12ConventionalWrapper.class);
@@ -1863,9 +2454,11 @@ public final class SAEJ1979AppendixWrapper
         }
     };
 
-    private final static List<Class<? extends PIDWrapper<?>>> QUAD_BANK_CONVENTIONAL_OXYGEN_SENSOR_PID_WRAPPERS
+    private final static List<Class<? extends PIDWrapper<?>>>
+            QUAD_BANK_CONVENTIONAL_OXYGEN_SENSOR_PID_WRAPPERS
             = new ArrayList<Class<? extends PIDWrapper<?>>>()
     {
+
         {
             super.add(QuadBankO2S11ConventionalWrapper.class);
             super.add(QuadBankO2S12ConventionalWrapper.class);
@@ -1878,9 +2471,11 @@ public final class SAEJ1979AppendixWrapper
         }
     };
 
-    private final static List<Class<? extends PIDWrapper<?>>> DUAL_BANK_WIDE_RANGE_VOLTAGE_OXYGEN_SENSOR_PID_WRAPPERS
+    private final static List<Class<? extends PIDWrapper<?>>>
+            DUAL_BANK_WIDE_RANGE_VOLTAGE_OXYGEN_SENSOR_PID_WRAPPERS
             = new ArrayList<Class<? extends PIDWrapper<?>>>()
     {
+
         {
             super.add(DualBankO2S11WideRangeVoltageWrapper.class);
             super.add(DualBankO2S12WideRangeVoltageWrapper.class);
@@ -1893,9 +2488,11 @@ public final class SAEJ1979AppendixWrapper
         }
     };
 
-    private final static List<Class<? extends PIDWrapper<?>>> QUAD_BANK_WIDE_RANGE_VOLTAGE_OXYGEN_SENSOR_PID_WRAPPERS
+    private final static List<Class<? extends PIDWrapper<?>>>
+            QUAD_BANK_WIDE_RANGE_VOLTAGE_OXYGEN_SENSOR_PID_WRAPPERS
             = new ArrayList<Class<? extends PIDWrapper<?>>>()
     {
+
         {
             super.add(QuadBankO2S11WideRangeVoltageWrapper.class);
             super.add(QuadBankO2S12WideRangeVoltageWrapper.class);
@@ -1908,9 +2505,11 @@ public final class SAEJ1979AppendixWrapper
         }
     };
 
-    private final static List<Class<? extends PIDWrapper<?>>> DUAL_BANK_WIDE_RANGE_CURRENT_OXYGEN_SENSOR_PID_WRAPPERS
+    private final static List<Class<? extends PIDWrapper<?>>>
+            DUAL_BANK_WIDE_RANGE_CURRENT_OXYGEN_SENSOR_PID_WRAPPERS
             = new ArrayList<Class<? extends PIDWrapper<?>>>()
     {
+
         {
             super.add(DualBankO2S11WideRangeCurrentWrapper.class);
             super.add(DualBankO2S12WideRangeCurrentWrapper.class);
@@ -1923,9 +2522,11 @@ public final class SAEJ1979AppendixWrapper
         }
     };
 
-    private final static List<Class<? extends PIDWrapper<?>>> QUAD_BANK_WIDE_RANGE_CURRENT_OXYGEN_SENSOR_PID_WRAPPERS
+    private final static List<Class<? extends PIDWrapper<?>>>
+            QUAD_BANK_WIDE_RANGE_CURRENT_OXYGEN_SENSOR_PID_WRAPPERS
             = new ArrayList<Class<? extends PIDWrapper<?>>>()
     {
+
         {
             super.add(QuadBankO2S11WideRangeCurrentWrapper.class);
             super.add(QuadBankO2S12WideRangeCurrentWrapper.class);
@@ -1938,85 +2539,88 @@ public final class SAEJ1979AppendixWrapper
         }
     };
 
-    private final static List<Class<? extends PIDWrapper<?>>> PID_WRAPPERS = new ArrayList<Class<? extends PIDWrapper<?>>>()
-    {
-        {
-            super.add(PidSupport_1_20.class);
-            super.add(MonitorStatusWrapper.class);
-            super.add(FreezeFrameDTCWrapper.class);
-            super.add(FuelSystemStatusWrapper.class);
-            super.add(CalculatedEngineLoadWrapper.class);
-            super.add(EngineCoolantTemperatureWrapper.class);
-            super.add(ShortTermFuelTrimBank_1_3_Wrapper.class);
-            super.add(LongTermFuelTrimBank_1_3_Wrapper.class);
-            super.add(ShortTermFuelTrimBank_2_4_Wrapper.class);
-            super.add(LongTermFuelTrimBank_2_4_Wrapper.class);
-            super.add(NarrowRangeFuelRailPressureRefAtmosphereWrapper.class);
-            super.add(IntakeManifoldAbsolutePressureWrapper.class);
-            super.add(EngineSpeedWrapper.class);
-            super.add(VehicleSpeedWrapper.class);
-            super.add(TimingAdvanceWrapper.class);
-            super.add(IntakeAirTemperatureWrapper.class);
-            super.add(MassAirflowRateWrapper.class);
-            super.add(AbsoluteThrottlePositionWrapper.class);
-            super.add(SecondaryAirStatusWrapper.class);
-            super.add(OxygenSensorLocationDualBankWrapper.class);
-            super.add(null); // $14
-            super.add(null); // $15
-            super.add(null); // $16
-            super.add(null); // $17
-            super.add(null); // $18
-            super.add(null); // $19
-            super.add(null); // $1A
-            super.add(null); // $1B
-            super.add(OBDSupportWrapper.class);
-            super.add(OxygenSensorLocationQuadBankWrapper.class);
-            super.add(AuxiliaryInputStatusWrapper.class);
-            super.add(TimeSinceEngineStartWrapper.class);
-            super.add(PidSupport_21_40.class);
-            super.add(DistanceTravelledWithActiveMILWrapper.class);
-            super.add(FuelRailPressureRefManifoldVacWrapper.class);
-            super.add(WideRangeVoltageFuelRailPressureRefAtmosphere.class);
-            super.add(null); // $24
-            super.add(null); // $25
-            super.add(null); // $26
-            super.add(null); // $27
-            super.add(null); // $28
-            super.add(null); // $29
-            super.add(null); // $2A
-            super.add(null); // $2B
-            super.add(CommandedEGRWrapper.class);
-            super.add(EGRErrorWrapper.class);
-            super.add(CommandedEvaporativePurgeWrapper.class);
-            super.add(FuelLevelInputWrapper.class);
-            super.add(WarmUpsSinceDTCResetWrapper.class);
-            super.add(DistanceTravelledSinceDTCResetWrapper.class);
-            super.add(EvaporativeSystemVaporPressureWrapper.class);
-            super.add(BarometricPressureWrapper.class);
-            super.add(null); // $34
-            super.add(null); // $35
-            super.add(null); // $36
-            super.add(null); // $37
-            super.add(null); // $38
-            super.add(null); // $39
-            super.add(null); // $3A
-            super.add(null); // $3B
-            super.add(CatalystTemperatureBank1Sensor1Wrapper.class);
-            super.add(CatalystTemperatureBank1Sensor2Wrapper.class);
-            super.add(CatalystTemperatureBank2Sensor1Wrapper.class);
-            super.add(CatalystTemperatureBank2Sensor2Wrapper.class);
-            super.add(PidSupport_41_60.class);
+    private final static List<Class<? extends PIDWrapper<?>>> PID_WRAPPERS =
+            new ArrayList<Class<? extends PIDWrapper<?>>>()
+            {
 
-            super.add(PidSupport_61_80.class);
-            super.add(PidSupport_81_A0.class);
-            super.add(PidSupport_A1_C0.class);
-            super.add(PidSupport_C1_E0.class);
-            super.add(PidSupport_E1_FF.class);
-        }
-    };
+                {
+                    super.add(PidSupport_1_20.class);
+                    super.add(MonitorStatusWrapper.class);
+                    super.add(FreezeFrameDTCWrapper.class);
+                    super.add(FuelSystemStatusWrapper.class);
+                    super.add(CalculatedEngineLoadWrapper.class);
+                    super.add(EngineCoolantTemperatureWrapper.class);
+                    super.add(ShortTermFuelTrimBank_1_3_Wrapper.class);
+                    super.add(LongTermFuelTrimBank_1_3_Wrapper.class);
+                    super.add(ShortTermFuelTrimBank_2_4_Wrapper.class);
+                    super.add(LongTermFuelTrimBank_2_4_Wrapper.class);
+                    super.add(NarrowRangeFuelRailPressureRefAtmosphereWrapper.class);
+                    super.add(IntakeManifoldAbsolutePressureWrapper.class);
+                    super.add(EngineSpeedWrapper.class);
+                    super.add(VehicleSpeedWrapper.class);
+                    super.add(TimingAdvanceWrapper.class);
+                    super.add(IntakeAirTemperatureWrapper.class);
+                    super.add(MassAirflowRateWrapper.class);
+                    super.add(AbsoluteThrottlePositionWrapper.class);
+                    super.add(SecondaryAirStatusWrapper.class);
+                    super.add(OxygenSensorLocationDualBankWrapper.class);
+                    super.add(null); // $14
+                    super.add(null); // $15
+                    super.add(null); // $16
+                    super.add(null); // $17
+                    super.add(null); // $18
+                    super.add(null); // $19
+                    super.add(null); // $1A
+                    super.add(null); // $1B
+                    super.add(OBDSupportWrapper.class);
+                    super.add(OxygenSensorLocationQuadBankWrapper.class);
+                    super.add(AuxiliaryInputStatusWrapper.class);
+                    super.add(TimeSinceEngineStartWrapper.class);
+                    super.add(PidSupport_21_40.class);
+                    super.add(DistanceTravelledWithActiveMILWrapper.class);
+                    super.add(FuelRailPressureRefManifoldVacWrapper.class);
+                    super.add(WideRangeVoltageFuelRailPressureRefAtmosphere.class);
+                    super.add(null); // $24
+                    super.add(null); // $25
+                    super.add(null); // $26
+                    super.add(null); // $27
+                    super.add(null); // $28
+                    super.add(null); // $29
+                    super.add(null); // $2A
+                    super.add(null); // $2B
+                    super.add(CommandedEGRWrapper.class);
+                    super.add(EGRErrorWrapper.class);
+                    super.add(CommandedEvaporativePurgeWrapper.class);
+                    super.add(FuelLevelInputWrapper.class);
+                    super.add(WarmUpsSinceDTCResetWrapper.class);
+                    super.add(DistanceTravelledSinceDTCResetWrapper.class);
+                    super.add(EvaporativeSystemVaporPressureWrapper.class);
+                    super.add(BarometricPressureWrapper.class);
+                    super.add(null); // $34
+                    super.add(null); // $35
+                    super.add(null); // $36
+                    super.add(null); // $37
+                    super.add(null); // $38
+                    super.add(null); // $39
+                    super.add(null); // $3A
+                    super.add(null); // $3B
+                    super.add(CatalystTemperatureBank1Sensor1Wrapper.class);
+                    super.add(CatalystTemperatureBank1Sensor2Wrapper.class);
+                    super.add(CatalystTemperatureBank2Sensor1Wrapper.class);
+                    super.add(CatalystTemperatureBank2Sensor2Wrapper.class);
+                    super.add(PidSupport_41_60.class);
+
+                    super.add(PidSupport_61_80.class);
+                    super.add(PidSupport_81_A0.class);
+                    super.add(PidSupport_A1_C0.class);
+                    super.add(PidSupport_C1_E0.class);
+                    super.add(PidSupport_E1_FF.class);
+                }
+            };
 
     @SuppressWarnings("unchecked")
-    public static <T extends PIDWrapper<?>> T getWrapper(@NonNull PID<?> pid, Profile profile)
+    public static <T extends PIDWrapper<?>> T getWrapper(@NonNull PID<?> pid,
+                                                         Profile profile)
     {
         try
         {
@@ -2025,11 +2629,15 @@ public final class SAEJ1979AppendixWrapper
             {
                 if(profile.isEquipped(Profile.DUAL_BANK))
                 {
-                    return (T)DUAL_BANK_CONVENTIONAL_OXYGEN_SENSOR_PID_WRAPPERS.get(pid.getID() - 0x14).newInstance();
+                    return (T) DUAL_BANK_CONVENTIONAL_OXYGEN_SENSOR_PID_WRAPPERS.get(
+                            pid.getID() - 0x14)
+                                                                                .newInstance();
                 }
                 else if(profile.isEquipped(Profile.QUAD_BANK))
                 {
-                    return (T)QUAD_BANK_CONVENTIONAL_OXYGEN_SENSOR_PID_WRAPPERS.get(pid.getID() - 0x14).newInstance();
+                    return (T) QUAD_BANK_CONVENTIONAL_OXYGEN_SENSOR_PID_WRAPPERS.get(
+                            pid.getID() - 0x14)
+                                                                                .newInstance();
                 }
                 else
                 {
@@ -2041,11 +2649,15 @@ public final class SAEJ1979AppendixWrapper
             {
                 if(profile.isEquipped(Profile.DUAL_BANK))
                 {
-                    return (T) DUAL_BANK_WIDE_RANGE_VOLTAGE_OXYGEN_SENSOR_PID_WRAPPERS.get(pid.getID() - 0x24).newInstance();
+                    return (T) DUAL_BANK_WIDE_RANGE_VOLTAGE_OXYGEN_SENSOR_PID_WRAPPERS.get(
+                            pid.getID() - 0x24)
+                                                                                      .newInstance();
                 }
                 else if(profile.isEquipped(Profile.QUAD_BANK))
                 {
-                    return (T) QUAD_BANK_WIDE_RANGE_VOLTAGE_OXYGEN_SENSOR_PID_WRAPPERS.get(pid.getID() - 0x24).newInstance();
+                    return (T) QUAD_BANK_WIDE_RANGE_VOLTAGE_OXYGEN_SENSOR_PID_WRAPPERS.get(
+                            pid.getID() - 0x24)
+                                                                                      .newInstance();
                 }
                 else
                 {
@@ -2057,11 +2669,15 @@ public final class SAEJ1979AppendixWrapper
             {
                 if(profile.isEquipped(Profile.DUAL_BANK))
                 {
-                    return (T)DUAL_BANK_WIDE_RANGE_CURRENT_OXYGEN_SENSOR_PID_WRAPPERS.get(pid.getID() - 0x34).newInstance();
+                    return (T) DUAL_BANK_WIDE_RANGE_CURRENT_OXYGEN_SENSOR_PID_WRAPPERS.get(
+                            pid.getID() - 0x34)
+                                                                                      .newInstance();
                 }
                 else if(profile.isEquipped(Profile.QUAD_BANK))
                 {
-                    return (T)QUAD_BANK_WIDE_RANGE_CURRENT_OXYGEN_SENSOR_PID_WRAPPERS.get(pid.getID() - 0x34).newInstance();
+                    return (T) QUAD_BANK_WIDE_RANGE_CURRENT_OXYGEN_SENSOR_PID_WRAPPERS.get(
+                            pid.getID() - 0x34)
+                                                                                      .newInstance();
                 }
                 else
                 {
@@ -2070,7 +2686,8 @@ public final class SAEJ1979AppendixWrapper
             }
             else
             {
-                return (T) PID_WRAPPERS.get(pid.getID()).newInstance();
+                return (T) PID_WRAPPERS.get(pid.getID())
+                                       .newInstance();
             }
         }
         catch(ClassCastException cce)
@@ -2080,11 +2697,13 @@ public final class SAEJ1979AppendixWrapper
                 Log.wtf(TAG, "bad cast", cce);
             }
         }
-        catch (IllegalAccessException | InstantiationException e)
+        catch(IllegalAccessException | InstantiationException e)
         {
             if(BuildConfig.DEBUG)
             {
-                Log.wtf(TAG, "No wrapper exists for : " + pid + " (This means you should make one.)", e);
+                Log.wtf(TAG,
+                        "No wrapper exists for : " + pid + " (This means you should make one.)",
+                        e);
             }
         }
         return null;
